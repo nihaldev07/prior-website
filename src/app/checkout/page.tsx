@@ -218,7 +218,7 @@ const CheckoutPage = () => {
   const confirmOrderAndCreateOne = async () => {
     const hasPayment =
       paymentMethod === "bkash" ||
-      shippingAddress.district.toLowerCase().includes("dhaka");
+      !shippingAddress.district.toLowerCase().includes("dhaka");
     const orderData = {
       customerInformation: {
         //@ts-ignore
