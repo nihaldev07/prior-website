@@ -1,4 +1,4 @@
-const hostName = "http://localhost:7002";
+const hostName = "https://prior-express.onrender.com";
 const baseUrl = `${hostName}/prior`;
 
 export const config = {

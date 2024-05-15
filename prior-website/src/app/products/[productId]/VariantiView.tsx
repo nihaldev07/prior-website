@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/Shadcn/Select";
 import { SingleProductType, Variation } from "@/data/types";
-import { useToast } from "@/components/ui/use-toast";
+import Swal from "sweetalert2";
 
 interface Props {
   type: "size" | "color";
@@ -29,8 +29,6 @@ const SelectDemo: React.FC<Props> = ({
   selectedVariant,
   onVariantChange,
 }) => {
-  const toast = useToast();
-
   const handleVariantChange = (value: string) => {
     const vType: "size" | "color" = type;
 
@@ -50,10 +48,7 @@ const SelectDemo: React.FC<Props> = ({
       const selectedVariantData = filteredVariants[0];
       onVariantChange(selectedVariantData);
     } else {
-      toast({
-        title: "This variant is out of stock",
-        variant: "destructive",
-      });
+      Swal.fire("Out Of Stock", "This variant is out of stock", "error");
     }
   };
 
