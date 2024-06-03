@@ -32,8 +32,8 @@ const Carousel = ({ images, direction = "horizontal", delay = 3000 }) => {
           <Image
             src={image}
             alt={`Image ${index}`}
-            height={100}
-            width={100}
+            width={1920}
+            height={1080}
             quality={100}
             className='w-full h-auto object-fill rounded-3xl'
           />
