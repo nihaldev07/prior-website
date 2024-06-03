@@ -1,14 +1,16 @@
 "use client";
-import React from "react";
+import React, { Suspense, lazy } from "react";
 
 import Filter from "@/components/Filter";
 import useProductFetch from "@/hooks/useFetchProducts";
-import ProductCard from "@/components/ProductCard";
-import { productsSection, shoes } from "@/data/content";
+import { productsSection } from "@/data/content";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Heading from "@/shared/Heading/Heading";
 import { ProductType } from "@/data/types";
 import { LoaderCircle } from "lucide-react";
+
+// Lazy load the ProductCard component
+const ProductCard = lazy(() => import("@/components/ProductCard"));
 
 const SectionProducts = () => {
   const {
@@ -38,11 +40,9 @@ const SectionProducts = () => {
       <div className='grid gap-2 gap-y-5 sm:gap-7 grid-cols-2 md:grid-cols-2 lg:grid-cols-4'>
         {!!products &&
           products.map((product: ProductType) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              className='border-neutral-300'
-            />
+            <Suspense fallback={<div>Loading...</div>} key={product.id}>
+              <ProductCard product={product} className='border-neutral-300' />
+            </Suspense>
           ))}
       </div>
 
