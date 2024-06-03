@@ -38,9 +38,8 @@ const ProductCard: FC<ProductCardProps> = ({
           className='h-[100px] sm:h-[250px] w-full lg:h-[220px]'
           href={`/products/${product.id}`}>
           <Image
-            width={1920}
-            height={1080}
-            quality={100}
+            width={250}
+            height={250}
             src={product.thumbnail}
             alt={`${product.name} cover photo`}
             className='h-full w-full object-fill object-bottom'
