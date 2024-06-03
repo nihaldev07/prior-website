@@ -186,7 +186,7 @@ const ShippingAddress: FC<Props> = ({
               <Input
                 rounded='rounded-lg'
                 sizeClass='h-12 px-4 py-3'
-                className='border-gray-300 bg-transparent placeholder:text-neutral-500 focus:border-primary'
+                className='border border-gray-300 bg-transparent placeholder:text-neutral-500 focus:border-primary'
                 placeholder=''
                 defaultValue='Enter Address'
                 type='text'
