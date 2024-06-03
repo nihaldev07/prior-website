@@ -18,6 +18,7 @@ const ProductSlider = () => {
       const res = await fetch(config.product.getBestProducts());
       const products = await res.json();
       if (!!products && Array.isArray(products)) {
+        //@ts-ignore
         setProducts([...products]);
       }
     } catch (error) {
