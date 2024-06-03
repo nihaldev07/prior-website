@@ -55,6 +55,7 @@ const ProductSlider = () => {
                       <Loader2 className='w-5 h-5 animate-spin' />
                     </div>
                   }
+                  //@ts-ignore
                   key={item?.id}>
                   <ProductCard
                     imageSize='250px'
