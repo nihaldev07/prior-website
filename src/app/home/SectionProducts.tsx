@@ -7,7 +7,7 @@ import { productsSection } from "@/data/content";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Heading from "@/shared/Heading/Heading";
 import { ProductType } from "@/data/types";
-import { LoaderCircle } from "lucide-react";
+import { Loader2, LoaderCircle } from "lucide-react";
 
 // Lazy load the ProductCard component
 const ProductCard = lazy(() => import("@/components/ProductCard"));
@@ -40,7 +40,14 @@ const SectionProducts = () => {
       <div className='grid gap-2 gap-y-5 sm:gap-7 grid-cols-2 md:grid-cols-2 lg:grid-cols-4'>
         {!!products &&
           products.map((product: ProductType) => (
-            <Suspense fallback={<div>Loading...</div>} key={product.id}>
+            <Suspense
+              fallback={
+                <div>
+                  Loading...
+                  <Loader2 className='w-5 h-5 animate-spin' />
+                </div>
+              }
+              key={product.id}>
               <ProductCard product={product} className='border-neutral-300' />
             </Suspense>
           ))}

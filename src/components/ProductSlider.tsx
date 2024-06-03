@@ -6,6 +6,7 @@ import { config } from "@/utils/config";
 import useThrottledEffect from "@/hooks/useThrottleEffect";
 import Carousel from "./Carosol/Swiper";
 import { ProductType } from "@/data/types";
+import { Loader2 } from "lucide-react";
 
 // Lazy load the ProductCard component
 const ProductCard = lazy(() => import("./ProductCard"));
@@ -46,7 +47,15 @@ const ProductSlider = () => {
                 return null;
               }
               return (
-                <Suspense fallback={<div>Loading...</div>} key={item.id}>
+                //@ts-ignore
+                <Suspense
+                  fallback={
+                    <div>
+                      Loading...
+                      <Loader2 className='w-5 h-5 animate-spin' />
+                    </div>
+                  }
+                  key={item?.id}>
                   <ProductCard
                     imageSize='250px'
                     showPrevPrice
