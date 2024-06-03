@@ -23,7 +23,7 @@ const Filter: React.FC<Props> = ({
 }) => {
   return (
     <div className='mx-auto mb-10 max-w-4xl items-center justify-between space-y-3 rounded-2xl border border-neutral-300 p-2 md:flex md:space-y-0 md:rounded-full'>
-      <div className='grid basis-[100%] gap-3 md:grid-cols-4'>
+      <div className='grid basis-[100%] gap-3 grid-cols-2 md:grid-cols-4'>
         {/* {filters.map((filter) => (
           <Select sizeClass='h-12' key={filter[0]}>
             {filter.map((item) => (
@@ -35,8 +35,8 @@ const Filter: React.FC<Props> = ({
         ))} */}
         <Select
           sizeClass='h-12'
+          className=' text-center sm:text-left sm:pl-2 '
           key={"categories"}
-          defaultValue=''
           value={filterData?.categoryId}
           onChange={(e) => {
             handleFilterChange({ ...filterData, categoryId: e.target.value });
@@ -51,8 +51,8 @@ const Filter: React.FC<Props> = ({
         </Select>
         <Select
           sizeClass='h-12'
+          className=' text-center sm:text-left sm:pl-2 '
           key={"colors"}
-          defaultValue=''
           value={filterData?.color}
           onChange={(e) => {
             handleFilterChange({ ...filterData, color: e.target.value });
@@ -68,7 +68,7 @@ const Filter: React.FC<Props> = ({
         <Select
           sizeClass='h-12'
           key={"size"}
-          defaultValue=''
+          className=' text-center sm:text-left sm:pl-2 '
           value={filterData?.size}
           onChange={(e) => {
             handleFilterChange({ ...filterData, size: e.target.value });
@@ -84,7 +84,7 @@ const Filter: React.FC<Props> = ({
         <Select
           sizeClass='h-12'
           key={"price"}
-          defaultValue='Below 10000'
+          className=' text-center sm:text-left sm:pl-2 '
           value={filterData?.price}
           onChange={(e) => {
             handleFilterChange({ ...filterData, price: e.target.value });

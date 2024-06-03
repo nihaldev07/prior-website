@@ -10,7 +10,7 @@ const SectionBestDeals = () => {
         isCenter
         isMain
         desc={
-          "Explore a stunning range of women's shoes and handbags at [Your Website Name]. Find the latest styles in footwear and purses to complement your wardrobe"
+          "Explore a stunning range of women's shoes and handbags at PriorBD.com . Find the latest styles in footwear and purses to complement your wardrobe"
         }>
         {"Your Ultimate Fashion Destination"}
       </Heading>

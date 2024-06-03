@@ -11,7 +11,7 @@ interface LogoProps {
 const Logo: FC<LogoProps> = ({ className = "hidden" }) => {
   return (
     <Link className='flex cursor-pointer items-center gap-2' href='/'>
-      <Image src={LogoImg} alt='main-logo' />
+      <Image src={LogoImg} alt='main-logo' width={200} height={64} />
       <span className={`${className} text-2xl font-bold hidden`}>Prior.</span>
     </Link>
   );

@@ -183,7 +183,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
       <button
         type='button'
         onClick={handleOpenMenu}
-        className='mx-5 flex items-center gap-1 rounded-full bg-neutral-100 p-2 text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+        className=' sm:mx-5 flex items-center gap-1 rounded-full bg-neutral-100 p-2 text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
         <FaBagShopping className='text-2xl' />
         <span className='hidden text-sm lg:block'>{cart.length} items</span>
       </button>

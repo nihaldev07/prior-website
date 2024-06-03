@@ -46,7 +46,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
   const distinctColors = new Set<string>(); // Use Set for efficient storage of unique values
   const distinctSizes = new Set<string>();
 
-  for (const item of product.variation) {
+  for (const item of product?.variation) {
     if (!!item.color) distinctColors.add(item.color);
     if (!!item.size) distinctSizes.add(item.size);
   }
@@ -161,14 +161,28 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
           )}
         </div>
 
-        <div className='mt-5 flex items-center gap-5'>
-          <ButtonPrimary className='w-full'>Buy Now</ButtonPrimary>
-          <ButtonSecondary
-            className='flex w-full items-center gap-1 border-2 border-primary text-primary'
-            onClick={() => handleCartSelection()}>
-            <BsBag /> Add to cart
-          </ButtonSecondary>
-        </div>
+        {product?.quantity > 0 && (
+          <div className='mt-5 flex items-center gap-5'>
+            <ButtonPrimary
+              href='/checkout'
+              className='w-full'
+              onClick={() => {
+                handleCartSelection();
+              }}>
+              Buy Now
+            </ButtonPrimary>
+            <ButtonSecondary
+              className='flex w-full items-center gap-1 border-2 border-primary text-primary'
+              onClick={() => handleCartSelection()}>
+              <BsBag /> Add to cart
+            </ButtonSecondary>
+          </div>
+        )}
+        {product?.quantity < 1 && (
+          <div className='mt-5 w-full flex items-center justify-center px-5 py-4 bg-gray-200 text-red-500 font-semibold'>
+            OUT OF STOCK
+          </div>
+        )}
       </div>
     </div>
   );

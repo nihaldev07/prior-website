@@ -1,4 +1,4 @@
-const hostName = "https://prior-express.onrender.com";
+const hostName = "http://app.priorbd.com"; //"https://prior-express.onrender.com";
 const baseUrl = `${hostName}/prior`;
 
 export const config = {
@@ -8,6 +8,7 @@ export const config = {
     getProductsByCategory: (id: string) => `${baseUrl}/product/category/${id}`,
     getBestProducts: () => `${baseUrl}/product/best`,
     getFilterData: () => `${baseUrl}/product/filterData`,
+    searchProducts: () => `${baseUrl}/product/search`,
   },
   order: {
     createOrder: () => `${baseUrl}/order/create`,
