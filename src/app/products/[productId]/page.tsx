@@ -1,5 +1,6 @@
 "use server";
 import React from "react";
+import Head from "next/head";
 
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
@@ -48,6 +49,12 @@ const SingleProductPage = async ({
 
   return (
     <div className='container'>
+      <Head>
+        <title>{name} | Prior - Your Priority in Fashion </title>
+        <meta name='description' content={description} />
+        <meta property='og:title' content={name} />
+        <meta property='og:image' content={thumbnail} />
+      </Head>
       <SectionNavigation />
       <div className='mb-20'>
         <SectionProductHeader

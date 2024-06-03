@@ -17,6 +17,7 @@ import { CartItem, useCart } from "@/context/CartContext";
 import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
+import { isValidBangladeshiPhoneNumber } from "@/utils/content";
 
 const CheckoutPage = () => {
   const { cart, updateToCart, removeFromCart } = useCart();
@@ -236,13 +237,17 @@ const CheckoutPage = () => {
       if (response.success) {
         if (hasPayment) {
           bkashCheckout(
-            paymentMethod === "bkash" ? transectionData?.remaining : 200,
+            paymentMethod === "bkash" ? transectionData?.remaining : 20,
             response?.data?.order?.id,
             customerInformation?.name,
             customerInformation?.phoneNumber
           );
         } else if (!shippingAddress.district.toLowerCase().includes("dhaka")) {
-          console.log("order:", response?.data);
+          Swal.fire(
+            "Order Create Successfully 🎉",
+            "Our agent will contact with you shortly",
+            "success"
+          );
         }
       }
     } catch (error) {
@@ -251,39 +256,59 @@ const CheckoutPage = () => {
   };
 
   const handleConfirmOrder = () => {
-    if (!!!orderProducts || orderProducts.length < 1) {
-      Swal.fire("Opps!!", "Please select at least one product", "error");
-    } else if (
-      customerInformation?.name === "" ||
-      customerInformation?.phoneNumber === ""
-    ) {
-      Swal.fire("Opps!!", "Please enter valid name and mobile number", "error");
-    } else if (
-      shippingAddress?.district === "" ||
-      shippingAddress?.division === "" ||
-      shippingAddress?.address === ""
-    ) {
-      Swal.fire("Opps!!", "Please enter valid shipping address", "error");
-    } else if (paymentMethod === "") {
-      Swal.fire("Opps!!", "Please select a payment method", "error");
-    } else if (!shippingAddress?.district.toLowerCase().includes("dhaka")) {
-      Swal.fire({
+    // Check if there are no order products
+    if (!orderProducts || orderProducts.length < 1) {
+      return Swal.fire("Oops!!", "Please select at least one product", "error");
+    }
+
+    // Check if customer information is missing
+    const { name, phoneNumber } = customerInformation || {};
+    if (!name || !phoneNumber) {
+      return Swal.fire(
+        "Oops!!",
+        "Please enter valid name and mobile number",
+        "error"
+      );
+    }
+
+    // Check if shipping address is missing
+    const { district, division, address } = shippingAddress || {};
+    if (!district || !division || !address) {
+      return Swal.fire(
+        "Oops!!",
+        "Please enter valid shipping address",
+        "error"
+      );
+    }
+
+    // Check if payment method is missing
+    if (!paymentMethod) {
+      return Swal.fire("Oops!!", "Please select a payment method", "error");
+    }
+
+    // Validate Bangladeshi phone number
+    if (!isValidBangladeshiPhoneNumber(phoneNumber)) {
+      return Swal.fire("Oops!!", "Please enter a valid phone number", "error");
+    }
+
+    // Check for deliveries outside Dhaka and prompt for prepayment
+    if (!district.toLowerCase().includes("dhaka")) {
+      return Swal.fire({
         title: "Terms & Condition",
         text: "A prepayment of 200 taka is required for deliveries outside Dhaka.",
         showDenyButton: false,
         showCancelButton: true,
         confirmButtonText: "Continue",
-        denyButtonText: `Don't save`,
+        denyButtonText: "Don't save",
       }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           confirmOrderAndCreateOne();
-        } else if (result.isDenied) {
         }
       });
-    } else {
-      confirmOrderAndCreateOne();
     }
+
+    // Confirm order if all checks pass
+    confirmOrderAndCreateOne();
   };
 
   return (

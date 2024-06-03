@@ -5,8 +5,6 @@ import { MdOutlineFilterList, MdSearch } from "react-icons/md";
 
 import ProductCard from "@/components/ProductCard";
 import SidebarFilters from "@/components/SideBarFilter";
-import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import Input from "@/shared/Input/Input";
 
 import useProductFetch from "@/hooks/useFetchProducts";
 import { ProductType } from "@/data/types";

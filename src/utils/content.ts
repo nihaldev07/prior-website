@@ -1,3 +1,13 @@
+export const isValidBangladeshiPhoneNumber = (number: string) => {
+  // Remove any non-digit characters from the input
+  const cleanedNumber = number.replace(/\D/g, "");
+
+  // Regular expression to match a valid Bangladeshi phone number
+  const bdPhoneNumberPattern = /^01[3-9]\d{8}$/;
+
+  // Test the cleaned number against the regular expression
+  return bdPhoneNumberPattern.test(cleanedNumber);
+};
 export const BDDistrictList = [
   {
     id: "1",
