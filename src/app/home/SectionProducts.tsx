@@ -35,7 +35,7 @@ const SectionProducts = () => {
         handleFilterChange={(value) => setFilterData(value)}
       />
 
-      <div className='grid gap-2 gap-y-5 sm:gap-7 grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
+      <div className='grid gap-2 gap-y-5 sm:gap-7 grid-cols-2 md:grid-cols-2 lg:grid-cols-4'>
         {!!products &&
           products.map((product: ProductType) => (
             <ProductCard

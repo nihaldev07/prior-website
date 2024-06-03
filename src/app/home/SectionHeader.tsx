@@ -12,14 +12,14 @@ import Carousel from "@/components/Carosol/Swiper";
 
 const SectionHeader = () => {
   return (
-    <div className='px-4 sm:container flex sm:flex-row flex-col justify-center items-center  gap-y-5 lg:flex lg:gap-5 lg:gap-y-0'>
-      <div className='basis-[100%] items-center space-y-10 rounded-md md:rounded-2xl p-2 md:p-5 md:flex md:space-y-0 bg-white sm:bg-blue-100'>
+    <div className='px-4 md:container flex md:flex-row flex-col justify-center items-center  gap-y-5 lg:flex lg:gap-5 lg:gap-y-0'>
+      <div className='basis-[100%] items-center space-y-10 rounded-md md:rounded-2xl p-2 md:p-5 md:flex md:space-y-0 bg-white md:bg-blue-100'>
         <div className='basis-[70%]  md:pl-10'>
-          <h4 className='sm:mb-5 text-3xl sm:text-xl text-center sm:text-left font-medium text-primary'>
+          <h4 className='md:mb-5 text-3xl md:text-xl text-center md:text-left font-medium text-primary'>
             {headerSection.title}
           </h4>
           <h1
-            className='hidden sm:inline-block text-[55px] font-medium tracking-tight'
+            className='hidden md:inline-block text-[55px] font-medium tracking-tight'
             style={{ lineHeight: "1em" }}>
             {headerSection.heading}
           </h1>
@@ -32,7 +32,7 @@ const SectionHeader = () => {
         </div>
       </div>
 
-      <div className='w-full sm:hidden'>
+      <div className='w-full md:hidden'>
         <Carousel images={[img1, img2, img3]} />
       </div>
 

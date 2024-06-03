@@ -32,10 +32,10 @@ const Carousel = ({ images, direction = "horizontal", delay = 3000 }) => {
           <Image
             src={image}
             alt={`Image ${index}`}
-            height={800}
-            width={200}
+            height={100}
+            width={100}
             quality={100}
-            className='w-full object-fill rounded-3xl'
+            className='w-full h-auto object-fill rounded-3xl'
           />
         </SwiperSlide>
       ))}
