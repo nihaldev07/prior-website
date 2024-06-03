@@ -15,38 +15,40 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
 
   return (
     <div className='space-y-3 rounded-2xl border border-neutral-300 p-2'>
-      <div className='relative overflow-hidden rounded-2xl md:h-[520px]'>
+      <div className='relative overflow-hidden rounded-2xl h-[350px] md:h-[520px]'>
         <LikeButton className='absolute right-5 top-5' />
         <Image
           src={shots[activeImageIndex]}
           alt='shoe image'
           fill
-          className='h-full w-full object-cover object-center'
+          className='h-full w-full object-fill object-center'
         />
       </div>
-      <div className='grid grid-cols-4 gap-3'>
-        {!!shots &&
-          shots.map((shot, index) => (
-            <div
-              key={index}
-              className={`${
-                activeImageIndex === index ? "border-2 border-primary" : ""
-              } h-[100px] overflow-hidden rounded-lg`}>
-              <button
-                className='h-full w-full'
-                type='button'
-                onClick={() => setActiveImageIndex(index)}>
-                <Image
-                  src={shot}
-                  width={100}
-                  height={100}
-                  alt='shoe image'
-                  className='h-full w-full object-cover object-center'
-                />
-              </button>
-            </div>
-          ))}
-      </div>
+      {shots.length > 1 && (
+        <div className='grid grid-cols-4 gap-3'>
+          {!!shots &&
+            shots.map((shot, index) => (
+              <div
+                key={index}
+                className={`${
+                  activeImageIndex === index ? "border-2 border-primary" : ""
+                } h-[100px] overflow-hidden rounded-lg`}>
+                <button
+                  className='h-full w-full'
+                  type='button'
+                  onClick={() => setActiveImageIndex(index)}>
+                  <Image
+                    src={shot}
+                    width={100}
+                    height={100}
+                    alt='shoe image'
+                    className='h-full w-full object-cover object-center'
+                  />
+                </button>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };

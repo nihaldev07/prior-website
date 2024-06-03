@@ -18,9 +18,11 @@ import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
 import { isValidBangladeshiPhoneNumber } from "@/utils/content";
+import { Loader2 } from "lucide-react";
 
 const CheckoutPage = () => {
   const { cart, updateToCart, removeFromCart } = useCart();
+  const [loading, setLoading] = useState(false);
   const [tabActive, setTabActive] = useState<
     "ContactInfo" | "ShippingAddress" | "PaymentMethod"
   >("ContactInfo");
@@ -217,6 +219,7 @@ const CheckoutPage = () => {
   };
 
   const confirmOrderAndCreateOne = async () => {
+    setLoading(true);
     const hasPayment =
       paymentMethod === "bkash" ||
       !shippingAddress.district.toLowerCase().includes("dhaka");
@@ -237,7 +240,7 @@ const CheckoutPage = () => {
       if (response.success) {
         if (hasPayment) {
           bkashCheckout(
-            paymentMethod === "bkash" ? transectionData?.remaining : 20,
+            paymentMethod === "bkash" ? transectionData?.remaining : 200,
             response?.data?.order?.id,
             customerInformation?.name,
             customerInformation?.phoneNumber
@@ -247,12 +250,13 @@ const CheckoutPage = () => {
             "Order Create Successfully 🎉",
             "Our agent will contact with you shortly",
             "success"
-          );
+          ).then(() => (window.location.href = "/"));
         }
       }
     } catch (error) {
       console.log("error");
     }
+    setLoading(false);
   };
 
   const handleConfirmOrder = () => {
@@ -368,8 +372,12 @@ const CheckoutPage = () => {
             </div>
             <ButtonPrimary
               className='mt-8 w-full'
+              disabled={loading}
               onClick={() => handleConfirmOrder()}>
-              Confirm order
+              Confirm order{" "}
+              {loading && (
+                <Loader2 className=' animate-spin w-5 h-5 text-white ml-2' />
+              )}
             </ButtonPrimary>
           </div>
         </div>

@@ -9,7 +9,6 @@ import { MdStar } from "react-icons/md";
 import { PiSealCheckFill } from "react-icons/pi";
 
 import ImageShowCase from "@/components/ImageShowCase";
-import nike_profile from "@/images/nike_profile.jpg";
 import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
@@ -78,12 +77,12 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
     addToCart(productData);
   };
   return (
-    <div className='items-stretch justify-between space-y-10 lg:flex lg:space-y-0'>
+    <div className=' sm:items-stretch justify-between space-y-10 lg:flex lg:space-y-0'>
       <div className='basis-[50%]'>
         <ImageShowCase shots={shots} />
       </div>
 
-      <div className='basis-[45%]'>
+      <div className='basis-[50%] sm:basis-[45%]'>
         <Heading className='mb-0' isMain title={""}>
           {shoeName}
         </Heading>
@@ -91,7 +90,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
         <div className='mb-10 flex items-center'>
           <div className='flex items-center gap-1'>
             <ButtonCircle3
-              className='overflow-hidden border border-neutral-400'
+              className='overflow-hidden border border-neutral-400 p-2'
               size='w-11 h-11'>
               <Image
                 width={100}
@@ -101,7 +100,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                 className='h-full w-full object-cover'
               />
             </ButtonCircle3>
-            <span className='font-medium'>
+            <span className='font-medium hidden sm:inline'>
               {!!product ? product?.categoryName : ""}
             </span>
             <PiSealCheckFill className='text-blue-600' />
@@ -111,11 +110,11 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
             <MdStar className='text-yellow-400' />
             <p className='text-sm'>
               {rating}{" "}
-              <span className='text-neutral-500'>{`(${reviews} Reviews)`}</span>
+              <span className='text-neutral-500'>{`(${reviews})`}</span>
             </p>
           </div>
-          <GoDotFill className='mx-3 text-neutral-500' />
-          <p className='text-neutral-500'>{`${pieces_sold} items sold`}</p>
+          {/* <GoDotFill className='mx-3 text-neutral-500' />
+          <p className='text-neutral-500'>{`${pieces_sold} items sold`}</p> */}
         </div>
 
         <div className='mb-5 space-y-1'>

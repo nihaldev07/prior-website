@@ -48,7 +48,7 @@ const SingleProductPage = async ({
   imageData.push(thumbnail);
 
   return (
-    <div className='container'>
+    <div className='px-4 sm:px-0 sm:container'>
       <Head>
         <title>{name} | Prior - Your Priority in Fashion </title>
         <meta name='description' content={description} />
@@ -56,7 +56,7 @@ const SingleProductPage = async ({
         <meta property='og:image' content={thumbnail} />
       </Head>
       <SectionNavigation />
-      <div className='mb-20'>
+      <div className='mt-4 sm:mt-0 mb-4 sm:mb-20'>
         <SectionProductHeader
           product={product}
           shots={imageData}

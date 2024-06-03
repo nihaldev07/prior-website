@@ -1,12 +1,12 @@
-import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
-import type { ReactNode } from 'react';
-import React, { useEffect, useState } from 'react';
-import { useSwipeable } from 'react-swipeable';
-import { useWindowSize } from 'react-use';
+import { AnimatePresence, motion, MotionConfig } from "framer-motion";
+import type { ReactNode } from "react";
+import React, { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
+import { useWindowSize } from "react-use";
 
-import NextBtn from '@/shared/NextPrev/NextBtn';
-import PrevBtn from '@/shared/NextPrev/PrevBtn';
-import { variants } from '@/utils/animationVariants';
+import NextBtn from "@/shared/NextPrev/NextBtn";
+import PrevBtn from "@/shared/NextPrev/PrevBtn";
+import { variants } from "@/utils/animationVariants";
 
 export interface MySliderProps<T> {
   className?: string;
@@ -29,11 +29,11 @@ export interface MySliderProps<T> {
 }
 
 export default function Slider<T>({
-  className = '',
+  className = "",
   itemPerRow = 5,
   data,
   renderItem = () => <div />,
-  arrowBtnClass = 'top-1/2 -translate-y-1/2',
+  arrowBtnClass = "top-1/2 -translate-y-1/2",
   renderSectionHeading,
   hideNextPrev = false,
 }: MySliderProps<T>) {
@@ -105,20 +105,18 @@ export default function Slider<T>({
 
       <MotionConfig
         transition={{
-          x: { type: 'cubic-bezier', easing: [0.25, 1, 0.5, 1] },
+          x: { type: "cubic-bezier", easing: [0.25, 1, 0.5, 1] },
           opacity: { duration: 0.2 },
-        }}
-      >
-        <div className="relative flow-root" {...handlers}>
-          <div className="flow-root rounded-xl">
+        }}>
+        <div className='relative flow-root' {...handlers}>
+          <div className='flow-root rounded-xl'>
             <motion.ul
               initial={false}
-              className="relative -mx-2 flex whitespace-nowrap xl:-mx-4 "
-            >
+              className='relative flex whitespace-nowrap xl:-mx-4 '>
               <AnimatePresence initial={false} custom={direction}>
                 {data.map((item, indx) => (
                   <motion.li
-                    className="relative inline-block shrink-0 whitespace-normal px-2"
+                    className='relative inline-block shrink-0 whitespace-normal px-2'
                     custom={direction}
                     initial={{
                       x: `${(currentIndex - 1) * -100}%`,
@@ -130,8 +128,7 @@ export default function Slider<T>({
                     key={indx}
                     style={{
                       width: `calc(1/${numberOfItems} * 100%)`,
-                    }}
-                  >
+                    }}>
                     {renderItem(item, indx)}
                   </motion.li>
                 ))}

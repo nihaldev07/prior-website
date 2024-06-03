@@ -32,7 +32,7 @@ const SectionMoreProducts: React.FC<Props> = ({ categoryId }) => {
     <div>
       <Heading className='mb-0'>Explore more products</Heading>
 
-      <div className='grid gap-7 md:grid-cols-2 lg:grid-cols-4'>
+      <div className='grid gap-2 md:gap-7 grid-cols-2 md:grid-cols-2 lg:grid-cols-4'>
         {products.map((shoe) => (
           <ProductCard
             key={shoe.id}

@@ -14,15 +14,15 @@ export const metadata: Metadata = {
 const page = () => {
   return (
     <div>
-      <div className='my-7'>
+      <div className=' my-7'>
         <SectionHeader />
       </div>
 
-      <div className='mb-32'>
+      <div className=' my-10 sm:mb-32'>
         <SectionBestDeals />
       </div>
 
-      <div className='mb-32'>
+      <div className='mb-10 sm:mb-32'>
         <SectionProducts />
       </div>
 

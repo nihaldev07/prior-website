@@ -5,7 +5,7 @@ import Heading from "@/shared/Heading/Heading";
 
 const SectionBestDeals = () => {
   return (
-    <div className='container'>
+    <div className='px-2 sm:px-0  sm:container'>
       <Heading
         isCenter
         isMain

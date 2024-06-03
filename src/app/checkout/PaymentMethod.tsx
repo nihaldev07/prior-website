@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import { MdOutlineCreditScore } from "react-icons/md";
 
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
+// import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import { Button } from "@/components/ui/button";
 
@@ -62,7 +62,7 @@ const PaymentMethod: FC<Props> = ({
           </Button>
         </div>
 
-        <div className='flex pt-6'>
+        {/* <div className='flex pt-6'>
           <ButtonPrimary
             className='w-full max-w-[240px]'
             onClick={onCloseActive}>
@@ -71,7 +71,7 @@ const PaymentMethod: FC<Props> = ({
           <ButtonSecondary className='ml-3' onClick={onCloseActive}>
             Cancel
           </ButtonSecondary>
-        </div>
+        </div> */}
       </div>
     </div>
   );
