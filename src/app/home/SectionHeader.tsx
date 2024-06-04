@@ -1,7 +1,6 @@
 import Image from "next/image";
 import React from "react";
 
-import PromoTag from "@/components/PromoTag";
 import { headerSection } from "@/data/content";
 import shoe_box from "@/images/banner-02.png";
 import img1 from "@/images/img_mb4.jpeg";

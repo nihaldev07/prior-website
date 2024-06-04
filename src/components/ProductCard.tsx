@@ -26,7 +26,7 @@ const ProductCard: FC<ProductCardProps> = ({
       className={`transitionEffect relative  bg-white rounded-bl-3xl rounded-tl-lg rounded-tr-3xl sm:border sm:rounded-2xl p-1 sm:p-3 sm:shadow-md ${className}`}>
       <div
         className={` h-[${
-          imageSize || "250px"
+          imageSize || "150px"
         }] sm:h-[250px] w-full overflow-hidden rounded-bl-3xl rounded-tl-lg rounded-tr-3xl sm:rounded-2xl lg:h-[220px] 2xl:h-[300px]`}>
         {!!product?.justIn && product.justIn && (
           <div className='absolute left-6 top-0 rounded-b-lg bg-primary px-3 py-2 text-sm uppercase text-white shadow-md'>
@@ -38,8 +38,8 @@ const ProductCard: FC<ProductCardProps> = ({
           className='h-[100px] sm:h-[250px] w-full lg:h-[220px]'
           href={`/products/${product.id}`}>
           <Image
-            width={250}
-            height={250}
+            width={150}
+            height={150}
             src={product.thumbnail}
             alt={`${product.name} cover photo`}
             className='h-full w-full object-fill object-bottom'
