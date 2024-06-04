@@ -34,7 +34,7 @@ const Carousel = ({ images, direction = "horizontal", delay = 3000 }) => {
             alt={`Image ${index}`}
             width={640}
             height={480}
-            quality={100}
+            quality={90}
             className='w-full h-auto object-fill rounded-3xl'
           />
         </SwiperSlide>
