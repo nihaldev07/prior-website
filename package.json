@@ -31,7 +31,7 @@
     "react-icons": "^4.11.0",
     "react-swipeable": "^7.0.1",
     "react-use": "^17.4.0",
-    "sharp": "^0.33.3",
+    "sharp": "^0.33.4",
     "sweetalert2": "^11.11.0",
     "swiper": "^11.1.4",
     "tailwind-merge": "^2.3.0",
