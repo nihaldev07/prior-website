@@ -72,14 +72,14 @@ const SidebarFilters: React.FC<Props> = ({
 
   const renderTabsCategories = () => {
     return (
-      <div className='relative flex flex-col space-y-4 pb-8'>
+      <div className='relative flex flex-col space-y-2 md:space-y-4 pb-2 md:pb-8'>
         <h3 className='mb-2.5 text-xl font-medium'>Category</h3>
         <div className='grid grid-cols-2 gap-4'>
           <button
             key={"001"}
             type='button'
             onClick={() => setActiveCategory("")}
-            className={`rounded-lg py-4 ${
+            className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
               activeCategory === "" ? "bg-primary text-white" : "bg-gray"
             }`}>
             All
@@ -89,7 +89,7 @@ const SidebarFilters: React.FC<Props> = ({
               key={item.id}
               type='button'
               onClick={() => setActiveCategory(item.id)}
-              className={`rounded-lg py-4 ${
+              className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
                 activeCategory === item.id ? "bg-primary text-white" : "bg-gray"
               }`}>
               {item.name}
@@ -103,14 +103,14 @@ const SidebarFilters: React.FC<Props> = ({
   // OK
   const renderTabsGender = () => {
     return (
-      <div className='relative flex flex-col space-y-4 py-8'>
+      <div className='relative flex flex-col space-y-2 md:space-y-4 py-2 md:py-8'>
         <h3 className='mb-2.5 text-xl font-medium'>Color</h3>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-2 gap-1 md:gap-4 max-h-[30vh] md:max-h-auto overflow-y-auto'>
           <button
             key={"001"}
             type='button'
             onClick={() => setActiveColor("")}
-            className={`rounded-lg py-4 ${
+            className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
               activeColor === "" ? "bg-primary text-white" : "bg-gray"
             }`}>
             All
@@ -120,7 +120,7 @@ const SidebarFilters: React.FC<Props> = ({
               key={item}
               type='button'
               onClick={() => setActiveColor(item)}
-              className={`rounded-lg py-4 ${
+              className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
                 activeColor === item ? "bg-primary text-white" : "bg-gray"
               }`}>
               {item}
@@ -134,14 +134,14 @@ const SidebarFilters: React.FC<Props> = ({
   // OK
   const renderTabsSize = () => {
     return (
-      <div className='relative flex flex-col space-y-4 py-8'>
+      <div className='relative flex flex-col space-y-2 md:space-y-4 py-2 md:py-8'>
         <h3 className='mb-2.5 text-xl font-medium'>Size</h3>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-2 gap-4 max-h-[30vh] md:max-h-auto overflow-y-auto'>
           <button
             key={"001"}
             type='button'
             onClick={() => setActiveSize("")}
-            className={`rounded-lg py-4 ${
+            className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
               activeSize === "" ? "bg-primary text-white" : "bg-gray"
             }`}>
             All
@@ -151,7 +151,7 @@ const SidebarFilters: React.FC<Props> = ({
               key={item}
               type='button'
               onClick={() => setActiveSize(item)}
-              className={`rounded-lg py-4 ${
+              className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
                 activeSize === item ? "bg-primary text-white" : "bg-gray"
               }`}>
               {item}
@@ -255,8 +255,8 @@ const SidebarFilters: React.FC<Props> = ({
   // };
 
   return (
-    <div className='top-28 lg:sticky'>
-      <Heading className='mb-0'>Filter products</Heading>
+    <div className='top-4 md:top-28 lg:sticky'>
+      <Heading className='mb-0 text-sm md:text-xl'>Filter products</Heading>
       <div className='divide-y divide-neutral-300'>
         {renderTabsCategories()}
         {renderTabsGender()}
