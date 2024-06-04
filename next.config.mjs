@@ -22,6 +22,12 @@ const nextConfig = {
         hostname: "d38c45qguy2pwg.cloudfront.net",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/deajqyzno/**",
+      },
     ],
     deviceSizes: [320, 420, 768, 1024, 1200],
   },
