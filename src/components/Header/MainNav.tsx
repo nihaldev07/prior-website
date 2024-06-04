@@ -9,20 +9,20 @@ import { GlobalSearch } from "./Search";
 
 const MainNav = () => {
   return (
-    <div className='container flex items-center justify-between py-4'>
+    <div className='container flex items-center justify-between py-0 sm:py-4'>
       <div className='flex-1 lg:hidden'>
         <MenuBar />
       </div>
       <div className='flex items-center gap-5 lg:basis-[60%]'>
         <Logo />
-        <div className='hidden w-full max-w-2xl items-center gap-5 rounded-full px-5  lg:flex'>
-          {/* <Input
+        {/* <div className='hidden w-full max-w-2xl items-center gap-5 rounded-full px-5  lg:flex'> */}
+        {/* <Input
             type='text'
             className='border-transparent bg-white placeholder:text-neutral-500 focus:border-transparent focus:ring-transparent focus:outline-none focus:ring-0'
             placeholder='search'
           />
           <RiSearch2Line className='text-2xl text-neutral-500' /> */}
-        </div>
+        {/* </div> */}
       </div>
 
       <div className='flex flex-1 items-center justify-end gap-2 sm:gap-5'>

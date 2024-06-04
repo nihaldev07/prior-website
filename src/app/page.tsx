@@ -8,7 +8,7 @@ import SectionProducts from "./home/SectionProducts";
 const page = () => {
   return (
     <div>
-      <div className='my-7'>
+      <div className='my-2 sm:my-7'>
         <SectionHeader />
       </div>
 
