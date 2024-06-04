@@ -3,9 +3,6 @@ import React from "react";
 
 import { headerSection } from "@/data/content";
 import shoe_box from "@/images/banner-02.png";
-import img1 from "@/images/img_mb4.jpeg";
-import img2 from "@/images/img_mb5.jpeg";
-import img3 from "@/images/img_mb6.jpeg";
 //import img4 from "@/images/img_mb41.jpg";
 import Carousel from "@/components/Carosol/Swiper";
 
@@ -32,7 +29,13 @@ const SectionHeader = () => {
       </div>
 
       <div className='w-full md:hidden'>
-        <Carousel images={[img1, img2, img3]} />
+        <Carousel
+          images={[
+            "https://res.cloudinary.com/deajqyzno/image/upload/v1717494246/prior/iqir3bzii2vkc4cv132y.jpg",
+            "https://res.cloudinary.com/deajqyzno/image/upload/v1717494258/prior/xcgfoyxnixpbmzg09i92.jpg",
+            "https://res.cloudinary.com/deajqyzno/image/upload/v1717494262/prior/cwzzn4mkcib8r4zye7uo.jpg",
+          ]}
+        />
       </div>
 
       {/* <div className='mt-5 basis-[30%] lg:mt-0'>
