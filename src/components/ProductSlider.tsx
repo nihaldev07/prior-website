@@ -80,10 +80,9 @@ const ProductSlider = () => {
                     <Image
                       src={p?.thumbnail}
                       alt={`Image ${index}`}
-                      width={640}
-                      height={480}
-                      quality={90}
-                      className='w-full h-auto object-fill rounded-3xl'
+                      width={200}
+                      height={200}
+                      className='w-full h-ful object-fill rounded-3xl'
                     />
                   </Link>
                 ))
