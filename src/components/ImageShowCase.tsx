@@ -21,8 +21,6 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
           src={shots[activeImageIndex]}
           alt='shoe image'
           fill
-          width={1920}
-          height={1080}
           quality={100}
           className='h-full w-full object-fill object-center'
         />

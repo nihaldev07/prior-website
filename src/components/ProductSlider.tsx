@@ -4,9 +4,11 @@ import React, { useState, lazy, Suspense } from "react";
 import Slider from "@/shared/Slider/Slider";
 import { config } from "@/utils/config";
 import useThrottledEffect from "@/hooks/useThrottleEffect";
-import Carousel from "./Carosol/Swiper";
+import Carousel from "./Carosol/SwiperComponent";
 import { ProductType } from "@/data/types";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 // Lazy load the ProductCard component
 const ProductCard = lazy(() => import("./ProductCard"));
@@ -71,10 +73,23 @@ const ProductSlider = () => {
       </div>
       <div className='w-full sm:hidden'>
         <Carousel
-          images={
-            !!products ? products.map((p: ProductType) => p?.thumbnail) : []
+          items={
+            !!products
+              ? products.map((p: ProductType, index: number) => (
+                  <Link href={`/products/${p?.id}`} key={index}>
+                    <Image
+                      src={p?.thumbnail}
+                      alt={`Image ${index}`}
+                      width={640}
+                      height={480}
+                      quality={90}
+                      className='w-full h-auto object-fill rounded-3xl'
+                    />
+                  </Link>
+                ))
+              : []
           }
-          delay={1500}
+          delay={2000}
         />
       </div>
     </div>
