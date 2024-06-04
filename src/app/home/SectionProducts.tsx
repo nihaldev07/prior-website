@@ -7,7 +7,7 @@ import { productsSection } from "@/data/content";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Heading from "@/shared/Heading/Heading";
 import { ProductType } from "@/data/types";
-import { Loader2, LoaderCircle } from "lucide-react";
+import { Bird, Loader2, LoaderCircle } from "lucide-react";
 
 // Lazy load the ProductCard component
 const ProductCard = lazy(() => import("@/components/ProductCard"));
@@ -60,9 +60,18 @@ const SectionProducts = () => {
       )}
 
       {loading && (
-        <span className='flex justify-center items-center gap-2 text-center text-black'>
+        <span className=' w-full p-4 flex justify-center items-center gap-2 text-center text-black'>
           loading... <LoaderCircle className='w-5 h-5 ml-2 text-black' />
         </span>
+      )}
+
+      {!loading && products?.length < 1 && (
+        <div className='w-full flex justify-center gap-2 flex-row items-center p-10 rounded-lg bg-gray-50'>
+          <Bird className='w-10 h-10 text-primary' />
+          <span className='text-base font-light text-center text-gray-700'>
+            No Product Found
+          </span>
+        </div>
       )}
     </div>
   );
