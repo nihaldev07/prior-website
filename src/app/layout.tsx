@@ -1,65 +1,23 @@
-import "@/styles/global.css";
-
 import type { Metadata } from "next";
-import React, { Suspense } from "react";
+import { Poppins } from "next/font/google";
+import "./globals.css";
+import Navbar from "./navbar";
 
-import Header from "@/components/Header/Header";
-import Footer from "@/shared/Footer/Footer";
-
-import Loading from "./loading";
-import { Toaster } from "@/components/ui/toaster";
-import { CartProvider } from "@/context/CartContext";
+const inter = Poppins({weight: "400", style:"normal", subsets: ["latin","latin-ext"]});
 
 export const metadata: Metadata = {
   title: "Prior Your Priority",
-  icons: [
-    {
-      rel: "apple-touch-icon",
-      url: "/apple-touch-icon.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      sizes: "32x32",
-      url: "/favicon.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      sizes: "16x16",
-      url: "/favicon.png",
-    },
-    {
-      rel: "icon",
-      url: "/favicon.ico",
-    },
-  ],
+  description: "Women shoes and bags",
 };
 
 export default function RootLayout({
-  // Layouts must accept a children prop.
-  // This will be populated with nested layouts or pages
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang='en'>
-      <body className=''>
-        <CartProvider>
-          <div>
-            <Header />
-            <Suspense fallback={<Loading />}>{children}</Suspense>
-            <Footer />
-            <Toaster />
-          </div>
-        </CartProvider>
-      </body>
+    <html lang="en">
+      <body className={inter.className}><Navbar /> {children}</body>
     </html>
   );
 }
-
-// Enable edge runtime, but you are required to disable the `migrate` function in `src/libs/DB.ts`
-// Unfortunately, this also means it will also disable the automatic migration of the database
-// And, you will have to manually migrate it with `drizzle-kit push`
-// export const runtime = 'edge';
