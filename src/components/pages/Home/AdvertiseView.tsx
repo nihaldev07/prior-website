@@ -9,7 +9,8 @@ return <section className="relative bg-gray-900 text-white p-10 lg:p-80">
     src="https://res.cloudinary.com/emerging-it/image/upload/v1715472500/samples/two-ladies.jpg"
     alt="Women Shopping"
     fill
-    className="z-[-1] opacity-70"
+    quality={100}
+    className="z-[-1] opacity-70 object-fill"
   />
 </div>
 <div className="relative container mx-auto px-6 text-center">
