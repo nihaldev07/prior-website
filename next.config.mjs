@@ -1,8 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['res.cloudinary.com'], // Add the domain of the external image
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+      },
+    ],
+  },
+  async rewrites() {
+    return [
+      // {
+      //   source: "/",
+      //   destination: "/home",
+      // },
+    ];
+  },
 };
 
 export default nextConfig;

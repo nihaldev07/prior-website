@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "./navbar";
+import { CartProvider } from "@/context/CartContext";
+import Footer from "@/shared/Footer/Footer";
 
-const inter = Poppins({weight: "400", style:"normal", subsets: ["latin","latin-ext"]});
+const inter = Poppins({
+  weight: "400",
+  style: "normal",
+  subsets: ["latin", "latin-ext"],
+});
 
 export const metadata: Metadata = {
   title: "Prior Your Priority",
@@ -17,7 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}><Navbar /> {children}</body>
+      <body className={inter.className}>
+        <CartProvider>
+          <>
+            <Navbar /> {children} <Footer />
+          </>
+        </CartProvider>
+      </body>
     </html>
   );
 }

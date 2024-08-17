@@ -18,7 +18,7 @@ export const  NavItems=[
     icon:"house"
   },{
     id:1,
-    title:"Category",
+    title:"Collections",
     link:"/collections",
     icon:"box"
   },{
@@ -28,8 +28,10 @@ export const  NavItems=[
     icon:"package-plus"
   },{
     id:3,
-    title:"About",
-    link:"/about",
+    title:"Cart",
+    link:"/cart",
     icon:"book-a"
   }
-]
+];
+
+export const defaultProdcutImg="https://res.cloudinary.com/emerging-it/image/upload/v1723890464/prior-test/fqjoez1xzhgtwsava8qh.png";
