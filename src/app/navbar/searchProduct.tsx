@@ -64,7 +64,7 @@ export function GlobalSearch() {
       >
         Search
       </div>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog open={open} onOpenChange={setOpen} modal>
         <CommandInput
           placeholder="Type product name to search..."
           value={inputValue}
