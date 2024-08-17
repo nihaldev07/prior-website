@@ -12,8 +12,31 @@ const inter = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Prior Your Priority",
-  description: "Women shoes and bags",
+  title: "Women's Shoes and Bags | Prior - Your Priority in Fashion",
+  description:
+    "Discover Prior's latest collection of women's shoes and bags, where style meets sophistication. Elevate your fashion game with our trendy footwear and handbags designed to make you stand out. Prioritize your style effortlessly with Prior - your ultimate destination for fashion-forward accessories.",
+  icons: [
+    {
+      rel: "apple-touch-icon",
+      url: "/apple-touch-icon.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      url: "/favicon.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      url: "/favicon.png",
+    },
+    {
+      rel: "icon",
+      url: "/favicons.ico",
+    },
+  ],
 };
 
 export default function RootLayout({
