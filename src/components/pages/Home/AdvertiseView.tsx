@@ -1,36 +1,39 @@
 import { Button } from "@/components/ui/button";
 import { headerSection } from "@/data/content";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
+// Lazy load heavy components or sections if needed
+const CarouselComponent = dynamic(
+  () => import("@/components/Carosol/SwiperComponent"),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  }
+);
 
 const AdvertiseView = () => {
   return (
     <>
-      <section className="relative  text-white p-28 sm:p-40 md:p-80">
+      <section className="relative text-white p-28 sm:p-40 md:p-80">
         <div className="absolute inset-0">
           <Image
             src="https://res.cloudinary.com/emerging-it/image/upload/v1723808062/tick_ujgq8c.png"
             alt="Women Shopping"
             fill
-            quality={100}
+            quality={80}
             className="z-[-1] object-fill"
+            priority={true} // Loads image with high priority, crucial for hero sections
           />
         </div>
-        <div className="absolute w-full h-full top-0 left-0  bg-blue-800 opacity-50 sm:opacity-70" />
+        <div className="absolute w-full h-full top-0 left-0 bg-blue-800 opacity-50 sm:opacity-70" />
         <div className="p-10" />
-        {/* <div className="absolute left-40 top-10">
-          <p className="text-6xl font-semibold text-white font-pocifico">
-            Prior
-          </p>
-          <p className="text-xl ml-10 font-semibold text-white font-pocifico">
-            Prior your priority
-          </p>
-        </div> */}
-        <div className="absolute flex items-center justify-center top-0 left-0 sm:left-[10%] h-full  px-6 text-center w-full sm:w-4/5 z-50">
+        <div className="absolute flex items-center justify-center top-0 left-0 sm:left-[10%] h-full px-6 text-center w-full sm:w-4/5 z-50">
           <div className="w-full">
-            <h1 className="text-base sm:text-4xl text-white lg:text-6xl font-bold mb-4">
+            <h1 className="text-base sm:text-4xl lg:text-6xl font-bold mb-4">
               {headerSection?.title}
             </h1>
-            <p className=" text-xs sm:text-lg text-white lg:text-2xl mb-8">
+            <p className="text-xs sm:text-lg lg:text-2xl mb-8">
               {headerSection?.description}
             </p>
             <Button
@@ -43,25 +46,23 @@ const AdvertiseView = () => {
           </div>
         </div>
       </section>
-      {/* <section className=" relative h-[25vh] w-full  hidden">
+      {/* Lazy load carousel or other content if needed */}
+      {/* <section className="relative h-[25vh] w-full hidden">
         <div className="absolute inset-0 z-[-1]">
           <CarouselComponent
-            items={mobileHeaderSectionImages.map(
-              (image: string, index: number) => (
-                <Image
-                  key={index}
-                  src={image}
-                  alt="Women Shopping"
-                  fill
-                  quality={90}
-                  className="z-[-1] object-fill"
-                />
-              )
-            )}
+            items={mobileHeaderSectionImages.map((image: string, index: number) => (
+              <Image
+                key={index}
+                src={image}
+                alt="Women Shopping"
+                fill
+                quality={90}
+                className="z-[-1] object-fill"
+              />
+            ))}
             delay={7000}
           />
         </div>
-        
       </section> */}
     </>
   );
