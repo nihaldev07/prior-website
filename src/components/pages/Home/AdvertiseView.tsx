@@ -1,19 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { headerSection } from "@/data/content";
-import Head from "next/head";
 import Image from "next/image";
 
 const AdvertiseView = () => {
   return (
     <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
       <section className="relative  text-white p-28 sm:p-40 md:p-80">
         <div className="absolute inset-0">
           <Image
@@ -36,10 +27,10 @@ const AdvertiseView = () => {
         </div> */}
         <div className="absolute flex items-center justify-center top-0 left-0 sm:left-[10%] h-full  px-6 text-center w-full sm:w-4/5 z-50">
           <div className="w-full">
-            <h1 className="text-base sm:text-4xl text-white lg:text-6xl font-bold mb-4 font-pocifico">
+            <h1 className="text-base sm:text-4xl text-white lg:text-6xl font-bold mb-4">
               {headerSection?.title}
             </h1>
-            <p className=" text-xs sm:text-lg text-white lg:text-2xl mb-8 font-pocifico">
+            <p className=" text-xs sm:text-lg text-white lg:text-2xl mb-8">
               {headerSection?.description}
             </p>
             <Button

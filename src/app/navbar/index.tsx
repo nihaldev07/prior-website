@@ -33,7 +33,15 @@ const Navbar = () => {
         </SheetTrigger>
         <SheetContent side={"left"}>
           <SheetHeader>
-            <SheetTitle className="text-primary">Prior</SheetTitle>
+            <SheetTitle>
+              <Image
+                alt="Your Company"
+                src={LogoImg}
+                width={40}
+                height={40}
+                className="size-10"
+              />
+            </SheetTitle>
           </SheetHeader>
           <Separator className="my-4" />
 
@@ -113,8 +121,10 @@ const Navbar = () => {
                     <DropdownMenuTrigger asChild>
                       <Button variant={"ghost"}>
                         <span className="sr-only">Open user menu</span>
-                        <img
+                        <Image
                           alt=""
+                          width={32}
+                          height={32}
                           src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                           className="h-8 w-8 rounded-full"
                         />

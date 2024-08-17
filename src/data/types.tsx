@@ -5,6 +5,7 @@ export type ProductType = {
   name: string;
   manu_id: string;
   justIn?: boolean;
+  rating?: number;
   description: string;
   discount: number;
   quantity: number;
