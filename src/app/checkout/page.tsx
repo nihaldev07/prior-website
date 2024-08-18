@@ -259,7 +259,7 @@ const CheckoutPage = () => {
             formData?.name,
             formData?.mobileNumber
           );
-        } else if (!formData.district.toLowerCase().includes("dhaka")) {
+        } else {
           Swal.fire(
             "Order Create Successfully 🎉",
             "Our agent will contact with you shortly",
