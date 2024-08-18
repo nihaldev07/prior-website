@@ -13,7 +13,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   return (
-    <div className="space-y-3 rounded-2xl  p-2">
+    <div className="space-y-3 rounded-2xl p-2">
       <div className="relative overflow-hidden rounded-2xl h-[350px] md:h-[700px] bg-gray-100">
         <LikeButton className="absolute right-5 top-5" />
         <Image
@@ -44,7 +44,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
                     width={100}
                     height={100}
                     alt="shoe image"
-                    className="h-full w-full object-cover object-center"
+                    className="h-full w-full object-scale-down object-center"
                   />
                 </button>
               </div>

@@ -22,18 +22,19 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
         {!!product?.images && product?.images?.length > 1 && (
           <CarouselComponent
             delay={5000}
-            items={product?.images.map((img: string, index: number) => (
-              <Image
-                key={index}
-                alt="product"
-                fill
-                quality={100}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="rounded-xl object-fill object-center"
-                src={img || defaultProdcutImg}
-                priority
-              />
-            ))}
+            items={[...product?.images, product?.thumbnail ?? ""]
+              .filter((str) => !!str)
+              .map((img: string, index: number) => (
+                <Image
+                  key={index}
+                  alt="product"
+                  fill
+                  quality={100}
+                  className="rounded-xl object-scale-down object-center"
+                  src={img || defaultProdcutImg}
+                  priority
+                />
+              ))}
           />
         )}
         {(!product?.images || product?.images?.length < 2) && (

@@ -14,7 +14,6 @@ const SingleProductPage = async ({
 }: {
   params: { collectionId: string };
 }) => {
-  console.log("wow");
   const product = await getProductDataById(collectionId);
 
   if (!product) {

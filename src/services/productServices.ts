@@ -6,9 +6,7 @@ export const fetchProductById = async (
 ): Promise<SingleProductType | null> => {
   try {
     const response = await fetch(config.product.getProductById(productId));
-    console.log(config.product.getProductById(productId));
     if (!response.ok) {
-      console.log("Fetching product error");
       return null;
     }
     const productData = await response.json();
