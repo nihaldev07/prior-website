@@ -37,6 +37,7 @@ interface IVariation {
   value?: string;
   size?:string;
   color?:string;
+  quantity?:number;
 }
 
 interface IRatingDetails {

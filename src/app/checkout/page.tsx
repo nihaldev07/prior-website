@@ -254,7 +254,7 @@ const CheckoutPage = () => {
       if (response.success) {
         if (hasPayment) {
           bkashCheckout(
-            10, // paymentMethod === "bkash" ? transectionData?.remaining : 200,
+            paymentMethod === "bkash" ? transectionData?.remaining : 200,
             response?.data?.order?.id,
             formData?.name,
             formData?.mobileNumber
