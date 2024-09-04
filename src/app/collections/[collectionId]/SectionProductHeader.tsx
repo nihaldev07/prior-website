@@ -11,8 +11,10 @@ import Heading from "@/shared/Heading/Heading";
 import SelectDemo from "./VariantiView";
 import { SingleProductType, Variation } from "@/data/types";
 import { useCart } from "@/context/CartContext";
-import { Briefcase, Info, Star } from "lucide-react";
+import { Briefcase, Info, ShoppingCart, Star } from "lucide-react";
 import InputNumber from "@/shared/InputNumber/InputNumber";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -36,7 +38,8 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
   product,
 }) => {
   const { addToCart } = useCart();
-  const [pQuantity, setPQuantity] = useState(0);
+  const router = useRouter();
+  const [pQuantity, setPQuantity] = useState(product?.quantity > 0 ? 1 : 0);
   const [selectedVariant, setSelectedVariant] = useState<Variation | null>(
     null
   );
@@ -50,7 +53,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
   const uniqueColors: string[] = Array.from(distinctColors) ?? []; // Convert Set to array
   const uniqueSizes: string[] = Array.from(distinctSizes) ?? [];
-  const handleCartSelection = () => {
+  const handleCartSelection = (isBuy: boolean = false) => {
     if (product?.hasVariation && !!!selectedVariant) {
       return alert("Please select size & color");
     } else if (pQuantity < 1) {
@@ -76,6 +79,15 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
     };
     //@ts-ignore
     addToCart(productData);
+    Swal.fire({
+      title: "Add To Cart",
+      text: `${product?.name} Added To Cart SuccessFully`,
+      icon: "success",
+    }).then(() => {
+      if (isBuy) {
+        router.push("/cart");
+      }
+    });
   };
   return (
     <div className=" sm:items-stretch justify-between space-y-10 lg:flex lg:space-y-0">
@@ -173,20 +185,19 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
         {product?.quantity > 0 &&
           (pQuantity > 0 ? (
-            <div className="mt-5 flex items-center gap-5">
+            <div className="mt-8 flex items-center gap-5">
               <ButtonPrimary
                 disabled={pQuantity < 1}
-                href="/checkout"
-                className="w-full"
+                className="w-full z-10"
                 onClick={() => {
-                  handleCartSelection();
+                  handleCartSelection(true);
                 }}
               >
                 Buy Now
               </ButtonPrimary>
               <ButtonSecondary
                 disabled={pQuantity < 1}
-                className="flex w-full items-center gap-1 border-2 border-primary text-primary"
+                className="flex w-full items-center gap-1 border-2 border-primary text-primary z-10"
                 onClick={() => handleCartSelection()}
               >
                 <Briefcase /> Add to cart

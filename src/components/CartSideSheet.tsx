@@ -10,7 +10,8 @@ import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import LikeButton from "./LikeButton";
 import { CartItem, useCart } from "@/context/CartContext";
 import { ShoppingCart, Star, Trash } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader } from "./ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
+import { Badge } from "./ui/badge";
 
 export interface CartSideBarProps {}
 const CartSideBar: React.FC<CartSideBarProps> = () => {
@@ -25,12 +26,12 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
     return (
       <div key={id} className="flex py-5 last:pb-0">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl mr-2">
           <Image
             fill
             src={thumbnail}
             alt={name}
-            className="h-full w-full object-contain object-center"
+            className="h-full w-full rounded-xl object-fill object-center"
           />
           <Link
             onClick={handleCloseMenu}
@@ -39,7 +40,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
           />
         </div>
 
-        <div className="ml-4 flex flex-1 flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between">
           <div>
             <div className="flex justify-between ">
               <div>
@@ -82,8 +83,10 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         open={isVisable}
         onOpenChange={(open) => (open ? handleOpenMenu() : handleCloseMenu())}
       >
-        <SheetContent>
-          <SheetHeader>Shopping Cart</SheetHeader>
+        <SheetContent className="p-0">
+          <SheetHeader className="p-8 justify-start">
+            <SheetTitle> Shopping Cart</SheetTitle>
+          </SheetHeader>
 
           <div className="relative h-auto bg-white">
             <div className="hiddenScrollbar h-screen overflow-y-auto p-5">
@@ -91,7 +94,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                 {cart.map((item) => renderProduct(item))}
               </div>
             </div>
-            <div className="absolute bottom-14 left-0 w-full bg-neutral-50 p-5">
+            <div className="absolute bottom-[150px] left-0 w-full bg-neutral-50 p-5">
               <p className="flex justify-between">
                 <span>
                   <span className="font-medium">Subtotal</span>
@@ -143,7 +146,15 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         onClick={() => handleOpenMenu()}
         className=" sm:mx-5 flex items-center gap-1 rounded-full  p-2 text-primary focus:outline-none"
       >
-        <ShoppingCart className="text-2xl" />
+        <div className="inline-block relative">
+          <ShoppingCart className=" text-base text-slate-800 sm:text-2xl sm:text-primary" />{" "}
+          <Badge
+            variant="destructive"
+            className=" absolute right-[-15px] top-[-10px] text-center items-center rounded-full px-1 py-0 sm:hidden"
+          >
+            {cart?.length > 99 ? "99+" : cart?.length}
+          </Badge>
+        </div>
         <span className="hidden text-sm lg:block">{cart.length} items</span>
       </button>
 

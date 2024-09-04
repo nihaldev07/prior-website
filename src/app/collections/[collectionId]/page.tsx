@@ -5,8 +5,8 @@ import Head from "next/head";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
-import SectionProductInfo from "./SectionProductInfo";
-import { Truck } from "lucide-react";
+// import SectionProductInfo from "./SectionProductInfo";
+// import { Truck } from "lucide-react";
 import { getProductDataById } from "@/lib/fetchFunctions";
 
 const SingleProductPage = async ({
@@ -68,7 +68,7 @@ const SingleProductPage = async ({
           reviews={0}
         />
       </div>
-      <div className="mb-28">
+      {/* <div className="mb-28">
         <SectionProductInfo
           overview={description}
           shipment_details={[
@@ -82,8 +82,8 @@ const SingleProductPage = async ({
           ratings={rating}
           ratingDetails={ratingDetails}
         />
-      </div>
-      <div className="mb-28">
+      </div> */}
+      <div className="mb-5">
         <SectionMoreProducts categoryId={categoryId} />
       </div>
     </div>

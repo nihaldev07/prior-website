@@ -67,3 +67,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+[data-state="open"] {
+  z-index: 1000;
+}
+
+.select-content-up {
+  position: absolute;
+    bottom: 100%;
+    /* Place above the trigger */
+    left: 0;
+    /* Aligns with the trigger's left edge */
+    margin-bottom: 50px;
+    /* Optional spacing between the trigger and content */
+}

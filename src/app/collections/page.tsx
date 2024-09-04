@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 
 import ProductCard from "@/shared/productCard";
 import SidebarFilters from "@/components/SidebarFilter";
@@ -14,6 +14,7 @@ import { collectionTag } from "@/data/content";
 const Page = () => {
   const { products, loading, distictFilterValues, setFilterData, filterData } =
     useProductFetch();
+  const [sheetOpen, setSheetOpen] = useState(false);
   return (
     <div className="my-6">
       <Heading isCenter isMain desc={collectionTag?.description}>
@@ -25,11 +26,16 @@ const Page = () => {
       >
         <div className="flex justify-between items-center p-2 md:hidden">
           <h2 className="text-primary font-semibold">Products</h2>
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger>
               <Filter className="w-6 h-6 ml-auto" />
             </SheetTrigger>
-            <SheetContent className="overflow-y-auto px-3">
+            <SheetContent
+              className="overflow-y-auto px-3"
+              onClick={() => {
+                setSheetOpen(false);
+              }}
+            >
               <SidebarFilters
                 filterData={filterData}
                 categories={distictFilterValues.categories}

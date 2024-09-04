@@ -52,7 +52,7 @@ export function GlobalSearch() {
         className=" size-6 text-primary  mr-1 sm:hidden"
       /> */}
       <div
-        className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+        className="pointer-events-none absolute inset-y-0 right-0 sm:left-0 flex items-center pl-3"
         onClick={() => setOpen(!open)}
       >
         <Search aria-hidden="true" className="size-5 text-gray-700" />
@@ -60,7 +60,7 @@ export function GlobalSearch() {
       <div
         onClick={() => setOpen(!open)}
         id="search"
-        className="block w-full rounded-md border border-gray-300 md:border-transparent md:border-0  bg-white md:bg-gray-200 py-1.5 pl-10 pr-3 text-gray-800 placeholder:text-gray-800 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
+        className="hidden sm:block w-full rounded-md border border-gray-300 md:border-transparent md:border-0  bg-white md:bg-gray-200 py-1.5 pl-10 pr-3 text-gray-800 placeholder:text-gray-800 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6"
       >
         Search
       </div>

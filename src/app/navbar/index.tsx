@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,11 +24,13 @@ import LogoImg from "@/images/logo.png";
 import Image from "next/image";
 import { GlobalSearch } from "./searchProduct";
 import CartSideBar from "@/components/CartSideSheet";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [openSheet, setOpenSheet] = useState(false);
   const renderMobileView = () => {
     return (
-      <Sheet>
+      <Sheet open={openSheet} onOpenChange={setOpenSheet}>
         <SheetTrigger>
           <Menu className="size-6 text-gray-700" />
         </SheetTrigger>
@@ -37,9 +40,8 @@ const Navbar = () => {
               <Image
                 alt="Your Company"
                 src={LogoImg}
-                width={40}
-                height={40}
-                className="size-10"
+                width={200}
+                height={100}
               />
             </SheetTitle>
           </SheetHeader>
@@ -51,7 +53,8 @@ const Navbar = () => {
                 <Link
                   key={item?.id}
                   href={item?.link}
-                  className="p-4 rounded font-medium bg-gray-100 text-gray-950 transition-colors hover:text-foreground"
+                  onClick={() => setOpenSheet(false)}
+                  className="p-4 font-medium bg-transparent text-gray-900 transition-colors hover:text-foreground border-b border-gray-300"
                 >
                   {item?.title}
                 </Link>
@@ -66,14 +69,18 @@ const Navbar = () => {
   return (
     <div className="w-full bg-white border-b border-gray-300">
       <div className="bg-transparent w-full">
-        <div className="mx-auto max-w-full px-2 sm:px-4 lg:px-8">
+        <div className="container sm:mx-auto max-w-full px-2 sm:px-4 lg:px-8">
           <div className="relative flex h-16 md:h-20  items-center justify-between md:container">
-            <div className="flex items-center px-2 lg:px-0">
-              <a href="/" className="flex-shrink-0">
+            <div className="flex ml-2 sm:hidden">
+              {/* Mobile menu button */}
+              {renderMobileView()}
+            </div>
+            <div className="flex items-center justify-center sm:justify-start px-2 w-full sm:w-auto lg:px-0">
+              <a href="/" className="flex-shrink-0 ">
                 <Image
                   alt="Your Company"
                   src={LogoImg}
-                  className="h-8 md:h-16 w-auto"
+                  className="h-10 md:h-16 w-auto"
                 />
               </a>
               <div className="hidden md:ml-6 sm:block">
@@ -105,11 +112,8 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            <div className="flex sm:hidden">
-              {/* Mobile menu button */}
-              {renderMobileView()}
-            </div>
-            <div className="hidden lg:ml-4 sm:block">
+
+            <div className=" lg:ml-4">
               <div className="flex items-center">
                 <div className="relative flex-shrink-0 rounded-full bg-white p-1 text-gray-400 ">
                   <CartSideBar />

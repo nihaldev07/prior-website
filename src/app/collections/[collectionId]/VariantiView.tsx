@@ -61,13 +61,20 @@ const SelectDemo: React.FC<Props> = ({
       }
     >
       <SelectTrigger className="w-full">
-        <SelectValue placeholder={`SELECT A ${type.toUpperCase()}`} />
+        <SelectValue
+          placeholder={`SELECT A ${type.toUpperCase()}`}
+          onClick={(e) => e.stopPropagation()}
+        />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent position="popper" className="z-30 select-content-up">
         <SelectGroup>
           <SelectLabel>{type.toUpperCase()}</SelectLabel>
           {list.map((v, i) => (
-            <SelectItem key={i} value={v}>
+            <SelectItem
+              key={i}
+              value={v}
+              onClick={(event) => event.stopPropagation()}
+            >
               {v.toUpperCase()}
             </SelectItem>
           ))}

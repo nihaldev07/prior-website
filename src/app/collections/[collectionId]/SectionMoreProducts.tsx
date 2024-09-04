@@ -6,6 +6,7 @@ import { ProductType } from "@/data/types";
 import axios from "axios";
 import { config } from "@/lib/config";
 import ProductCard from "@/shared/productCard";
+import { Separator } from "@/components/ui/separator";
 interface Props {
   categoryId: string;
 }
@@ -28,8 +29,12 @@ const SectionMoreProducts: React.FC<Props> = ({ categoryId }) => {
     fetchProducts(); //eslint-disable-next-line
   }, [categoryId]);
   return (
-    <div>
-      <Heading className="mb-0">Explore more products</Heading>
+    <div className="flex-col justify-center items-center">
+      <Heading className="mt-6 " isCenter={true} isMain={true}>
+        Explore more products
+      </Heading>
+
+      <Separator className="my-4" />
 
       <div className="grid gap-2 md:gap-7 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
         {products.map((shoe) => (

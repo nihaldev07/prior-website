@@ -27,7 +27,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
       className="rounded-xl shadow-none border-0 bg-transparent"
       onClick={() => router.push(`/collections/${product?.id}`)}
     >
-      <CardHeader className="mb-2 relative flex justify-center items-center bg-gray-100 h-52 md:h-80 lg:h-[400px] rounded-xl px-2">
+      <CardHeader className="mb-2 relative flex justify-center items-center bg-gray-100 h-56 md:h-80 lg:h-[400px] rounded-xl px-2">
         {!!product?.images && product?.images?.length > 1 && (
           <CarouselComponent
             delay={5000}
@@ -39,7 +39,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
                   alt="product"
                   fill
                   quality={100}
-                  className="rounded-xl object-scale-down object-center"
+                  className="rounded-xl object-fill object-center"
                   src={img || defaultProdcutImg}
                   priority
                 />
@@ -90,7 +90,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
               Out Of Stock
             </p>
           )}
-          <div className="mt-2 mb-4">
+          <div className="mt-2 mb-4 hidden">
             <Rating
               style={{ maxWidth: 100 }}
               value={product?.rating ?? 5}
@@ -102,7 +102,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
           <Button
             onClick={() => router.push(`/collections/${product?.id}`)}
             variant="outline"
-            className={`px-3 py-2 text-sm text-blue-700 border-blue-300 hover:bg-blue-800 font-semibold  hover:text-white `}
+            className={` hidden px-3 py-2 text-sm text-blue-700 border-blue-300 hover:bg-blue-800 font-semibold  hover:text-white `}
           >
             View
           </Button>
