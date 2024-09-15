@@ -94,7 +94,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                 {cart.map((item) => renderProduct(item))}
               </div>
             </div>
-            <div className="absolute bottom-[150px] left-0 w-full bg-neutral-50 p-5">
+            <div className="absolute bottom-[100px] left-0 w-full bg-neutral-50 p-5">
               <p className="flex justify-between">
                 <span>
                   <span className="font-medium">Subtotal</span>

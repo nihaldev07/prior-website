@@ -28,6 +28,11 @@ export const  NavItems=[
     icon:"package-plus"
   },{
     id:3,
+    title:"About",
+    link:"/about",
+    icon:"book-a"
+  },{
+    id:4,
     title:"Cart",
     link:"/cart",
     icon:"book-a"

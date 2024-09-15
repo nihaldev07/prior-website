@@ -28,7 +28,7 @@ const AdvertiseView = () => {
         </div>
         <div className="absolute w-full h-full top-0 left-0 bg-blue-800 opacity-50 sm:opacity-70" />
         <div className="p-10" />
-        <div className="absolute flex items-center justify-center top-0 left-0 sm:left-[10%] h-full px-6 text-center w-full sm:w-4/5 z-50">
+        <div className="absolute flex items-center justify-center top-0 left-0 sm:left-[10%] h-full px-6 text-center w-full sm:w-4/5 z-20">
           <div className="w-full">
             <h1 className="text-base sm:text-4xl lg:text-6xl font-bold mb-4">
               {headerSection?.title}

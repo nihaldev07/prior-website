@@ -10,6 +10,7 @@ interface Props {
   colors: string[];
   categories: Category[];
   filterData: any;
+  showCategory?: boolean;
   handleFilterChange: (filterData: any) => void;
 }
 //
@@ -18,6 +19,7 @@ const SidebarFilters: React.FC<Props> = ({
   colors,
   categories,
   filterData,
+  showCategory = true,
   handleFilterChange,
 }) => {
   // const [activeLocation, setActiveLocation] = useState("All");
@@ -230,7 +232,7 @@ const SidebarFilters: React.FC<Props> = ({
     <div className="top-4 md:top-28 lg:sticky">
       <Heading className="mb-0 text-sm md:text-xl">Filter products</Heading>
       <div className="divide-y divide-neutral-300">
-        {renderTabsCategories()}
+        {!!showCategory && renderTabsCategories()}
         {renderTabsGender()}
         {renderTabsSize()}
         {/* {renderTabsPriceRage()} */}

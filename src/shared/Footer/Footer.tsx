@@ -8,7 +8,7 @@ import React from "react";
 
 const navigation = {
   solutions: [
-    { name: "Marketing", href: "#" },
+    { name: "Products", href: "/collections" },
     { name: "Analytics", href: "#" },
     { name: "Commerce", href: "#" },
     { name: "Insights", href: "#" },
@@ -17,10 +17,9 @@ const navigation = {
     { name: "Pricing", href: "#" },
     { name: "Documentation", href: "#" },
     { name: "Guides", href: "#" },
-    { name: "API Status", href: "#" },
   ],
   company: [
-    { name: "About", href: "#" },
+    { name: "About", href: "/about" },
     { name: "Blog", href: "#" },
     { name: "Jobs", href: "#" },
     { name: "Press", href: "#" },
