@@ -52,10 +52,14 @@ export function GlobalSearch() {
         className=" size-6 text-primary  mr-1 sm:hidden"
       /> */}
       <div
-        className="pointer-events-none absolute inset-y-0 right-0 sm:left-0 flex items-center pl-3"
+        className="sm:pointer-events-none absolute inset-y-0 right-0 sm:left-0 flex items-center pl-3"
         onClick={() => setOpen(!open)}
       >
-        <Search aria-hidden="true" className="size-5 text-gray-700" />
+        <Search
+          aria-hidden="true"
+          className="size-5 text-gray-700"
+          onClick={() => setOpen(!open)}
+        />
       </div>
       <div
         onClick={() => setOpen(!open)}

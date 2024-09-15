@@ -30,6 +30,7 @@
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-facebook": "^9.0.12",
     "react-hook-form": "^7.52.2",
     "react-simple-star-rating": "^5.1.7",
     "sharp": "^0.33.5",

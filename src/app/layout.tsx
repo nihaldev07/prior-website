@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./navbar";
 import { CartProvider } from "@/context/CartContext";
 import Footer from "@/shared/Footer/Footer";
+import FacebookChat from "@/components/FacebookChat";
 
 const inter = Poppins({
   weight: "400",
@@ -52,6 +53,7 @@ export default function RootLayout({
             <Navbar /> {children} <Footer />
           </>
         </CartProvider>
+        <FacebookChat />
       </body>
     </html>
   );
