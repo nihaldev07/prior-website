@@ -50,7 +50,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <CartProvider>
           <>
-            <Navbar /> {children} <Footer />
+            <Navbar />
+            {children}
+            <Footer />
           </>
         </CartProvider>
         <FacebookChat />

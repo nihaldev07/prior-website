@@ -42,7 +42,7 @@ const SectionProducts = () => {
           products.map((product: ProductType) => (
             <Suspense
               fallback={
-                <div>
+                <div className="h-full w-full flex justify-center items-center object-fill">
                   Loading...
                   <Loader2 className="w-5 h-5 animate-spin" />
                 </div>
@@ -61,9 +61,11 @@ const SectionProducts = () => {
       )}
 
       {loading && (
-        <span className=" w-full p-4 flex justify-center items-center gap-2 text-center text-black">
-          loading... <LoaderCircle className="w-5 h-5 ml-2 text-black" />
-        </span>
+        <div className="w-full p-12 bg-gray-200 justify-center items-center flex">
+          <span className=" w-full p-4 flex justify-center items-center gap-2 text-center text-black">
+            loading... <LoaderCircle className="w-5 h-5 ml-2 text-black" />
+          </span>
+        </div>
       )}
 
       {!loading && products?.length < 1 && (
