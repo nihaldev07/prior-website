@@ -19,8 +19,8 @@ const navigation = {
   ],
   legal: [
     { name: "Return Policy", href: "/return-policy" },
-    { name: "Privacy", href: "/privacy-policy" },
-    { name: "Terms", href: "/terms" },
+    { name: "Privacy & Policy", href: "/privacy-policy" },
+    { name: "Terms & Conditions", href: "/terms-conditions" },
   ],
   social: [
     {

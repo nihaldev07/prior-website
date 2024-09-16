@@ -16,6 +16,7 @@ import { bkashCheckout } from "@/utils/payment";
 import { isValidBangladeshiPhoneNumber } from "@/utils/content";
 import { Loader2, Star, TrashIcon } from "lucide-react";
 import UserInformation from "./userForm";
+import TermsCondition from "./agreeToTerns";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -28,6 +29,7 @@ export interface UserFormData {
 const CheckoutPage = () => {
   const { cart, updateToCart, removeFromCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
 
   const [orderProducts, setOrderProduct] = useState<CartItem[]>([]);
   const [transectionData, setTransectionData] = useState({
@@ -384,9 +386,19 @@ const CheckoutPage = () => {
                 <span>{transectionData?.remaining}</span>
               </div>
             </div>
+
+            <div id="PaymentMethod" className="scroll-mt-24 mt-4">
+              <TermsCondition
+                checked={isTermsChecked}
+                handleTermCondition={(value: boolean) =>
+                  setIsTermsChecked(value)
+                }
+              />
+            </div>
+
             <ButtonPrimary
               className="mt-8 w-full"
-              disabled={loading}
+              disabled={loading || !isTermsChecked}
               onClick={() => handleConfirmOrder()}
             >
               Confirm order{" "}
