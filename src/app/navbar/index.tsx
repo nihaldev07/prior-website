@@ -106,7 +106,7 @@ const Navbar = () => {
             {NavItems.map((item: INavItem) => {
               if (item?.title.toLowerCase().includes("collections")) {
                 return (
-                  <Collapsible defaultOpen>
+                  <Collapsible defaultOpen key={item?.id}>
                     <CollapsibleTrigger asChild>
                       <div className="flex items-center justify-between ">
                         <span className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary uppercase">

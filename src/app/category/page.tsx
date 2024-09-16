@@ -1,12 +1,8 @@
-export default function Category() {
-  return null; // This will not render anything since we are redirecting
-}
+import { redirect } from "next/navigation";
 
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: "/collection",
-      permanent: false, // Set true if this is a permanent redirect (301)
-    },
-  };
+export default function CategoryPage() {
+  // Redirect from "/category" to "/collection"
+  redirect("/collections");
+
+  return null; // This will never be rendered since we are redirecting
 }
