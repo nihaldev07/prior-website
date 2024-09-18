@@ -1,5 +1,3 @@
-"use client";
-
 import type { FC } from "react";
 
 // import ButtonPrimary from "@/shared/Button/ButtonPrimary";
@@ -36,16 +34,14 @@ const PaymentMethod: FC<Props> = ({
         {/* ==================== */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Button
-            variant={
-              paymentMethod === "cashondelivery" ? "secondary" : "outline"
-            }
+            variant={paymentMethod === "cashondelivery" ? "default" : "outline"}
             onClick={() => handlePaymentMethodChange("cashondelivery")}
           >
             <Banknote className="mr-2 size-5" /> Cash On Delivery
           </Button>
           <Button
             className="flex justify-center items-center"
-            variant={paymentMethod === "bkash" ? "secondary" : "outline"}
+            variant={paymentMethod === "bkash" ? "default" : "outline"}
             onClick={() => handlePaymentMethodChange("bkash")}
           >
             <Image

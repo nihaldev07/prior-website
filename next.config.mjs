@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: "images.unsplash.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "prior-image.s3.eu-north-1.amazonaws.com",
+        port: "",
+      },
     ],
   },
   async rewrites() {

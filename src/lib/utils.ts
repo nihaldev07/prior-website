@@ -28,8 +28,8 @@ export const  NavItems=[
     icon:"package-plus"
   },{
     id:3,
-    title:"About",
-    link:"/about",
+    title:"Store Location",
+    link:"/store-location",
     icon:"book-a"
   },{
     id:4,
@@ -38,5 +38,6 @@ export const  NavItems=[
     icon:"book-a"
   }
 ];
+
 
 export const defaultProdcutImg="https://res.cloudinary.com/emerging-it/image/upload/v1723890464/prior-test/fqjoez1xzhgtwsava8qh.png";

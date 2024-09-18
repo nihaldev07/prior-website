@@ -1,7 +1,6 @@
-"use client";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 import type { FC } from "react";
 
 interface Props {
@@ -12,8 +11,8 @@ interface Props {
 const TermsCondition: FC<Props> = ({ checked, handleTermCondition }) => {
   return (
     <div className="rounded-xl ">
-      <div className="flex  items-start p-4 ">
-        <div className="flex items-center space-x-2">
+      <div className="flex  items-start py-4 leading-relaxed">
+        <div className="flex items-center space-x-2 leading-relaxed">
           <Checkbox
             id="terms"
             checked={checked}
@@ -21,13 +20,16 @@ const TermsCondition: FC<Props> = ({ checked, handleTermCondition }) => {
           />
           <Label htmlFor="terms">
             I Have Read & Agree to the website{" "}
-            <a href="/terms-conditions" className="text-blue-500 font-semibold">
+            <Link
+              href="/terms-conditions"
+              className="text-blue-500 font-semibold"
+            >
               terms & conditions
-            </a>
+            </Link>
             {" and "}
-            <a href="/return-policy" className="text-blue-500 font-semibold">
-              return policy
-            </a>
+            <Link href="/return-policy" className="text-blue-500 font-semibold">
+              return & refund policy
+            </Link>
           </Label>
         </div>
       </div>

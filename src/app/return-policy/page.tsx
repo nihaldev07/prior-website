@@ -5,18 +5,23 @@ const RefundAndReturnPolicy = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-lg">
         <Tabs defaultValue="english" className="w-full px-4 relative">
-          <h1 className="text-3xl font-bold text-center mb-6">
+          <h1 className="text-xl md:text-3xl font-bold text-left md:text-center mb-6">
             Refund & Return Policy
           </h1>
-          <TabsList className="grid min-w-fit grid-cols-2 top-0 right-2 absolute">
+          <TabsList className="hidden md:grid min-w-fit grid-cols-2 top-0 right-2 absolute">
             <TabsTrigger value="english">English</TabsTrigger>
             <TabsTrigger value="bangla">বাংলা</TabsTrigger>
+          </TabsList>
+
+          <TabsList className="grid md:hidden min-w-fit grid-cols-2 top-0 right-[-15px] absolute">
+            <TabsTrigger value="english">EN</TabsTrigger>
+            <TabsTrigger value="bangla">বাং</TabsTrigger>
           </TabsList>
 
           {/* English Content */}
           <TabsContent value="english">
             <div>
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="text-base md:text-xl font-semibold mb-4">
                 Qualifying Conditions for Refunds and Returns
               </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
@@ -27,7 +32,9 @@ const RefundAndReturnPolicy = () => {
                 <li>Product Lost During Shipment</li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">How to Exchange</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                How to Exchange
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>
                   Immediate Contact: Call us at 01700534317 or message us on our
@@ -43,7 +50,9 @@ const RefundAndReturnPolicy = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">Shipping Costs</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                Shipping Costs
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>
                   Covered by Us: For damaged, wrong items, or lost products.
@@ -51,7 +60,9 @@ const RefundAndReturnPolicy = () => {
                 <li>Paid by Customer: For all other returns or exchanges.</li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">Return Conditions</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                Return Conditions
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>Items must be unworn, unwashed, and unused.</li>
                 <li>Include the original invoice slip and tags.</li>
@@ -67,7 +78,7 @@ const RefundAndReturnPolicy = () => {
           {/* Bangla Content */}
           <TabsContent value="bangla">
             <div>
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="text-base md:text-xl font-semibold mb-4">
                 ফেরত এবং বিনিময় শর্তাবলী
               </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
@@ -78,7 +89,7 @@ const RefundAndReturnPolicy = () => {
                 <li>শিপমেন্টের সময় পণ্য হারানো</li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="text-base md:text-xl font-semibold mb-4">
                 কিভাবে বিনিময় করবেন
               </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
@@ -96,7 +107,9 @@ const RefundAndReturnPolicy = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">শিপিং খরচ</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                শিপিং খরচ
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>আমাদের দ্বারা আচ্ছাদিত: ক্ষতিগ্রস্ত বা ভুল পণ্যের জন্য।</li>
                 <li>
@@ -104,7 +117,9 @@ const RefundAndReturnPolicy = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">ফেরত শর্তাবলী</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                ফেরত শর্তাবলী
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>পণ্যগুলি অব্যবহৃত এবং অব্যবহৃত হতে হবে।</li>
                 <li>মূল চালান স্লিপ এবং ট্যাগগুলি অন্তর্ভুক্ত করুন।</li>

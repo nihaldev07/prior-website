@@ -5,19 +5,24 @@ const TermsAndConditions = () => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-lg">
         <Tabs defaultValue="english" className="w-full px-4 relative">
-          <h1 className="text-3xl font-bold text-center mb-6">
+          <h1 className=" text-xl md:text-3xl font-bold text-left md:text-center mb-6">
             Terms & Conditions
           </h1>
-          <TabsList className="grid min-w-fit grid-cols-2 top-0 right-2 absolute">
+          <TabsList className="hidden md:grid min-w-fit grid-cols-2 top-0 right-2 absolute">
             <TabsTrigger value="english">English</TabsTrigger>
             <TabsTrigger value="bangla">বাংলা</TabsTrigger>
+          </TabsList>
+
+          <TabsList className="grid md:hidden min-w-fit grid-cols-2 top-0 right-[-15px] absolute">
+            <TabsTrigger value="english">EN</TabsTrigger>
+            <TabsTrigger value="bangla">বাং</TabsTrigger>
           </TabsList>
 
           {/* Content */}
 
           <TabsContent value="english">
             <div>
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="text-base md:text-xl font-semibold mb-4">
                 Delivery Charges and Conditions
               </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
@@ -33,7 +38,7 @@ const TermsAndConditions = () => {
                 <li>Note: Charges are set by the delivery agents.</li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="text-base md:text-xl font-semibold mb-4">
                 Exchange Terms and Conditions
               </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
@@ -64,7 +69,9 @@ const TermsAndConditions = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">Return Policies</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                Return Policies
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>
                   Return products with flaws for a refund if a replacement
@@ -80,7 +87,9 @@ const TermsAndConditions = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">Refund Policy</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                Refund Policy
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>
                   Refunds are processed once the item is returned and QC is
@@ -101,7 +110,7 @@ const TermsAndConditions = () => {
           <TabsContent value="bangla">
             <div>
               {/* Bangla content goes here */}
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="text-base md:text-xl font-semibold mb-4">
                 ডেলিভারি চার্জ এবং শর্তাবলী
               </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
@@ -117,7 +126,9 @@ const TermsAndConditions = () => {
                 <li>বিঃদ্রঃ চার্জগুলি ডেলিভারি এজেন্ট দ্বারা নির্ধারিত।</li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">বিনিময় শর্তাবলী</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                বিনিময় শর্তাবলী
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>
                   আউটলেট থেকে ক্রয়ের ৩ দিনের মধ্যে বিনিময় গ্রহণ করা হয়।
@@ -142,7 +153,9 @@ const TermsAndConditions = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">ফেরত নীতিমালা</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                ফেরত নীতিমালা
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>
                   পণ্যের ত্রুটির জন্য ফেরত প্রদান করা হবে যদি কোনো বিকল্প প্রদান
@@ -157,7 +170,9 @@ const TermsAndConditions = () => {
                 </li>
               </ul>
 
-              <h2 className="text-xl font-semibold mb-4">ফেরত নীতি</h2>
+              <h2 className="text-base md:text-xl font-semibold mb-4">
+                ফেরত নীতি
+              </h2>
               <ul className="list-disc list-inside space-y-2 mb-6">
                 <li>ফেরত পণ্য QC পাস করার পরে ফেরত প্রদান করা হবে।</li>
                 <li>অর্ডার বাতিল হলে স্বয়ংক্রিয়ভাবে ফেরত প্রদান করা হবে।</li>

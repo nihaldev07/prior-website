@@ -4,7 +4,7 @@ import type { FC } from "react";
 import React, { useState } from "react";
 
 import ImageShowCase from "@/components/ImageShowCase";
-import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
+// import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 import Heading from "@/shared/Heading/Heading";
@@ -15,6 +15,19 @@ import { Briefcase, Info, ShoppingCart, Star } from "lucide-react";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+// import {
+//   HoverCard,
+//   HoverCardContent,
+//   HoverCardTrigger,
+// } from "@/components/ui/hover-card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -96,16 +109,13 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       </div>
 
       <div className="basis-[50%] sm:basis-[45%]">
-        <Heading className="mb-0" isMain title={""}>
+        <Heading className="mb-0 text-left" isMain title={""}>
           {shoeName}
         </Heading>
 
         <div className="mb-10 flex items-center">
           <div className="flex items-center gap-1">
-            <ButtonCircle3
-              className="overflow-hidden border border-neutral-400 p-2"
-              size="w-11 h-11"
-            >
+            <Button variant={"ghost"} className="overflow-hidden p-2 w-11 h-11">
               <Image
                 width={100}
                 height={100}
@@ -113,17 +123,23 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                 alt="nike_profile"
                 className="h-full w-full object-cover"
               />
-            </ButtonCircle3>
-            <span className="font-medium hidden sm:inline">
-              {!!product ? product?.categoryName : ""}
+            </Button>
+            <span className="font-medium">
+              <Badge
+                variant={"secondary"}
+                className=" uppercase bg-gray-700 text-white"
+              >
+                {" "}
+                {!!product ? product?.categoryName : ""}
+              </Badge>
             </span>
           </div>
           <div className="flex items-center ml-4">
-            <Star className="text-yellow-400" />
-            <p className="text-sm">
+            {/* <Star className="text-yellow-400" /> */}
+            {/* <p className="text-sm">
               {rating}{" "}
               <span className="text-neutral-500">{`(${reviews})`}</span>
-            </p>
+            </p> */}
           </div>
           {/* <GoDotFill className='mx-3 text-neutral-500' />
           <p className='text-neutral-500'>{`${pieces_sold} items sold`}</p> */}
@@ -133,16 +149,31 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
           {prevPrice > 0 && (
             <p className="text-neutral-500 line-through">৳ {prevPrice}</p>
           )}
-          <h1 className="text-3xl font-medium">৳ {currentPrice}</h1>
+          <h1 className="text-2xl font-medium">৳ {currentPrice}</h1>
         </div>
 
         <div className="mb-5 flex items-end justify-between">
           <p className="text-xl">
             Available colors {uniqueSizes.length > 0 && "& sizes"}
           </p>
-          <p className="flex items-center gap-1 text-sm text-neutral-500">
-            Size guide <Info />
-          </p>
+          <Popover>
+            <PopoverTrigger>
+              <p className="flex items-center gap-1 text-sm text-neutral-500">
+                Size guide <Info />
+              </p>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Image
+                src={
+                  "https://res.cloudinary.com/emerging-it/image/upload/v1726649836/oafeegdk1zpxmgytikrl.jpg"
+                }
+                width={500}
+                height={500}
+                alt="size-guide"
+                className="h-full w-full object-fit"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
@@ -213,6 +244,14 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
             OUT OF STOCK
           </div>
         )}
+
+        <div className="text-base font-medium text-gray-700 text-left mt-4">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 ">
+            Description
+          </h2>
+          <Separator className="text-gray-300 w-full my-2" />
+          {product?.description}
+        </div>
       </div>
     </div>
   );

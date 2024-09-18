@@ -1,4 +1,4 @@
-const hostName = "https://app.priorbd.com";
+const hostName = "http://localhost:7001"; //"https://app.priorbd.com";
 const baseUrl = `${hostName}/prior`;
 
 export const config = {
@@ -14,9 +14,13 @@ export const config = {
   },
   order: {
     createOrder: () => `${baseUrl}/order/create`,
+    getOrderDetails:(orderId:string)=>`${baseUrl}/order/details/${orderId}`
   },
   payment: {
     bkashCheckout: () => `${hostName}/bkash/bkash-checkout`,
     bkashCallback: () => `${hostName}/bkash/bkash-callback`,
   },
+  contact:{
+    createContactQuery:()=>`${baseUrl}/customer-service/contact`
+  }
 };

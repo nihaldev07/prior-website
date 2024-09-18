@@ -15,10 +15,11 @@ const navigation = {
   ],
   company: [
     { name: "About", href: "/about" },
-    { name: "Contact Us", href: "#" },
+    { name: "Contact Us", href: "/contact-us" },
+    { name: "Store Location", href: "/store-location" },
   ],
   legal: [
-    { name: "Return Policy", href: "/return-policy" },
+    { name: "Return & Refund Policy", href: "/return-policy" },
     { name: "Privacy & Policy", href: "/privacy-policy" },
     { name: "Terms & Conditions", href: "/terms-conditions" },
   ],
@@ -97,8 +98,13 @@ const Footer: React.FC = () => {
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="grid grid-cols-2 gap-8 xl:col-span-2">
             <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div className="">
+                <h1 className=" text-[40px] font-bold text-white uppercase">
+                  Prior
+                </h1>
+              </div>
               <div>
-                <h3 className="text-sm font-semibold leading-6 text-white">
+                <h3 className="text-sm mt-10 md:mt-0 font-semibold leading-6 text-white">
                   Solutions
                 </h3>
                 <ul role="list" className="mt-6 space-y-4">

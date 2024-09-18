@@ -55,8 +55,8 @@ const SingleProductPage = async ({
         <meta property="og:title" content={name} />
         <meta property="og:image" content={thumbnail} />
       </Head>
-      <SectionNavigation />
-      <div className="mt-4 sm:mt-0 mb-4 sm:mb-20">
+      {/* <SectionNavigation /> */}
+      <div className="mt-4  mb-4 sm:mb-20">
         <SectionProductHeader
           product={product}
           shots={imageData}
@@ -83,7 +83,7 @@ const SingleProductPage = async ({
           ratingDetails={ratingDetails}
         />
       </div> */}
-      <div className="mb-5">
+      <div className=" mt-16 md:mt-5">
         <SectionMoreProducts categoryId={categoryId} />
       </div>
     </div>
