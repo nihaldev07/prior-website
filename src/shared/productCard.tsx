@@ -101,10 +101,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
             )}
             {!isOutOfStock && (
               <p className="text-gray-700 text-xs md:text-base font-medium flex justify-between items-center ">
-                <TooltipDemo text="Available Quantity">
-                  <ShoppingBasket className="mx-2" />
-                </TooltipDemo>
-                :{" "}
+                Qty :{" "}
                 <Badge variant={"outline"} className="ml-2">
                   {product?.quantity}
                 </Badge>{" "}
