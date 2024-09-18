@@ -74,7 +74,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
           <div className="w-full flex justify-between items-start my-1">
             {!!hasVariation && !isOutOfStock && (
               <p className="text-gray-700 text-xs md:text-base font-medium flex justify-between items-center">
-                Variations :{" "}
+                Variant :{" "}
                 <Badge variant={"outline"} className="ml-2">
                   {
                     product?.variation?.filter(
@@ -88,7 +88,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
 
             {!hasVariation && !isOutOfStock && (
               <p className="text-gray-700 text-xs md:text-base font-medium flex justify-between items-center">
-                Variations :{" "}
+                Variant :{" "}
                 <Badge variant={"outline"} className="ml-2">
                   1
                 </Badge>
