@@ -31,7 +31,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
       className="rounded-xl shadow-none border-0 bg-transparent"
       onClick={() => router.push(`/collections/${product?.id}`)}
     >
-      <CardHeader className="mb-2 relative flex justify-center items-center bg-gray-100 h-56 md:h-80 lg:h-[400px] rounded-sm px-2">
+      <CardHeader className="mb-2 relative flex justify-center items-center bg-gray-100 h-64 md:h-80 lg:h-[400px] rounded-sm px-2">
         {/* {!!product?.images && product?.images?.length > 1 && (
           <CarouselComponent
             delay={5000}
