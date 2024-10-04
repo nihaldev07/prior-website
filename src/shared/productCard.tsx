@@ -10,14 +10,15 @@ import { ProductType } from "@/data/types";
 // import CarouselComponent from "@/components/Carosol/SwiperComponent";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBasket } from "lucide-react";
-import TooltipDemo from "./tooltip";
+import { useState } from "react";
+import { PawPrint } from "lucide-react";
 
 interface IProp {
   product: IProduct | ProductType;
 }
 const ProductCard: React.FC<IProp> = ({ product }) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const hasVariation =
     product?.hasVariation &&
     product?.variation?.filter(
@@ -50,14 +51,23 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
           />
         )}
         {(!product?.images || product?.images?.length < 2) && ( */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
+            <PawPrint className=" animate-ping w-16 h-16" />
+          </div>
+        )}
         <Image
           alt="product"
           fill
           quality={100}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="rounded-sm object-fill object-center"
+          className={`rounded-sm object-fill object-center ${
+            isLoading ? "invisible" : "visible"
+          }`} // Hide image until loaded
           src={product?.thumbnail || defaultProdcutImg}
           priority
+          onLoad={() => setIsLoading(false)}
+          onLoadStart={() => setIsLoading(true)}
         />
         {/* )} */}
       </CardHeader>

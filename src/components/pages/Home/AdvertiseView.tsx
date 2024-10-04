@@ -2,15 +2,7 @@ import { Button } from "@/components/ui/button";
 import { headerSection } from "@/data/content";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-
-// Lazy load heavy components or sections if needed
-const CarouselComponent = dynamic(
-  () => import("@/components/Carosol/SwiperComponent"),
-  {
-    ssr: false,
-    loading: () => <p>Loading...</p>,
-  }
-);
+import Link from "next/link";
 
 const AdvertiseView = () => {
   return (
@@ -36,13 +28,15 @@ const AdvertiseView = () => {
             <p className=" hidden md:block text-xs sm:text-lg text-gray-300 lg:text-2xl mb-8">
               {headerSection?.description}
             </p>
-            <Button
-              variant="outline"
-              size="lg"
-              className="bg-transparent text-gray-300 text-xs md:text-xl px-3 py-2 md:px-8 md:py-6"
-            >
-              Shop Now
-            </Button>
+            <Link href={"/category/fed3dffe-c6c1-46fd-b020-eb8ca8f3ca8c"}>
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-transparent text-gray-300 text-xs md:text-xl px-3 py-2 md:px-8 md:py-6"
+              >
+                Shop Now
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

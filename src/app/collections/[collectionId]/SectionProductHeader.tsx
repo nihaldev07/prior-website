@@ -11,23 +11,18 @@ import Heading from "@/shared/Heading/Heading";
 import SelectDemo from "./VariantiView";
 import { SingleProductType, Variation } from "@/data/types";
 import { useCart } from "@/context/CartContext";
-import { Briefcase, Info, ShoppingCart, Star } from "lucide-react";
+import { Briefcase, Info } from "lucide-react";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 // import {
 //   HoverCard,
 //   HoverCardContent,
 //   HoverCardTrigger,
 // } from "@/components/ui/hover-card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -109,13 +104,13 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       </div>
 
       <div className="basis-[50%] sm:basis-[45%]">
-        <Heading className="mb-0 text-left" isMain title={""}>
+        <Heading className="mb-0 text-left px-0" isMain title={""}>
           {shoeName}
         </Heading>
 
         <div className="mb-10 flex items-center">
           <div className="flex items-center gap-1">
-            <Button variant={"ghost"} className="overflow-hidden p-2 w-11 h-11">
+            {/* <Button variant={"ghost"} className="overflow-hidden p-2 w-11 h-11">
               <Image
                 width={100}
                 height={100}
@@ -123,7 +118,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                 alt="nike_profile"
                 className="h-full w-full object-cover"
               />
-            </Button>
+            </Button> */}
             <span className="font-medium">
               <Badge
                 variant={"secondary"}
@@ -156,13 +151,13 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
           <p className="text-xl">
             Available colors {uniqueSizes.length > 0 && "& sizes"}
           </p>
-          <Popover>
-            <PopoverTrigger>
+          <Dialog>
+            <DialogTrigger>
               <p className="flex items-center gap-1 text-sm text-neutral-500">
                 Size guide <Info />
               </p>
-            </PopoverTrigger>
-            <PopoverContent>
+            </DialogTrigger>
+            <DialogContent>
               <Image
                 src={
                   "https://res.cloudinary.com/emerging-it/image/upload/v1726649836/oafeegdk1zpxmgytikrl.jpg"
@@ -172,8 +167,8 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                 alt="size-guide"
                 className="h-full w-full object-fit"
               />
-            </PopoverContent>
-          </Popover>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">

@@ -1,3 +1,5 @@
+import { getRandomCollection } from "./contentSet";
+
 export const headerSection={
     title:" Discover Your Perfect Pair",
     description:"Explore our curated collection of stylish shoes and bags designed just for you. Find the perfect match for any occasion with our exclusive range of fashion-forward products.",
@@ -23,10 +25,9 @@ export const promotionTag = {
     "Embrace grace and glamour with our women's shoes and handbags. Discover versatile styles that blend sophistication with comfort, curated for the modern woman.",
 };
 
-export const collectionTag = {
- title:" Discover Your Perfect Pair",
-    description:"Explore our curated collection of stylish shoes and bags designed just for you. Find the perfect match for any occasion with our exclusive range of fashion-forward products.",
-};
+export const collectionTag = getRandomCollection();
+
+
 
 
 export const newProductPageContent = {

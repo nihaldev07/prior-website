@@ -3,7 +3,7 @@ import React, { Suspense, lazy } from "react";
 
 import { productsSection } from "@/data/content";
 import { ProductType } from "@/data/types";
-import { Bird, Loader2, LoaderCircle } from "lucide-react";
+import { Bird, Cat, Loader2, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useProductFetch from "@/hooks/useProductFetch";
 import Heading from "@/shared/Heading/Heading";
@@ -37,14 +37,13 @@ const SectionProducts = () => {
         handleFilterChange={(value: any) => setFilterData(value)}
       />
 
-      <div className="md:container grid gap-3 sm:gap-8 grid-cols-2 md:grid-cols-4">
+      <div className=" grid gap-3 sm:gap-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
         {!!products &&
           products.map((product: ProductType) => (
             <Suspense
               fallback={
                 <div className="h-full w-full flex justify-center items-center object-fill">
-                  Loading...
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Cat className=" size-8 animate-ping" />
                 </div>
               }
               key={product.id}

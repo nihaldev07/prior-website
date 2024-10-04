@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "./navbar";
 import { CartProvider } from "@/context/CartContext";
-import Footer from "@/shared/Footer/Footer";
 import FacebookChat from "@/components/FacebookChat";
+import Navbar from "./navbar";
+import Footer from "@/shared/Footer/Footer";
 
 const inter = Poppins({
   weight: "400",

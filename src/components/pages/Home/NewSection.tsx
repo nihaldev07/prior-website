@@ -14,7 +14,7 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
   const renderProductCarousel = () => {
     return (
       <CarouselComponent
-        slidersPerView={3.5}
+        slidersPerView={5}
         items={
           !products
             ? []
@@ -44,7 +44,7 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
     );
   };
   return (
-    <div className="container my-4  md:my-10">
+    <div className=" px-4 my-4  md:my-10">
       <Heading isCenter isMain desc={promotionTag?.description}>
         {promotionTag?.heading}
       </Heading>

@@ -38,9 +38,12 @@ const Page = () => {
             >
               <SidebarFilters
                 filterData={filterData}
+                selectedCategory={filterData?.categoryId}
+                selectedColor={filterData?.color}
+                selectedSize={filterData?.size}
                 categories={distictFilterValues.categories}
-                colors={distictFilterValues.colors}
-                sizes={distictFilterValues.sizes}
+                colors={distictFilterValues.colors.filter((i) => i !== "")}
+                sizes={distictFilterValues.sizes.filter((i) => i !== "")}
                 handleFilterChange={(value) => {
                   setFilterData(value);
                 }}
@@ -52,8 +55,8 @@ const Page = () => {
           <SidebarFilters
             filterData={filterData}
             categories={distictFilterValues.categories}
-            colors={distictFilterValues.colors}
-            sizes={distictFilterValues.sizes}
+            colors={distictFilterValues.colors.filter((i) => i !== "")}
+            sizes={distictFilterValues.sizes.filter((i) => i !== "")}
             handleFilterChange={(value) => {
               setFilterData(value);
             }}

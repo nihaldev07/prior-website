@@ -1,5 +1,7 @@
 "use client";
 
+import { classNames } from "@/lib/utils";
+import { Cat, PawPrint } from "lucide-react";
 import Image from "next/image";
 import type { FC } from "react";
 import React, { useState } from "react";
@@ -10,19 +12,41 @@ interface ImageShowCaseProps {
 }
 
 const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [loadingStates, setLoadingStates] = useState(
+    Array(shots.length).fill(true)
+  );
+
+  const handleImageLoad = (index: number, isLoaded: boolean = false) => {
+    setLoadingStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !isLoaded; // Set the loading state to false for the loaded image
+      return newStates;
+    });
+  };
 
   return (
     <div className="space-y-3 rounded-sm p-2">
       <div className="relative overflow-hidden rounded-sm h-[500px] md:h-[700px] bg-gray-200 flex justify-center items-center">
         {/* <LikeButton className="absolute right-5 top-5" /> */}
         <div className="w-full relative h-full sm:w-[80%]">
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
+              <Cat className=" animate-pulse w-16 h-16  md:w-32 md:h-32" />
+            </div>
+          )}
           <Image
             src={shots[activeImageIndex]}
             alt="shoe image"
             fill
             quality={100}
-            className=" absolute top-0 left-0 rounded-sm object-fill  object-center h-full w-full "
+            className={classNames(
+              " absolute top-0 left-0 rounded-sm object-fill  object-center h-full w-full ",
+              isLoading ? "invisible" : "visible"
+            )}
+            onLoad={() => setIsLoading(false)}
+            onLoadStart={() => setIsLoading(true)}
           />
         </div>
       </div>
@@ -37,16 +61,30 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
                 } h-[100px] overflow-hidden rounded-lg`}
               >
                 <button
-                  className="h-full w-full bg-gray-200"
+                  className="h-full w-full bg-gray-200 relative"
                   type="button"
-                  onClick={() => setActiveImageIndex(index)}
+                  onClick={() => {
+                    setActiveImageIndex(index);
+                    setIsLoading(true);
+                  }}
                 >
+                  {/* Loading state indicator */}
+                  {loadingStates[index] && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
+                      <PawPrint className=" animate-pulse w-8 h-8  md:w-16 md:h-16" />
+                    </div>
+                  )}
                   <Image
                     src={shot}
                     width={100}
                     height={100}
                     alt="shoe image"
-                    className="h-full w-full object-scale-down object-center"
+                    className={classNames(
+                      "h-full w-full object-scale-down object-center",
+                      loadingStates[index] ? "invisible" : "visible"
+                    )}
+                    onLoad={() => handleImageLoad(index, true)}
+                    onLoadStart={() => handleImageLoad(index)}
                   />
                 </button>
               </div>

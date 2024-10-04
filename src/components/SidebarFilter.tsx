@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 
 import Heading from "@/shared/Heading/Heading";
 import { Category } from "@/data/types";
+import { Button } from "./ui/button";
+import { Palette, PencilRuler } from "lucide-react";
 
 interface Props {
   sizes: string[];
@@ -11,6 +13,9 @@ interface Props {
   categories: Category[];
   filterData: any;
   showCategory?: boolean;
+  selectedCategory?: string;
+  selectedColor?: string;
+  selectedSize?: string;
   handleFilterChange: (filterData: any) => void;
 }
 //
@@ -19,14 +24,17 @@ const SidebarFilters: React.FC<Props> = ({
   colors,
   categories,
   filterData,
+  selectedSize = "",
+  selectedColor = "",
+  selectedCategory = "",
   showCategory = true,
   handleFilterChange,
 }) => {
   // const [activeLocation, setActiveLocation] = useState("All");
   // const [rangePrices, setRangePrices] = useState([100, 500]);
-  const [activeCategory, setActiveCategory] = useState("");
-  const [activeColor, setActiveColor] = useState("");
-  const [activeSize, setActiveSize] = useState("");
+  const [activeCategory, setActiveCategory] = useState(selectedCategory);
+  const [activeColor, setActiveColor] = useState(selectedColor);
+  const [activeSize, setActiveSize] = useState(selectedSize);
 
   useEffect(() => {
     handleFilterChange({
@@ -41,29 +49,25 @@ const SidebarFilters: React.FC<Props> = ({
   const renderTabsCategories = () => {
     return (
       <div className="relative flex flex-col space-y-2 md:space-y-4 pb-2 md:pb-8">
-        <h3 className="mb-2.5 text-xl font-medium">Category</h3>
+        <h3 className="mb-2.5 text-xl font-medium  border-b border-gray-950  py-3 px-1">
+          Categories
+        </h3>
         <div className="grid grid-cols-2 gap-4">
-          <button
+          <Button
             key={"001"}
-            type="button"
+            variant={activeCategory === "" ? "default" : "outline"}
             onClick={() => setActiveCategory("")}
-            className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
-              activeCategory === "" ? "bg-primary text-white" : "bg-gray"
-            }`}
           >
             All
-          </button>
+          </Button>
           {categories.map((item) => (
-            <button
+            <Button
               key={item.id}
-              type="button"
               onClick={() => setActiveCategory(item.id)}
-              className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
-                activeCategory === item.id ? "bg-primary text-white" : "bg-gray"
-              }`}
+              variant={activeCategory === item?.id ? "default" : "outline"}
             >
               {item.name}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -73,10 +77,19 @@ const SidebarFilters: React.FC<Props> = ({
   // OK
   const renderTabsGender = () => {
     return (
-      <div className="relative flex flex-col space-y-2 md:space-y-4 py-2 md:py-8">
-        <h3 className="mb-2.5 text-xl font-medium">Color</h3>
-        <div className="grid grid-cols-2 gap-1 md:gap-4 max-h-[30vh] md:max-h-auto overflow-y-auto">
-          <button
+      <div className="relative flex flex-col space-y-2 md:space-y-4 py-2">
+        <h3 className="mb-2.5 text-xl font-medium  border-b border-gray-950  py-3 px-1">
+          <Palette className="inline" /> Colors
+        </h3>
+        <div className="grid grid-cols-2 gap-2 md:gap-3 max-h-[40vh] overflow-y-auto">
+          <Button
+            key={"001"}
+            onClick={() => setActiveColor("")}
+            variant={activeColor === "" ? "default" : "outline"}
+          >
+            All
+          </Button>
+          {/* <button
             key={"001"}
             type="button"
             onClick={() => setActiveColor("")}
@@ -85,18 +98,15 @@ const SidebarFilters: React.FC<Props> = ({
             }`}
           >
             All
-          </button>
+          </button> */}
           {colors.map((item) => (
-            <button
+            <Button
               key={item}
-              type="button"
               onClick={() => setActiveColor(item)}
-              className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
-                activeColor === item ? "bg-primary text-white" : "bg-gray"
-              }`}
+              variant={activeColor === item ? "default" : "outline"}
             >
               {item}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -107,9 +117,18 @@ const SidebarFilters: React.FC<Props> = ({
   const renderTabsSize = () => {
     return (
       <div className="relative flex flex-col space-y-2 md:space-y-4 py-2 md:py-8">
-        <h3 className="mb-2.5 text-xl font-medium">Size</h3>
+        <h3 className="mb-2.5 text-xl font-medium   border-b border-gray-950  py-3 px-1">
+          <PencilRuler className="inline" /> Sizes
+        </h3>
         <div className="grid grid-cols-2 gap-4 max-h-[30vh] md:max-h-auto overflow-y-auto">
-          <button
+          <Button
+            key={"001"}
+            onClick={() => setActiveSize("")}
+            variant={activeColor === "" ? "default" : "outline"}
+          >
+            All
+          </Button>
+          {/* <button
             key={"001"}
             type="button"
             onClick={() => setActiveSize("")}
@@ -118,18 +137,25 @@ const SidebarFilters: React.FC<Props> = ({
             }`}
           >
             All
-          </button>
+          </button> */}
           {sizes.map((item) => (
-            <button
+            <Button
               key={item}
-              type="button"
+              variant={activeSize === item ? "default" : "outline"}
               onClick={() => setActiveSize(item)}
-              className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
-                activeSize === item ? "bg-primary text-white" : "bg-gray"
-              }`}
             >
               {item}
-            </button>
+            </Button>
+            // <button
+            //   key={item}
+            //   type="button"
+            //   onClick={() => setActiveSize(item)}
+            //   className={`rounded-lg py-2 md:py-4 text-xs md:text-lg ${
+            //     activeSize === item ? "bg-primary text-white" : "bg-gray"
+            //   }`}
+            // >
+            //   {item}
+            // </button>
           ))}
         </div>
       </div>
@@ -231,10 +257,10 @@ const SidebarFilters: React.FC<Props> = ({
   return (
     <div className="top-4 md:top-28 lg:sticky">
       <Heading className="mb-0 text-sm md:text-xl">Filter products</Heading>
-      <div className="divide-y divide-neutral-300">
+      <div>
         {!!showCategory && renderTabsCategories()}
-        {renderTabsGender()}
-        {renderTabsSize()}
+        {Array.isArray(colors) && colors?.length > 0 && renderTabsGender()}
+        {Array.isArray(sizes) && sizes?.length > 0 && renderTabsSize()}
         {/* {renderTabsPriceRage()} */}
         {/* {renderTabsLocation()} */}
       </div>

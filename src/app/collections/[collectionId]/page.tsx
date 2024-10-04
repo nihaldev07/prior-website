@@ -38,7 +38,6 @@ const SingleProductPage = async ({
     discount,
     description,
     rating,
-    ratingDetails,
     categoryId,
   } = product;
 
