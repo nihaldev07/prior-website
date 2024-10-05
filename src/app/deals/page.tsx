@@ -5,6 +5,7 @@ import Heading from "@/shared/Heading/Heading";
 import { newProductPageContent } from "@/data/content";
 import axios from "axios";
 import { config } from "@/lib/config";
+import Head from "next/head";
 
 const fetchProducts = async () => {
   try {
@@ -21,6 +22,21 @@ const DealPage = async () => {
 
   return (
     <div className="my-6">
+      <Head>
+        <title>{newProductPageContent?.title} | Prior</title>
+        <meta name="description" content={newProductPageContent?.description} />
+        <meta property="og:title" content={newProductPageContent?.title} />
+        <meta
+          property="og:description"
+          content={newProductPageContent?.description}
+        />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg"
+        />
+        <meta property="og:type" content="website" />
+      </Head>
+
       <Heading isCenter isMain desc={newProductPageContent?.description}>
         {newProductPageContent?.title}
       </Heading>

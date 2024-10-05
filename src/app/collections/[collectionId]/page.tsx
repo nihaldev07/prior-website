@@ -1,6 +1,5 @@
 import React from "react";
 import Head from "next/head";
-
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
@@ -46,11 +45,12 @@ const SingleProductPage = async ({
 
   // SEO Metadata
   const title = `${name} | Prior - Your Priority in Fashion`;
-  const metaDescription = `${description}. Get it now at Prior!`;
+  const metaDescription = `${description} Get it now at Prior!`;
   const ogImage = thumbnail || images[0];
 
+  // Return metadata in the form of an object
   return (
-    <div className="px-4 sm:px-0 sm:container">
+    <>
       <Head>
         <title>{title}</title>
         <meta name="description" content={metaDescription} />
@@ -58,31 +58,35 @@ const SingleProductPage = async ({
         <meta property="og:description" content={metaDescription} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:type" content="product" />
-        <meta property="og:url" content={`/collections/${id}`} />
-        {/* You can also include Twitter card metadata if desired */}
-        <meta name="twitter:card" content={ogImage} />
+        <meta
+          property="og:url"
+          content={`https://priorbd.com/collections/${id}`}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogImage} />
       </Head>
 
-      <div className="mt-4 mb-4 sm:mb-20">
-        <SectionProductHeader
-          product={product}
-          shots={imageData}
-          shoeName={name}
-          prevPrice={prevPrice}
-          currentPrice={currentPrice}
-          rating={rating}
-          pieces_sold={0}
-          reviews={0}
-        />
-      </div>
+      <div className="px-4 sm:px-0 sm:container">
+        <div className="mt-4 mb-4 sm:mb-20">
+          <SectionProductHeader
+            product={product}
+            shots={imageData}
+            shoeName={name}
+            prevPrice={prevPrice}
+            currentPrice={currentPrice}
+            rating={rating}
+            pieces_sold={0}
+            reviews={0}
+          />
+        </div>
 
-      <div className="mt-16 md:mt-5">
-        <SectionMoreProducts categoryId={categoryId} />
+        <div className="mt-16 md:mt-5">
+          <SectionMoreProducts categoryId={categoryId} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
