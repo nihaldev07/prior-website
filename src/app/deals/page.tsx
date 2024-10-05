@@ -1,4 +1,3 @@
-"use server";
 import React from "react";
 import ProductCard from "@/shared/productCard";
 import { ProductType } from "@/data/types";

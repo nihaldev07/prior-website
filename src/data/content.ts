@@ -1,9 +1,7 @@
-import { getRandomCollection } from "./contentSet";
+import { title } from "process";
+import { getRandomCollection, getRandomSeoFromFirstSetCollection, getRandomSeoFromSecondSetCollection, getRandomSeoFromThridSetCollection } from "./contentSet";
 
-export const headerSection={
-    title:" Discover Your Perfect Pair",
-    description:"Explore our curated collection of stylish shoes and bags designed just for you. Find the perfect match for any occasion with our exclusive range of fashion-forward products.",
-}
+export const headerSection= {title:getRandomSeoFromThridSetCollection().header,description:getRandomSeoFromThridSetCollection().description};
 
 export const mobileHeaderSectionImages=[
             "https://res.cloudinary.com/deajqyzno/image/upload/v1717494246/prior/iqir3bzii2vkc4cv132y.jpg",
@@ -11,18 +9,14 @@ export const mobileHeaderSectionImages=[
             "https://res.cloudinary.com/deajqyzno/image/upload/v1717494262/prior/cwzzn4mkcib8r4zye7uo.jpg",
           ];
 
-export const productsSection = {
-  heading: "Discover Elegant Women's Footwear & Handbags",
-  description:
-    "Step into elegance with our exquisite selection of women's footwear and handbags. Browse through our collection of classy shoes and stylish handbags to complete your look. Shop now!",
-};
+export const productsSection = {heading:getRandomSeoFromSecondSetCollection().header,description:getRandomSeoFromSecondSetCollection().description};
 
 export const prices = ["Below 3000", "Below 4000", "Below 8000", "Below 10000"];
 
 export const promotionTag = {
   heading: "Prior Your Priority",
   description:
-    "Embrace grace and glamour with our women's shoes and handbags. Discover versatile styles that blend sophistication with comfort, curated for the modern woman.",
+    getRandomCollection().description
 };
 
 export const collectionTag = getRandomCollection();
@@ -30,10 +24,7 @@ export const collectionTag = getRandomCollection();
 
 
 
-export const newProductPageContent = {
- title:"New In Town",
-    description:"Explore our curated collection of stylish shoes and bags designed just for you. Find the perfect match for any occasion with our exclusive range of fashion-forward products.",
-};
+export const newProductPageContent = {title:getRandomSeoFromFirstSetCollection().header,description:getRandomSeoFromFirstSetCollection().description};
 
 export const footerData = {
   description:

@@ -1,12 +1,9 @@
-"use server";
 import React from "react";
 import Head from "next/head";
 
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
-// import SectionProductInfo from "./SectionProductInfo";
-// import { Truck } from "lucide-react";
 import { getProductDataById } from "@/lib/fetchFunctions";
 
 const SingleProductPage = async ({
@@ -20,9 +17,7 @@ const SingleProductPage = async ({
     return (
       <div className="container">
         <SectionNavigation />
-
         <h1 className="text-center mt-10">No Product Found</h1>
-
         <div className="mb-28">
           <SectionMoreProducts categoryId="" />
         </div>
@@ -31,6 +26,7 @@ const SingleProductPage = async ({
   }
 
   const {
+    id,
     name,
     images,
     thumbnail,
@@ -43,19 +39,34 @@ const SingleProductPage = async ({
 
   const prevPrice = discount > 0 ? unitPrice : discount;
   const currentPrice = unitPrice - discount;
+
+  // Creating image data array
   let imageData = images ?? [];
   imageData.push(thumbnail);
+
+  // SEO Metadata
+  const title = `${name} | Prior - Your Priority in Fashion`;
+  const metaDescription = `${description}. Get it now at Prior!`;
+  const ogImage = thumbnail || images[0];
 
   return (
     <div className="px-4 sm:px-0 sm:container">
       <Head>
-        <title>{name} | Prior - Your Priority in Fashion </title>
-        <meta name="description" content={description} />
-        <meta property="og:title" content={name} />
-        <meta property="og:image" content={thumbnail} />
+        <title>{title}</title>
+        <meta name="description" content={metaDescription} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={`/collections/${id}`} />
+        {/* You can also include Twitter card metadata if desired */}
+        <meta name="twitter:card" content={ogImage} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={ogImage} />
       </Head>
-      {/* <SectionNavigation /> */}
-      <div className="mt-4  mb-4 sm:mb-20">
+
+      <div className="mt-4 mb-4 sm:mb-20">
         <SectionProductHeader
           product={product}
           shots={imageData}
@@ -67,22 +78,8 @@ const SingleProductPage = async ({
           reviews={0}
         />
       </div>
-      {/* <div className="mb-28">
-        <SectionProductInfo
-          overview={description}
-          shipment_details={[
-            {
-              icon: <Truck className="w-10 h-10" />,
-              title: "Shipping",
-              description:
-                "Our online shop offers extensive shipping coverage throughout Bangladesh, ensuring fast and reliable delivery to every region. Shop with confidence knowing your orders will reach you promptly and securely, no matter where you are in the country. Enjoy convenient nationwide shipping with us!",
-            },
-          ]}
-          ratings={rating}
-          ratingDetails={ratingDetails}
-        />
-      </div> */}
-      <div className=" mt-16 md:mt-5">
+
+      <div className="mt-16 md:mt-5">
         <SectionMoreProducts categoryId={categoryId} />
       </div>
     </div>

@@ -209,7 +209,280 @@ const collections = [
   },
 ];
 
+
+const seoPoetryMessagesList1 = [
+  {
+    header: "Timeless Styles for Every Occasion",
+    description: "Find the perfect blend of elegance and comfort with our versatile footwear and handbags, designed to accompany you through every moment of your life.",
+  },
+  {
+    header: "Walk in Comfort, Shine in Style",
+    description: "Let your feet revel in comfort while you make a fashion statement. Our curated collection of shoes offers both elegance and ease for the modern woman.",
+  },
+  {
+    header: "Luxury Handbags That Speak Elegance",
+    description: "Carry your world in style with our stunning handbags, where elegance meets functionality. Discover pieces that are as unique as you.",
+  },
+  {
+    header: "Heels That Elevate, Flats That Soothe",
+    description: "From glamorous heels that make you stand tall to comfy flats that bring ease to your steps, find shoes that match your every mood.",
+  },
+  {
+    header: "Fashion That Inspires Confidence",
+    description: "Discover shoes and handbags that not only elevate your outfit but boost your confidence, making you feel your best with every step.",
+  },
+  {
+    header: "A Shoe for Every Story You Tell",
+    description: "Whether you're headed to a gala or a casual outing, our collection ensures there's a shoe for every chapter of your life.",
+  },
+  {
+    header: "The Perfect Handbag for Every Journey",
+    description: "Explore handbags designed to complement your everyday adventures, each one crafted to add elegance to your travels near and far.",
+  },
+  {
+    header: "Grace Meets Glamour in Every Step",
+    description: "Step into a world where grace and glamour go hand in hand, with footwear that reflects your poise and personality.",
+  },
+  {
+    header: "Find Your Dream Pair Today",
+    description: "Fall in love with shoes that are as comfortable as they are beautiful. Discover your dream pair and step into a world of style.",
+  },
+  {
+    header: "Handbags to Cherish, Designs to Love",
+    description: "Adorn your shoulder with handbags that speak to your heart. Elegant, functional, and forever fashionable.",
+  },
+  {
+    header: "A Style Journey Begins with the Perfect Shoe",
+    description: "Your style journey starts with us. Find the perfect pair that aligns with your unique sense of style and completes your every look.",
+  },
+  {
+    header: "Handbags for the Bold & Beautiful",
+    description: "For the bold, beautiful, and unstoppable woman—our handbag collection is designed to turn heads and hold everything you need.",
+  },
+  {
+    header: "Footwear for All-Day Elegance",
+    description: "Whether you're conquering the boardroom or dancing through the night, our footwear ensures all-day comfort and elegance.",
+  },
+  {
+    header: "Unleash Your Inner Diva with Our Footwear",
+    description: "Slip into shoes that not only reflect your style but let your inner diva shine. Every step is a statement.",
+  },
+  {
+    header: "The Art of Craftsmanship in Every Handbag",
+    description: "Indulge in handbags that showcase the art of craftsmanship. Each piece is a testament to timeless design and enduring quality.",
+  },
+  {
+    header: "Step Into Fashion, Step Into You",
+    description: "Our footwear isn't just about fashion; it's about stepping into the best version of yourself with each stride.",
+  },
+  {
+    header: "Elegant Handbags for Your Everyday Adventures",
+    description: "From workdays to weekends, our handbags are designed to carry your essentials in style, no matter where life takes you.",
+  },
+  {
+    header: "Shoes That Whisper Comfort, Shout Style",
+    description: "Feel the comfort with every step and showcase your style with every glance. Discover shoes that balance both perfectly.",
+  },
+  {
+    header: "The Handbag That Complements Your Aura",
+    description: "Find a handbag that doesn’t just carry your essentials but complements your aura and adds to your chic presence.",
+  },
+  {
+    header: "Shoes Designed to Fit Every Chapter of Life",
+    description: "From your first step into the office to an evening out, our collection is here to support and enhance every chapter of your journey.",
+  },
+];
+
+
+const seoPoetryMessagesList2 = [
+  {
+    header: "Feel Chic, Stay Comfortable",
+    description: "Who says you can't have it all? Our chic yet comfortable collection of shoes proves that style and ease can go hand in hand.",
+  },
+  {
+    header: "Exquisite Handbags for the Elegant Woman",
+    description: "Crafted for elegance and designed for utility, our handbags redefine luxury. Explore pieces that add grace to your day.",
+  },
+  {
+    header: "Shoes That Celebrate Every Woman",
+    description: "From high heels to comfy flats, celebrate your unique style with shoes that are made for every woman, every day.",
+  },
+  {
+    header: "Carry Confidence, Wear Elegance",
+    description: "Step into confidence with shoes and handbags that elevate your everyday wardrobe and make you feel unstoppable.",
+  },
+  {
+    header: "Sophisticated Shoes for Every Mood",
+    description: "From playful to polished, our footwear collection caters to every mood, occasion, and outfit in your wardrobe.",
+  },
+  {
+    header: "Handbags that Mirror Your Elegance",
+    description: "Explore handbags that are not just fashion statements but reflections of your elegance and sophistication.",
+  },
+  {
+    header: "Heels That Lift You Higher, Flats That Ground You",
+    description: "Discover footwear that empowers you—whether it's the height of a heel or the comfort of a flat, you’re always grounded in style.",
+  },
+  {
+    header: "Fashion-Forward Shoes for the Modern Woman",
+    description: "Embrace fashion-forward designs that keep you ahead of the style curve while ensuring unmatched comfort.",
+  },
+  {
+    header: "Bags that Carry More Than Just Your Essentials",
+    description: "Our handbags are designed to carry more than just your essentials—they carry your confidence, grace, and personal flair.",
+  },
+  {
+    header: "Shoes That Make Every Step Count",
+    description: "Walk through life with shoes that blend beauty, comfort, and elegance. Every step you take will be your favorite.",
+  },
+  {
+    header: "Every Handbag, a New Story to Tell",
+    description: "Let each handbag tell a story of sophistication, elegance, and effortless charm—crafted for every woman’s unique narrative.",
+  },
+  {
+    header: "Comfort in Every Sole, Style in Every Stitch",
+    description: "Discover footwear that is intricately crafted for comfort without compromising on style. Every sole tells a story.",
+  },
+  {
+    header: "Your Journey Begins with the Perfect Handbag",
+    description: "Start every adventure with a handbag that carries your essentials and exudes elegance in every thread.",
+  },
+  {
+    header: "Shoes That Speak Volumes About Your Style",
+    description: "Find footwear that speaks volumes about who you are—elegant, bold, and undeniably stylish.",
+  },
+  {
+    header: "Handbags as Unique as You Are",
+    description: "Carry handbags that reflect your individuality, each one designed with careful attention to detail and elegance.",
+  },
+  {
+    header: "A Shoe Collection That Transforms Your Wardrobe",
+    description: "Step up your fashion game with shoes that transform any outfit into a head-turning ensemble.",
+  },
+  {
+    header: "Embrace the Beauty of a Well-Crafted Handbag",
+    description: "Feel the beauty of craftsmanship with handbags that add a touch of elegance to your everyday life.",
+  },
+  {
+    header: "Footwear That Takes You from Day to Night",
+    description: "Our versatile footwear collection is designed to seamlessly take you from day to night in style and comfort.",
+  },
+  {
+    header: "Handbags That Define Effortless Elegance",
+    description: "Effortless elegance comes naturally with our handbags—crafted for the modern woman who loves style and practicality.",
+  },
+  {
+    header: "Shoes That Fit Like a Dream",
+    description: "Find shoes that don’t just fit your feet but fit your dreams, perfectly balancing comfort and sophistication.",
+  },
+];
+
+
+const seoPoetryMessagesList3 = [
+  {
+    header: "Carry Your World in Style",
+    description: "Discover handbags that are designed to carry your world in style, blending luxury, functionality, and elegance.",
+  },
+  {
+    header: "Heels That Lift You Higher, Flats That Ground You",
+    description: "Discover footwear that empowers you—whether it's the height of a heel or the comfort of a flat, you’re always grounded in style.",
+  },
+  {
+    header: "Chic Handbags for Every Occasion",
+    description: "From casual outings to special occasions, our handbags are crafted to complement every moment of your life.",
+  },
+  {
+    header: "Fashion That Inspires Confidence",
+    description: "Discover shoes and handbags that not only elevate your outfit but boost your confidence, making you feel your best with every step.",
+  },
+  {
+    header: "The Handbag That Complements Your Aura",
+    description: "Find a handbag that doesn’t just carry your essentials but complements your aura and adds to your chic presence.",
+  },
+  {
+    header: "Find Your Dream Pair Today",
+    description: "Fall in love with shoes that are as comfortable as they are beautiful. Discover your dream pair and step into a world of style.",
+  },
+  {
+    header: "A Shoe for Every Story You Tell",
+    description: "Whether you're headed to a gala or a casual outing, our collection ensures there's a shoe for every chapter of your life.",
+  },
+  {
+    header: "Timeless Styles for Every Occasion",
+    description: "Find the perfect blend of elegance and comfort with our versatile footwear and handbags, designed to accompany you through every moment of your life.",
+  },
+  {
+    header: "Celebrate Every Step You Take",
+    description: "Our shoes encourage you to celebrate every step you take, offering both comfort and chic style for the modern woman.",
+  },
+  {
+    header: "Discover Fashion That Defines You",
+    description: "Let our handbags and shoes reflect your individuality, creating a signature style that defines who you are.",
+  },
+  {
+    header: "Elegance Meets Comfort in Our Collection",
+    description: "Experience the perfect harmony of elegance and comfort with our beautifully crafted footwear and handbags.",
+  },
+  {
+    header: "The Perfect Accessories for Every Outfit",
+    description: "Complete your look with our stunning range of footwear and handbags—your perfect style companions.",
+  },
+  {
+    header: "Step into Fashion, Step into You",
+    description: "Our footwear isn't just about fashion; it's about stepping into the best version of yourself with each stride.",
+  },
+  {
+    header: "Explore Handbags That Make a Statement",
+    description: "Find handbags that not only hold your essentials but also make a bold fashion statement, expressing your unique style.",
+  },
+  {
+    header: "Heels That Celebrate Your Spirit",
+    description: "Dance through life in heels that celebrate your spirit and style, offering both grace and strength.",
+  },
+  {
+    header: "Fashion Forward Footwear for the Modern Woman",
+    description: "Stay ahead of the trends with footwear that blends fashion-forward designs with all-day comfort.",
+  },
+  {
+    header: "Handbags That Carry Your Essence",
+    description: "Our handbags are designed to carry your essence—practical, stylish, and uniquely you.",
+  },
+  {
+    header: "Elevate Your Everyday with Our Handbags",
+    description: "Transform your daily routine into a stylish experience with handbags that elevate every outfit effortlessly.",
+  },
+  {
+    header: "Where Comfort Meets Chic",
+    description: "Discover the ultimate fusion of comfort and chic style with footwear that makes you feel fabulous, all day long.",
+  },
+  {
+    header: "Every Handbag, a New Story to Tell",
+    description: "Let each handbag tell a story of sophistication, elegance, and effortless charm—crafted for every woman’s unique narrative.",
+  },
+  {
+    header: "Step Up Your Style Game",
+    description: "Explore our curated collection of footwear and handbags designed to elevate your style game, making every outfit extraordinary.",
+  },
+];
+
+
 export const getRandomCollection = () => {
   const randomIndex = Math.floor(Math.random() * collections.length);
   return collections[randomIndex];
+};
+
+export const getRandomSeoFromFirstSetCollection = () => {
+  const randomIndex = Math.floor(Math.random() * seoPoetryMessagesList1.length);
+  return seoPoetryMessagesList1[randomIndex];
+};
+
+export const getRandomSeoFromSecondSetCollection = () => {
+  const randomIndex = Math.floor(Math.random() * seoPoetryMessagesList2.length);
+  return seoPoetryMessagesList2[randomIndex];
+};
+
+
+export const getRandomSeoFromThridSetCollection = () => {
+  const randomIndex = Math.floor(Math.random() * seoPoetryMessagesList3.length);
+  return seoPoetryMessagesList3[randomIndex];
 };

@@ -51,6 +51,7 @@ export default function Home() {
             width={512}
             height={512}
             alt="loading..."
+            unoptimized
           />
         </div>
       </main>

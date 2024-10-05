@@ -1,10 +1,13 @@
 // pages/home.tsx
 
-import AdvertiseView from "./AdvertiseView";
-import Category from "./Category";
-import NewSectionView from "./NewSection";
+import dynamic from "next/dynamic";
 import { IProduct } from "@/lib/interface";
-import SectionProducts from "./products";
+
+// Lazy load components
+const AdvertiseView = dynamic(() => import("./AdvertiseView"), { ssr: false });
+const NewSectionView = dynamic(() => import("./NewSection"), { ssr: false });
+const SectionProducts = dynamic(() => import("./products"), { ssr: false });
+// Category can be lazily loaded if needed
 
 // Define the interface for the component props
 interface HomePageProps {
@@ -18,7 +21,6 @@ const HomePage: React.FC<HomePageProps> = ({ categories, products }) => {
     <div className="w-full">
       <AdvertiseView />
       <NewSectionView products={products} />
-      {/* <Category categories={categories} /> */}
       <SectionProducts />
     </div>
   );
