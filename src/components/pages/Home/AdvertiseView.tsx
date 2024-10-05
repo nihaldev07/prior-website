@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const AdvertiseView: React.FC = React.memo(() => {
+const AdvertiseView = React.memo(() => {
   return (
     <section className="relative text-white p-28 sm:p-40 md:p-80">
       <div className="absolute inset-0">
@@ -41,5 +41,8 @@ const AdvertiseView: React.FC = React.memo(() => {
     </section>
   );
 });
+
+// Adding a display name to the component
+AdvertiseView.displayName = "AdvertiseView";
 
 export default AdvertiseView;
