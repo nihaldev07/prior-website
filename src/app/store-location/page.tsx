@@ -17,10 +17,7 @@ const StoreLocations = () => {
         <meta property="og:description" content={metaDescription} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://yourwebsite.com/store-locations"
-        />
+        <meta property="og:url" content="https://priorbd.com/store-locations" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={metaDescription} />

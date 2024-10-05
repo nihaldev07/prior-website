@@ -1,5 +1,4 @@
 import React from "react";
-import Head from "next/head";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
@@ -51,7 +50,7 @@ const SingleProductPage = async ({
   // Return metadata in the form of an object
   return (
     <>
-      <Head>
+      <head>
         <title>{title}</title>
         <meta name="description" content={metaDescription} />
         <meta property="og:title" content={title} />
@@ -62,11 +61,11 @@ const SingleProductPage = async ({
           property="og:url"
           content={`https://priorbd.com/collections/${id}`}
         />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content={ogImage} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogImage} />
-      </Head>
+      </head>
 
       <div className="px-4 sm:px-0 sm:container">
         <div className="mt-4 mb-4 sm:mb-20">
