@@ -55,7 +55,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
             className="rounded-sm object-fill object-center"
             src={imagePlaceHolder} // Default image URL
             priority={true}
-            loading="eager"
+            loading="lazy"
           />
         )}
 
@@ -70,7 +70,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
           } transition-opacity duration-500`} // Transition effect for smooth loading
           src={product?.thumbnail || imagePlaceHolder}
           priority={true}
-          loading="eager"
+          loading="lazy"
           onLoadingComplete={() => setIsLoaded(true)} // Update state when image is loaded
         />
         {/* )} */}
