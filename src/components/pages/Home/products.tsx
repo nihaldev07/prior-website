@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense, lazy } from "react";
+import React, { lazy } from "react";
 
 import { productsSection } from "@/data/content";
 import { ProductType } from "@/data/types";
@@ -40,16 +40,7 @@ const SectionProducts = () => {
       <div className=" grid gap-3 sm:gap-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
         {!!products &&
           products.map((product: ProductType) => (
-            <Suspense
-              fallback={
-                <div className="h-full w-full flex justify-center items-center object-fill">
-                  <Cat className=" size-8 animate-ping" />
-                </div>
-              }
-              key={product.id}
-            >
-              <ProductCard product={product} />
-            </Suspense>
+            <ProductCard product={product} />
           ))}
       </div>
 
