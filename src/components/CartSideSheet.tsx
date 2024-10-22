@@ -22,7 +22,16 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
   const handleCloseMenu = () => setIsVisable(false);
 
   const renderProduct = (item: CartItem) => {
-    const { id, name, thumbnail, unitPrice, categoryName, quantity } = item;
+    const {
+      id,
+      name,
+      thumbnail,
+      unitPrice,
+      hasDiscount = false,
+      updatedPrice,
+      categoryName,
+      quantity,
+    } = item;
 
     return (
       <div key={id} className="flex py-5 last:pb-0">
@@ -57,7 +66,9 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                   <span className="text-sm">{5}</span>
                 </div>
               </div>
-              <span className=" font-medium">৳{unitPrice}</span>
+              <span className=" font-medium">
+                ৳{hasDiscount ? updatedPrice ?? unitPrice : unitPrice}
+              </span>
             </div>
           </div>
           <div className="flex w-full items-end justify-between text-sm">
@@ -105,9 +116,18 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                 <span className="text-xl font-medium">
                   ৳
                   {cart.reduce((sum, cartdata) => {
+                    const {
+                      quantity,
+                      hasDiscount = false,
+                      updatedPrice,
+                      unitPrice,
+                    } = cartdata;
                     sum =
                       Number(sum) +
-                      Number(cartdata.quantity) * Number(cartdata.unitPrice);
+                      Number(quantity) *
+                        Number(
+                          hasDiscount ? updatedPrice ?? unitPrice : unitPrice
+                        );
                     return sum;
                   }, 0)}
                 </span>

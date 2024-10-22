@@ -6,8 +6,11 @@ export type ProductType = {
   manu_id: string;
   justIn?: boolean;
   rating?: number;
+  hasDiscount?: boolean;
+  updatedPrice?: number;
   description: string;
   discount: number;
+  discountType?: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
@@ -50,6 +53,7 @@ export type SingleProductType = {
   id: string;
   name: string;
   description: string;
+  discountType: string;
   discount: number;
   quantity: number;
   unitPrice: number;
@@ -57,6 +61,8 @@ export type SingleProductType = {
   images: string[];
   categoryId: string;
   productCode: string;
+  hasDiscount?: boolean;
+  updatedPrice?: number;
   hasVariation: boolean;
   categoryName: string;
   categoryImg: string;

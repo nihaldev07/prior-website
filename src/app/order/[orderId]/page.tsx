@@ -8,6 +8,7 @@ import {
 import OrderTable from "../OrderTable";
 import { getOrderDetails } from "@/lib/fetchFunctions";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const OrderDetails = async ({
   params: { orderId },
@@ -103,39 +104,57 @@ const OrderDetails = async ({
       {/* Order Info and Customer Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Order Info */}
-        <div className="text-left space-y-2">
-          <p className="text-lg md:text-xl font-bold  uppercase">
-            Customer Information
-          </p>
-          <p className="text-md md:text-lg">
-            <span className="font-semibold">Name:</span> {order.customer.name}
-          </p>
-          {order.customer.email && (
-            <p className="text-md md:text-lg">
-              <span className="font-semibold">Email:</span>{" "}
-              {order.customer.email}
-            </p>
-          )}
-          <p className="text-md md:text-lg">
-            <span className="font-semibold">Phone:</span>{" "}
-            {order.customer.phoneNumber}
-          </p>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Customer Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-left space-y-2">
+              <p className="text-sm md:text-lg">
+                <span className="font-semibold">Name:</span>{" "}
+                {order.customer.name}
+              </p>
+              {order.customer.email && (
+                <p className="text-sm md:text-lg">
+                  <span className="font-semibold">Email:</span>{" "}
+                  {order.customer.email}
+                </p>
+              )}
+              <p className="text-sm md:text-lg">
+                <span className="font-semibold">Phone:</span>{" "}
+                {order.customer.phoneNumber}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Shipping Info */}
-        <div className="text-left space-y-2 md:ml-auto">
-          <p className="text-lg md:text-xl font-bold  uppercase">
-            Shipping Address
-          </p>
-          <p className="text-md md:text-lg">{order?.shipping?.address}</p>
-          <p className="text-md md:text-lg">
-            {order?.shipping?.district}, {order?.shipping?.division}
-          </p>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl">Shipping Address</CardTitle>
+            <CardContent className="p-0 mt-1">
+              <div className="text-left space-y-2">
+                <p className="text-sm text-left md:text-lg">
+                  {order?.shipping?.address}
+                </p>
+                <p className="text-sm text-left md:text-lg">
+                  {order?.shipping?.district}, {order?.shipping?.division}
+                </p>
+              </div>
+            </CardContent>
+          </CardHeader>
+        </Card>
       </div>
 
       {/* Order Table */}
-      <OrderTable order={order} />
+      <Card>
+        <CardHeader>
+          <CardTitle>Order Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <OrderTable order={order} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

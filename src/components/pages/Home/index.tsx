@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { IProduct } from "@/lib/interface";
+import CampaignPage from "./CampaignView";
 
 // Lazy load components
 const AdvertiseView = dynamic(() => import("./AdvertiseView"), { ssr: false });
@@ -20,6 +21,7 @@ const HomePage: React.FC<HomePageProps> = ({ categories, products }) => {
   return (
     <div className="w-full">
       <AdvertiseView />
+      <CampaignPage />
       <NewSectionView products={products} />
       <SectionProducts />
     </div>

@@ -5,20 +5,20 @@ import Image from "next/image";
 import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { IProduct, IVariation } from "@/lib/interface";
-import { defaultProdcutImg } from "@/lib/utils";
+import imagePlaceHolder from "@/images/imagePlaceholder.svg";
 import { ProductType } from "@/data/types";
 // import CarouselComponent from "@/components/Carosol/SwiperComponent";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { PawPrint } from "lucide-react";
+import { Tag } from "lucide-react";
 
 interface IProp {
   product: IProduct | ProductType;
 }
 const ProductCard: React.FC<IProp> = ({ product }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const hasVariation =
     product?.hasVariation &&
     product?.variation?.filter(
@@ -31,43 +31,47 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
       className="rounded-xl shadow-none border-0 bg-transparent"
       onClick={() => router.push(`/collections/${product?.id}`)}
     >
-      <CardHeader className="mb-2 relative flex justify-center items-center bg-gray-100 h-64 md:h-80 lg:h-[400px] rounded-sm px-2">
-        {/* {!!product?.images && product?.images?.length > 1 && (
-          <CarouselComponent
-            delay={5000}
-            items={[...product?.images, product?.thumbnail ?? ""]
-              .filter((str) => !!str)
-              .map((img: string, index: number) => (
-                <Image
-                  key={index}
-                  alt="product"
-                  fill
-                  quality={100}
-                  className="rounded-sm object-fill object-center"
-                  src={img || defaultProdcutImg}
-                  priority
-                />
-              ))}
+      <CardHeader className="mb-2 relative flex justify-center items-center  h-60 md:h-80 lg:h-[400px] rounded-sm px-2">
+        {!!product?.hasDiscount &&
+          !!product?.discount &&
+          !!product?.updatedPrice && (
+            <Badge
+              variant={"secondary"}
+              className=" absolute top-1 text-base font-semibold right-0 z-50 rounded-tr-md shadow-lg rounded-bl-lg rounded-tl-none rounded-br-none p-2 bg-orange-100 uppercase"
+            >
+              <Tag className="w-4 h-4 mr-1" />{" "}
+              {!!product?.discountType && product?.discountType !== "%"
+                ? `${product?.discount}৳ `
+                : `${product?.discount}%`}{" "}
+              Off
+            </Badge>
+          )}
+        {!isLoaded && (
+          <Image
+            alt="default-product"
+            fill
+            quality={50}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="rounded-sm object-fill object-center"
+            src={imagePlaceHolder} // Default image URL
+            priority={true}
+            loading="eager"
           />
         )}
-        {(!product?.images || product?.images?.length < 2) && ( */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
-            <PawPrint className=" animate-ping w-16 h-16" />
-          </div>
-        )}
+
+        {/* Actual image */}
         <Image
           alt="product"
           fill
-          quality={100}
+          quality={50}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className={`rounded-sm object-fill object-center ${
-            isLoading ? "invisible" : "visible"
-          }`} // Hide image until loaded
-          src={product?.thumbnail || defaultProdcutImg}
-          priority
-          onLoad={() => setIsLoading(false)}
-          onLoadStart={() => setIsLoading(true)}
+            isLoaded ? "opacity-100" : "opacity-0"
+          } transition-opacity duration-500`} // Transition effect for smooth loading
+          src={product?.thumbnail || imagePlaceHolder}
+          priority={true}
+          loading="eager"
+          onLoadingComplete={() => setIsLoaded(true)} // Update state when image is loaded
         />
         {/* )} */}
       </CardHeader>
@@ -77,9 +81,20 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
             <h2 className=" text-base md:text-xl text-gray-900 font-semibold truncate max-w-[70%]">
               {product?.name}
             </h2>
-            <h2 className=" text-sm md:text-xl text-blue-900 font-semibold ml-auto float-right">
-              ৳ {product?.unitPrice}
-            </h2>
+            {!!product?.hasDiscount && !!product?.updatedPrice ? (
+              <div className="ml-auto float-right flex flex-row gap-2 justify-center items-center">
+                <del className="text-xs text-gray-500 font-light">
+                  ৳ {product?.unitPrice}
+                </del>
+                <h2 className=" text-sm md:text-xl text-blue-900 font-semibold">
+                  ৳ {product?.updatedPrice}
+                </h2>
+              </div>
+            ) : (
+              <h2 className=" text-sm md:text-xl text-blue-900 font-semibold ml-auto float-right">
+                ৳ {product?.unitPrice}
+              </h2>
+            )}
           </div>
           <div className="w-full flex justify-between items-start my-1">
             {!!hasVariation && !isOutOfStock && (

@@ -15,9 +15,9 @@ export interface InputNumberProps {
 
 const InputNumber: FC<InputNumberProps> = ({
   className = "w-full",
-  defaultValue = 1,
-  min = 1,
-  max = 99,
+  defaultValue = 0,
+  min = 0,
+  max = 0,
   onChange,
   label,
   desc,
@@ -36,7 +36,7 @@ const InputNumber: FC<InputNumberProps> = ({
     onChange && onChange(value - 1);
   };
   const handleClickIncrement = () => {
-    if (max && max <= value) return;
+    if (!!max && max <= value) return;
     setValue((state) => {
       return state + 1;
     });
@@ -76,7 +76,7 @@ const InputNumber: FC<InputNumberProps> = ({
           className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 bg-white text-xl hover:border-neutral-700 focus:outline-none disabled:cursor-default disabled:opacity-50 disabled:hover:border-neutral-400"
           type="button"
           onClick={handleClickIncrement}
-          disabled={max ? max <= value : false}
+          disabled={max < 1 ? true : !!max ? max <= value : false}
         >
           +
         </button>

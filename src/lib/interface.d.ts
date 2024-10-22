@@ -11,8 +11,11 @@ interface IProduct {
   name?: string;
   description?: string;
   discount?: number;
+  discountType?:string;
   quantity?: number;
   unitPrice?: number;
+  hasDiscount?: boolean;
+  updatedPrice?:number;
   thumbnail?: string;
   images?: string[];
   categoryId?: string; // or string, depending on your category ID type
@@ -50,4 +53,27 @@ interface IRatingDetails {
 interface IProductDetailsProps {
   product?: Product;
   category?: Category;
+}
+
+
+export interface ICampaingProducts{
+    id:string;
+     name:string;
+      description:string;
+       thumbnail:string;
+        quantity:number;
+        active:boolean;
+         unitPrice:number;
+}
+export interface ICampaign {
+  id: string;
+  title: string;
+  description: string;
+  image?: string; // Optional since the image is not required
+  products: ICampaingProducts[]; // Assuming Product interface is defined
+  discount: number;
+  discountType?: string; // Optional with default '%'
+  startDate: string;
+  endDate: string;
+  active?: boolean; // Optional with default true
 }

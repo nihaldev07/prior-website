@@ -17,6 +17,9 @@ export interface CartItem {
   quantity: number;
   unitPrice: number;
   manufactureId: string;
+  updatedPrice?: number;
+  hasDiscount?: boolean;
+  discountType?: string;
   discount: number;
   description: string;
   thumbnail: string;

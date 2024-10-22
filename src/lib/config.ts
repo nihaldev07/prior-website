@@ -22,5 +22,9 @@ export const config = {
   },
   contact:{
     createContactQuery:()=>`${baseUrl}/customer-service/contact`
+  },
+  campaign:{
+    getActiveCampaign:()=>`${baseUrl}/campaign/active`,
+    getCampaignById:(id:string)=>`${baseUrl}/campaign/active/${id}`
   }
 };

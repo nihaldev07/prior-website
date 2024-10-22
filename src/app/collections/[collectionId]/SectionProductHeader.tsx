@@ -11,7 +11,7 @@ import Heading from "@/shared/Heading/Heading";
 import SelectDemo from "./VariantiView";
 import { SingleProductType, Variation } from "@/data/types";
 import { useCart } from "@/context/CartContext";
-import { Briefcase, Info } from "lucide-react";
+import { Briefcase, Info, TagIcon } from "lucide-react";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -72,14 +72,21 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       sku: product?.sku,
       name: product?.name,
       active: true,
-      quantity: 1,
+      quantity: pQuantity,
       unitPrice: product?.unitPrice,
       manufactureId: "",
+      discountType: product?.discountType,
+      updatedPrice: product?.updatedPrice ?? 0,
+      hasDiscount: product?.discount > 0 && !!product?.updatedPrice,
       discount: product?.discount,
       description: product?.description,
       thumbnail: product?.thumbnail,
       productCode: product?.productCode,
-      totalPrice: Number(product?.unitPrice * 1).toFixed(2),
+      totalPrice: Number(
+        (product?.discount > 0 && !!product?.updatedPrice
+          ? product?.updatedPrice
+          : product?.unitPrice) * Number(pQuantity)
+      ).toFixed(2),
       categoryName: product?.categoryName,
       hasVariation: product?.hasVariation,
       variation: selectedVariant,
@@ -119,6 +126,20 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                 className="h-full w-full object-cover"
               />
             </Button> */}
+
+            {!!product?.discount && !!product?.updatedPrice && (
+              <Badge
+                variant={"default"}
+                className=" uppercase my-2 bg-blue-400"
+              >
+                <TagIcon className="mr-2 w-4 h-4 " />{" "}
+                {!!product?.discountType && product?.discountType !== "%"
+                  ? `${product?.discount}৳ `
+                  : `${product?.discount}%`}{" "}
+                off
+              </Badge>
+            )}
+
             <span className="font-medium">
               <Badge
                 variant={"secondary"}
@@ -142,7 +163,9 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
         <div className="mb-5 space-y-1">
           {prevPrice > 0 && (
-            <p className="text-neutral-500 line-through">৳ {prevPrice}</p>
+            <div className="flex justify-start items-center gap-2">
+              <p className="text-neutral-500 line-through">৳ {prevPrice}</p>
+            </div>
           )}
           <h1 className="text-2xl font-medium">৳ {currentPrice}</h1>
         </div>
@@ -203,7 +226,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
         <InputNumber
           defaultValue={pQuantity}
           min={0}
-          max={product?.quantity}
+          max={product?.quantity ?? 0}
           onChange={(value) => {
             setPQuantity(value);
           }}

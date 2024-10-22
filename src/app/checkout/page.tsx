@@ -75,6 +75,13 @@ const CheckoutPage = () => {
         Number(sum) + Number(cartdata.quantity) * Number(cartdata.unitPrice);
       return sum;
     }, 0);
+    const discount = cart.reduce((sum, cartdata) => {
+      sum =
+        Number(sum) +
+        (Number(cartdata.unitPrice) - Number(cartdata.updatedPrice ?? 0));
+      return sum;
+    }, 0);
+    transectionData.discount = discount;
     transectionData.totalPrice = totalPrice;
     transectionData.remaining =
       Number(totalPrice) +
@@ -231,8 +238,15 @@ const CheckoutPage = () => {
   const confirmOrderAndCreateOne = async () => {
     setLoading(true);
     const hasPayment =
+      transectionData?.discount > 0 ||
       paymentMethod === "bkash" ||
       !formData.district.toLowerCase().includes("dhaka");
+    const paymentAmount =
+      transectionData?.discount > 0
+        ? 200
+        : !formData.district.toLowerCase().includes("dhaka")
+        ? 150
+        : 0;
     const orderData = {
       customerInformation: {
         //@ts-ignore
@@ -254,10 +268,13 @@ const CheckoutPage = () => {
     try {
       const response = await createOrder(orderData);
       if (response.success) {
+        const orderId = response?.data?.order?.id;
         if (hasPayment) {
           bkashCheckout(
-            paymentMethod === "bkash" ? transectionData?.remaining : 200,
-            response?.data?.order?.id,
+            paymentMethod === "bkash"
+              ? transectionData?.remaining
+              : paymentAmount,
+            orderId,
             formData?.name,
             formData?.mobileNumber
           );
@@ -266,7 +283,7 @@ const CheckoutPage = () => {
             "Order Create Successfully 🎉",
             "Our agent will contact with you shortly",
             "success"
-          ).then(() => (window.location.href = "/"));
+          ).then(() => (window.location.href = `/order/${orderId}`));
         }
       }
     } catch (error) {
@@ -312,10 +329,23 @@ const CheckoutPage = () => {
     }
 
     // Check for deliveries outside Dhaka and prompt for prepayment
-    if (!district.toLowerCase().includes("dhaka")) {
+    if (transectionData?.discount > 0) {
       return Swal.fire({
         title: "Terms & Condition",
-        text: "A prepayment of 200 taka is required for deliveries outside Dhaka.",
+        text: "A prepayment of 200 taka is required for dicounted products.",
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        denyButtonText: "Don't save",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          confirmOrderAndCreateOne();
+        }
+      });
+    } else if (!district.toLowerCase().includes("dhaka")) {
+      return Swal.fire({
+        title: "Terms & Condition",
+        text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for deliveries outside Dhaka.`,
         showDenyButton: false,
         showCancelButton: true,
         confirmButtonText: "Continue",
@@ -378,6 +408,13 @@ const CheckoutPage = () => {
                 <span>Estimated Delivery & Handling</span>
                 <span className="font-semibold">
                   {transectionData?.deliveryCharge}
+                </span>
+              </div>
+
+              <div className="flex justify-between py-4">
+                <span>Discount</span>
+                <span className="font-semibold">
+                  {transectionData?.discount}
                 </span>
               </div>
 

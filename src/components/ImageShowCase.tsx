@@ -28,7 +28,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
 
   return (
     <div className="space-y-3 rounded-sm p-2">
-      <div className="relative overflow-hidden rounded-sm h-[500px] md:h-[700px] bg-gray-200 flex justify-center items-center">
+      <div className="relative overflow-hidden rounded-sm h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] bg-gray-200 flex justify-center items-center">
         {/* <LikeButton className="absolute right-5 top-5" /> */}
         <div className="w-full relative h-full sm:w-[80%]">
           {isLoading && (

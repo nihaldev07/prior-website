@@ -30,22 +30,23 @@ const SingleProductPage = async ({
     thumbnail,
     unitPrice,
     discount,
+    updatedPrice,
     description,
     rating,
     categoryId,
   } = product;
 
-  const prevPrice = discount > 0 ? unitPrice : discount;
-  const currentPrice = unitPrice - discount;
+  const prevPrice = !!discount && !!updatedPrice ? unitPrice : 0;
+  const currentPrice = !!discount && !!updatedPrice ? updatedPrice : unitPrice;
 
   // Creating image data array
-  let imageData = images ?? [];
-  imageData.push(thumbnail);
+  let imageData = [thumbnail];
+  if (!!images && images?.length > 0) imageData = [...imageData, ...images];
 
   // SEO Metadata
   const title = `${name} | Prior - Your Priority in Fashion`;
   const metaDescription = `${description} Get it now at Prior!`;
-  const ogImage = thumbnail || images[0];
+  const ogImage = thumbnail;
 
   // Return metadata in the form of an object
   return (

@@ -14,7 +14,17 @@ const CartPage = () => {
     item: CartItem,
     removeFromCart: (id: string) => void
   ) => {
-    const { id, name, thumbnail, unitPrice, categoryName, quantity } = item;
+    const {
+      id,
+      name,
+      thumbnail,
+      unitPrice,
+      hasDiscount = false,
+      updatedPrice,
+      discountType = "%",
+      categoryName,
+      quantity,
+    } = item;
     return (
       <div key={name} className="flex py-5 last:pb-0">
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl md:h-40 md:w-40">
@@ -42,7 +52,9 @@ const CartPage = () => {
                   <span className="text-sm">{5}</span>
                 </div>
               </div>
-              <span className="font-medium md:text-xl">৳ {unitPrice}</span>
+              <span className="font-medium md:text-xl">
+                ৳ {hasDiscount ? updatedPrice ?? unitPrice : unitPrice}
+              </span>
             </div>
           </div>
           <div className="flex w-full items-end justify-between text-sm">
@@ -58,7 +70,10 @@ const CartPage = () => {
                   updateToCart({
                     ...item,
                     quantity: value,
-                    totalPrice: Number(unitPrice) * Number(value),
+                    totalPrice:
+                      Number(
+                        hasDiscount ? updatedPrice ?? unitPrice : unitPrice
+                      ) * Number(value),
                   });
                 }}
               />
@@ -108,7 +123,11 @@ const CartPage = () => {
                         sum =
                           Number(sum) +
                           Number(cartdata.quantity) *
-                            Number(cartdata.unitPrice);
+                            Number(
+                              !!cartdata?.hasDiscount
+                                ? cartdata?.updatedPrice ?? cartdata?.unitPrice
+                                : cartdata?.unitPrice
+                            );
                         return sum;
                       }, 0)}
                     </span>

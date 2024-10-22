@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
-import FacebookChat from "@/components/FacebookChat";
 import Navbar from "./navbar";
 import Footer from "@/shared/Footer/Footer";
 
@@ -55,7 +54,6 @@ export default function RootLayout({
             <Footer />
           </>
         </CartProvider>
-        <FacebookChat />
       </body>
     </html>
   );
