@@ -40,7 +40,7 @@ const SectionProducts = () => {
       <div className=" grid gap-3 sm:gap-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
         {!!products &&
           products.map((product: ProductType) => (
-            <ProductCard product={product} />
+            <ProductCard key={product?.id} product={product} />
           ))}
       </div>
 

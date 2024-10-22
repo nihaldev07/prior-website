@@ -47,7 +47,9 @@ const CampaignPage = () => {
     };
 
     fetchCampaign();
-  }, []);
+
+    //eslinst-disable-next-line
+  }, [fetchActiveCampaign]);
 
   useEffect(() => {
     if (campaign) {
@@ -58,6 +60,7 @@ const CampaignPage = () => {
       );
       return () => clearInterval(interval);
     }
+    //eslinst-disable-next-line
   }, [campaign]);
 
   const updateCountdown = (endDate: string) => {
