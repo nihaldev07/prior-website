@@ -3,9 +3,9 @@
 import dynamic from "next/dynamic";
 import { IProduct } from "@/lib/interface";
 import CampaignPage from "./CampaignView";
+import HeroSection from "./HeroSection";
 
 // Lazy load components
-const AdvertiseView = dynamic(() => import("./AdvertiseView"), { ssr: false });
 const NewSectionView = dynamic(() => import("./NewSection"), { ssr: false });
 const SectionProducts = dynamic(() => import("./products"), { ssr: false });
 // Category can be lazily loaded if needed
@@ -20,7 +20,8 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ categories, products }) => {
   return (
     <div className="w-full">
-      <AdvertiseView />
+      <HeroSection />
+      {/* <AdvertiseView /> */}
       <CampaignPage />
       <NewSectionView products={products} />
       <SectionProducts />

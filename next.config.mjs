@@ -17,6 +17,11 @@ const nextConfig = {
         hostname: "prior-image.s3.eu-north-1.amazonaws.com",
         port: "",
       },
+      {
+        protocol:"https",
+        hostname:"d38c45qguy2pwg.cloudfront.net",
+        port:""
+      }
     ],
   },
   async rewrites() {

@@ -25,7 +25,7 @@ const SectionProducts = () => {
   } = useProductFetch();
 
   return (
-    <div className="px-3 sm:mx-20 mb-4">
+    <div className="px-3 lg:mx-20 mb-4">
       <Heading isCenter isMain desc={productsSection.description}>
         {productsSection.heading}
       </Heading>
@@ -37,7 +37,7 @@ const SectionProducts = () => {
         handleFilterChange={(value: any) => setFilterData(value)}
       />
 
-      <div className=" grid gap-3 sm:gap-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
+      <div className=" grid gap-3 sm:gap-2 md:gap-4 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {!!products &&
           products.map((product: ProductType) => (
             <ProductCard key={product?.id} product={product} />

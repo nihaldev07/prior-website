@@ -31,49 +31,48 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
       className="rounded-xl shadow-none border-0 bg-transparent"
       onClick={() => router.push(`/collections/${product?.id}`)}
     >
-      <CardHeader className="mb-2 relative flex justify-center items-center  h-60 md:h-80 lg:h-[400px] rounded-sm px-2">
+      <CardHeader className="mb-2 relative flex justify-center items-center h-[200px] md:h-[300px] lg:h-[400px] rounded-sm px-2 overflow-hidden">
         {!!product?.hasDiscount &&
           !!product?.discount &&
           !!product?.updatedPrice && (
             <Badge
               variant={"secondary"}
-              className=" absolute top-1 text-base font-semibold right-0 z-50 rounded-tr-md shadow-lg rounded-bl-lg rounded-tl-none rounded-br-none p-2 bg-orange-100 uppercase"
+              className="absolute top-1 text-base font-semibold right-0 z-50 rounded-tr-md shadow-lg rounded-bl-lg rounded-tl-none rounded-br-none p-2 bg-orange-100 uppercase"
             >
-              <Tag className="w-4 h-4 mr-1" />{" "}
+              <Tag className="w-4 h-4 mr-1" />
               {!!product?.discountType && product?.discountType !== "%"
                 ? `${product?.discount}৳ `
                 : `${product?.discount}%`}{" "}
               Off
             </Badge>
           )}
+
+        {/* Placeholder Image */}
         {!isLoaded && (
           <Image
             alt="default-product"
             fill
-            quality={50}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="rounded-sm object-fill object-center"
+            quality={1}
+            className="rounded-sm object-cover" // Changed to object-cover to maintain aspect ratio
             src={imagePlaceHolder} // Default image URL
-            priority={true}
             loading="lazy"
           />
         )}
 
-        {/* Actual image */}
+        {/* Actual Image */}
         <Image
           alt="product"
-          fill
           quality={50}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className={`rounded-sm object-fill object-center ${
+          className={`rounded-sm${
+            // Changed to object-cover for better responsiveness
             isLoaded ? "opacity-100" : "opacity-0"
           } transition-opacity duration-500`} // Transition effect for smooth loading
           src={product?.thumbnail || imagePlaceHolder}
-          priority={true}
-          loading="lazy"
-          onLoadingComplete={() => setIsLoaded(true)} // Update state when image is loaded
+          onLoad={() => setIsLoaded(true)} // Update state when image is loaded
+          priority // Load image immediately for better initial content paint
+          layout="fill" // Stretch image to fill its container
+          objectFit="cover" // Crop image to fit container while maintaining aspect ratio
         />
-        {/* )} */}
       </CardHeader>
       <CardContent className="px-0">
         <div className=" w-full">

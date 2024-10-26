@@ -40,13 +40,12 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
             src={shots[activeImageIndex]}
             alt="shoe image"
             fill
-            quality={100}
+            quality={80}
             className={classNames(
               " absolute top-0 left-0 rounded-sm object-fill  object-center h-full w-full ",
               isLoading ? "invisible" : "visible"
             )}
             onLoad={() => setIsLoading(false)}
-            onLoadStart={() => setIsLoading(true)}
           />
         </div>
       </div>

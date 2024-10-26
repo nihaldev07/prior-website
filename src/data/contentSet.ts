@@ -465,6 +465,74 @@ const seoPoetryMessagesList3 = [
   },
 ];
 
+const headerSectionMsgList =[
+  {
+    title: "Stylish Shoes :: Trendy Footwear",
+    description: "Discover the latest fashion trends in women's shoes. From chic heels to comfy sneakers, find the perfect pair to elevate your style. Whether you're dressing up for a special occasion or keeping it casual, our collection has something for everyone."
+  },
+  {
+    title: "Designer Handbags :: Luxury Bags",
+    description: "Elevate your style with our curated collection of designer handbags. From classic totes to trendy clutches, find the perfect bag to complement your outfit. Experience the epitome of luxury and functionality."
+  },
+  {
+    title: "Women's Footwear :: Fashionable Shoes",
+    description: "Shop the latest women's footwear trends. Find stylish shoes for every occasion, from work to weekend. Our collection features a wide range of styles, including boots, sandals, flats, and heels."
+  },
+  {
+    title: "Fashionable Bags :: Stylish Handbags",
+    description: "Discover a curated collection of stylish handbags to complement your outfit. From classic leather totes to trendy crossbody bags, find the perfect bag to carry your essentials in style."
+  },
+  {
+    title: "Affordable Luxury :: Designer Fashion",
+    description: "Experience luxury without the high price tag. Shop our collection of affordable designer shoes and bags. Our curated selection offers high-quality, stylish pieces at competitive prices."
+  },
+  {
+    title: "Comfortable Sneakers :: Everyday Footwear",
+    description: "Find comfort and style in our collection of everyday sneakers. Perfect for running errands, working out, or simply relaxing, our sneakers offer the perfect blend of comfort and fashion."
+  },
+  {
+    title: "Elegant Heels :: Dress Shoes for Women",
+    description: "Step out in style with our elegant heels, perfect for any occasion. From classic pumps to trendy stilettos, our collection has something for every taste. Elevate your look and feel confident in every step."
+  },
+  {
+    title: "Casual Flats :: Versatile Footwear",
+    description: "Discover the ultimate comfort and style with our collection of casual flats. Perfect for everyday wear, our flats are both stylish and comfortable. Choose from a variety of colors, patterns, and materials."
+  },
+  {
+    title: "Trendy Boots :: Winter Footwear",
+    description: "Stay warm and stylish this winter with our trendy boot collection. From knee-high boots to ankle boots, our selection offers a variety of styles to suit your personal taste. Whether you're braving the cold or adding a touch of edge to your outfit, our boots have you covered."
+  },
+  {
+    title: "Sporty Sandals :: Summer Footwear",
+    description: "Stay cool and comfortable this summer with our sporty sandal collection. Perfect for beach days, poolside lounging, or casual outings, our sandals offer the perfect blend of style and comfort. Choose from a variety of colors, materials, and heel heights."
+  },
+  {
+    title: "Leather Handbags :: Luxury Accessories",
+    description: "Invest in timeless luxury with our collection of leather handbags. Crafted from premium materials and designed to last, our leather handbags are the perfect accessory to elevate your style. Choose from a variety of styles, including totes, satchels, and shoulder bags."
+  },
+  {
+    title: "Tote Bags :: Spacious and Stylish",
+    description: "Carry your essentials in style with our spacious tote bags. Perfect for work, school, or travel, our tote bags offer ample space for your belongings. Choose from a variety of materials, colors, and patterns to find the perfect tote for your needs."
+  },
+  {
+    title: "Backpacks for Women :: Trendy and Functional",
+    description: "Stay organized and stylish with our range of women's backpacks. Whether you're a student, a commuter, or a traveler, our backpacks offer the perfect blend of functionality and fashion. Choose from a variety of sizes, colors, and materials to find the perfect backpack for your lifestyle."
+  },
+  {
+    title: "Clutches :: Evening Bags",
+    description: "Make a statement with our elegant clutches, perfect for any special occasion. From sleek and minimalist designs to embellished and ornate styles, our clutches are sure to add a touch of glamour to your evening attire."
+  },
+  {
+    title: "Crossbody Bags :: Hands-Free Style",
+    description: "Stay hands-free and stylish with our collection of crossbody bags. Perfect for everyday use or travel, our crossbody bags offer a convenient and stylish way to carry your essentials. Choose from a variety of sizes, colors, and materials to find the perfect crossbody bag for your needs."
+  },
+  {
+    title: "Women's Shoes Online :: Buy Shoes Online",
+    description: "Shop the latest women's shoes online. Find your perfect pair at affordable prices. Our online store offers a wide range of styles, sizes, and colors, all at your fingertips. Enjoy the convenience of shopping from home and have your favorite shoes delivered right to your doorstep."
+  },
+  // ... more titles and descriptions
+];
+
 
 export const getRandomCollection = () => {
   const randomIndex = Math.floor(Math.random() * collections.length);
@@ -485,4 +553,10 @@ export const getRandomSeoFromSecondSetCollection = () => {
 export const getRandomSeoFromThridSetCollection = () => {
   const randomIndex = Math.floor(Math.random() * seoPoetryMessagesList3.length);
   return seoPoetryMessagesList3[randomIndex];
+};
+
+
+export const getRandomSeoFromHeaderSetCollection = () => {
+  const randomIndex = Math.floor(Math.random() * headerSectionMsgList.length);
+  return headerSectionMsgList[randomIndex];
 };
