@@ -1,12 +1,12 @@
 // components/HeroSection.tsx
 import Image from "next/image";
 import React from "react";
-import HeroSectionImg from "@/images/hero-img.webp";
-import img1 from "@/images/abc-1.png";
-import img2 from "@/images/abc.png";
 import { headerSection, headerSectionMBL } from "@/data/content";
 
 const HeroSection: React.FC = () => {
+  const HeroSectionImg = "https://d38c45qguy2pwg.cloudfront.net/hero-img.webp";
+  const img1 = "https://d38c45qguy2pwg.cloudfront.net/abc.png";
+  const img2 = "https://d38c45qguy2pwg.cloudfront.net/abc+(2).png";
   return (
     <header className="bg-gray-900 pattern min-h-[60vh] md:min-h-[80vh]">
       <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
