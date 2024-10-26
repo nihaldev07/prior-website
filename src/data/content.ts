@@ -2,6 +2,7 @@ import { title } from "process";
 import { getRandomCollection, getRandomSeoFromFirstSetCollection, getRandomSeoFromHeaderSetCollection, getRandomSeoFromSecondSetCollection, getRandomSeoFromThridSetCollection } from "./contentSet";
 
 export const headerSection= {title:getRandomSeoFromHeaderSetCollection().title,description:getRandomSeoFromHeaderSetCollection().description};
+export const headerSectionMBL= {title:getRandomSeoFromHeaderSetCollection().title,description:getRandomSeoFromThridSetCollection().description};
 
 export const mobileHeaderSectionImages=[
             "https://res.cloudinary.com/deajqyzno/image/upload/v1717494246/prior/iqir3bzii2vkc4cv132y.jpg",

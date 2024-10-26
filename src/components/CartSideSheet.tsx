@@ -95,17 +95,12 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
         onOpenChange={(open) => (open ? handleOpenMenu() : handleCloseMenu())}
       >
         <SheetContent className="p-0">
-          <SheetHeader className="p-8 justify-start">
+          <SheetHeader className="py-8 px-2 justify-start">
             <SheetTitle> Shopping Cart</SheetTitle>
           </SheetHeader>
 
-          <div className="relative h-auto bg-white">
-            <div className="hiddenScrollbar h-screen overflow-y-auto p-5">
-              <div className="divide-y divide-neutral-300">
-                {cart.map((item) => renderProduct(item))}
-              </div>
-            </div>
-            <div className="absolute bottom-[100px] left-0 w-full bg-neutral-50 p-5">
+          <div className="relative min-h-[80vh] max-h-[89vh] overflow-y-auto bg-white">
+            <div className="absolute bottom-0 left-0 w-full bg-neutral-50 p-5">
               <p className="flex justify-between">
                 <span>
                   <span className="font-medium">Subtotal</span>
@@ -147,6 +142,11 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                 >
                   View cart
                 </ButtonSecondary>
+              </div>
+            </div>
+            <div className="hiddenScrollbar h-screen overflow-y-auto p-5">
+              <div className="divide-y divide-neutral-300">
+                {cart.map((item) => renderProduct(item))}
               </div>
             </div>
           </div>

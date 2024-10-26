@@ -1,50 +1,22 @@
-"use client";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { config } from "@/lib/config";
+// src/app/page.tsx
+
 import HomePage from "@/components/pages/Home";
+import { config } from "@/lib/config";
 
-export default function Home() {
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(false);
+async function fetchCategoriesAndProducts() {
+  const [categoryResponse, productResponse] = await Promise.all([
+    fetch(config.product.getCategories()).then((res) => res.json()),
+    fetch(config.product.getNewProducts()).then((res) => res.json()),
+  ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Start loading
-        const [categoryResponse, productResponse] = await Promise.all([
-          axios.get(config.product.getCategories()),
-          axios.get(config.product.getNewProducts()),
-        ]);
+  const categories = categoryResponse?.success ? categoryResponse.data : [];
+  const products = productResponse ?? [];
 
-        // Handle responses
-        const categoriesData = categoryResponse?.data?.success
-          ? categoryResponse.data.data
-          : [];
-        const productsData = productResponse?.data ?? [];
+  return { categories, products };
+}
 
-        // Set state
-        setCategories(categoriesData);
-        setProducts(productsData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError(true); // Handle error state
-      } finally {
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Show error message if fetch fails
-  if (error) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <p>Error loading data</p>
-      </main>
-    );
-  }
+export default async function Home() {
+  const { categories, products } = await fetchCategoriesAndProducts();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">

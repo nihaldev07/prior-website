@@ -2,12 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { IProduct, IVariation } from "@/lib/interface";
 import imagePlaceHolder from "@/images/imagePlaceholder.svg";
 import { ProductType } from "@/data/types";
-// import CarouselComponent from "@/components/Carosol/SwiperComponent";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
@@ -16,6 +14,7 @@ import { Tag } from "lucide-react";
 interface IProp {
   product: IProduct | ProductType;
 }
+
 const ProductCard: React.FC<IProp> = ({ product }) => {
   const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -31,13 +30,14 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
       className="rounded-xl shadow-none border-0 bg-transparent"
       onClick={() => router.push(`/collections/${product?.id}`)}
     >
-      <CardHeader className="mb-2 relative flex justify-center items-center h-[200px] md:h-[300px] lg:h-[400px] rounded-sm px-2 overflow-hidden">
+      <CardHeader className="mb-2 relative flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 overflow-hidden">
+        {/* Badge for discount */}
         {!!product?.hasDiscount &&
           !!product?.discount &&
           !!product?.updatedPrice && (
             <Badge
               variant={"secondary"}
-              className="absolute top-1 text-base font-semibold right-0 z-50 rounded-tr-md shadow-lg rounded-bl-lg rounded-tl-none rounded-br-none p-2 bg-orange-100 uppercase"
+              className="absolute top-1 text-base font-semibold right-0 z-50 rounded-tr-md shadow-lg rounded-bl-lg p-2 bg-orange-100 uppercase"
             >
               <Tag className="w-4 h-4 mr-1" />
               {!!product?.discountType && product?.discountType !== "%"
@@ -53,7 +53,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
             alt="default-product"
             fill
             quality={1}
-            className="rounded-sm object-cover" // Changed to object-cover to maintain aspect ratio
+            className="rounded-sm object-cover" // Ensures placeholder maintains aspect ratio
             src={imagePlaceHolder} // Default image URL
             loading="lazy"
           />
@@ -62,43 +62,45 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
         {/* Actual Image */}
         <Image
           alt="product"
-          quality={50}
-          className={`rounded-sm${
-            // Changed to object-cover for better responsiveness
+          quality={60} // Optimize image quality for better load speed
+          className={`rounded-sm transition-opacity duration-500 ${
             isLoaded ? "opacity-100" : "opacity-0"
-          } transition-opacity duration-500`} // Transition effect for smooth loading
+          }`}
           src={product?.thumbnail || imagePlaceHolder}
-          onLoad={() => setIsLoaded(true)} // Update state when image is loaded
-          priority // Load image immediately for better initial content paint
-          layout="fill" // Stretch image to fill its container
-          objectFit="cover" // Crop image to fit container while maintaining aspect ratio
+          onLoad={() => setIsLoaded(true)} // Show image when fully loaded
+          priority
+          loading="eager"
+          fill // Ensures image fills the container
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, (max-width: 1024px) 50vw, 33vw"
+          style={{ objectFit: "fill", objectPosition: "center" }}
         />
       </CardHeader>
+
       <CardContent className="px-0">
-        <div className=" w-full">
+        <div className="w-full">
           <div className="flex justify-between items-center">
-            <h2 className=" text-base md:text-xl text-gray-900 font-semibold truncate max-w-[70%]">
+            <h2 className="text-base md:text-xl text-gray-900 font-semibold truncate max-w-[70%]">
               {product?.name}
             </h2>
             {!!product?.hasDiscount && !!product?.updatedPrice ? (
-              <div className="ml-auto float-right flex flex-row gap-2 justify-center items-center">
+              <div className="ml-auto flex gap-2 items-center">
                 <del className="text-xs text-gray-500 font-light">
                   ৳ {product?.unitPrice}
                 </del>
-                <h2 className=" text-sm md:text-xl text-blue-900 font-semibold">
+                <h2 className="text-sm md:text-xl text-blue-900 font-semibold">
                   ৳ {product?.updatedPrice}
                 </h2>
               </div>
             ) : (
-              <h2 className=" text-sm md:text-xl text-blue-900 font-semibold ml-auto float-right">
+              <h2 className="text-sm md:text-xl text-blue-900 font-semibold ml-auto">
                 ৳ {product?.unitPrice}
               </h2>
             )}
           </div>
           <div className="w-full flex justify-between items-start my-1">
             {!!hasVariation && !isOutOfStock && (
-              <p className="text-gray-700 text-xs md:text-base font-medium flex justify-between items-center">
-                Variant :{" "}
+              <p className="text-gray-700 text-xs md:text-base font-medium">
+                Variant:{" "}
                 <Badge variant={"outline"} className="ml-2">
                   {
                     product?.variation?.filter(
@@ -111,40 +113,31 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
             )}
 
             {!hasVariation && !isOutOfStock && (
-              <p className="text-gray-700 text-xs md:text-base font-medium flex justify-between items-center">
-                Variant :{" "}
+              <p className="text-gray-700 text-xs md:text-base font-medium">
+                Variant:{" "}
                 <Badge variant={"outline"} className="ml-2">
                   1
                 </Badge>
               </p>
             )}
             {isOutOfStock && (
-              <p className="text-red-700 text-xs md:text-base font-medium ">
+              <p className="text-red-700 text-xs md:text-base font-medium">
                 Out Of Stock
               </p>
             )}
             {!isOutOfStock && (
-              <p className="text-gray-700 text-xs md:text-base font-medium flex justify-between items-center ">
-                Qty :{" "}
+              <p className="text-gray-700 text-xs md:text-base font-medium">
+                Qty:{" "}
                 <Badge variant={"outline"} className="ml-2">
                   {product?.quantity}
-                </Badge>{" "}
+                </Badge>
               </p>
             )}
           </div>
-          <div className="mt-2 mb-4 hidden">
-            <Rating
-              style={{ maxWidth: 100 }}
-              value={product?.rating ?? 5}
-              readOnly
-              onChange={(val: any) => console.log("rating:", val)}
-            />
-          </div>
-
           <Button
             onClick={() => router.push(`/collections/${product?.id}`)}
             variant="outline"
-            className={` hidden px-3 py-2 text-sm text-blue-700 border-blue-300 hover:bg-blue-800 font-semibold  hover:text-white `}
+            className="hidden px-3 py-2 text-sm text-blue-700 border-blue-300 hover:bg-blue-800 font-semibold hover:text-white"
           >
             View
           </Button>
