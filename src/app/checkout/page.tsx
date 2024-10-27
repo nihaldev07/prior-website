@@ -103,9 +103,16 @@ const CheckoutPage = () => {
         formData.district.toLowerCase().includes("dhaka") &&
         formData.division.toLowerCase().includes("dhaka")
       ) {
-        deliveryCharge = 100;
+        deliveryCharge = 80;
+      } else if (
+        formData.division.toLowerCase().includes("dhaka") &&
+        ["gazipur", "tongi", "narayanganj", "savar"].includes(
+          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+        )
+      ) {
+        deliveryCharge = 55;
       } else {
-        deliveryCharge = 180;
+        deliveryCharge = 150;
       }
 
       transectionData.remaining =
