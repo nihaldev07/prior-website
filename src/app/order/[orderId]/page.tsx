@@ -69,7 +69,8 @@ const OrderDetails = async ({
             variant={"destructive"}
             className="text-base px-4 py-2 rounded-full border-0"
           >
-            Order Status: {order.status === 'cancel' ? 'cancelled' : order?.status}{" "}
+            Order Status:{" "}
+            {order.status === "cancel" ? "cancelled" : order?.status}{" "}
             <LucideInfo className="inline-block text-white mx-2" />
           </Badge>
         ) : (
@@ -96,7 +97,13 @@ const OrderDetails = async ({
         </h1>
         <p className="text-lg md:text-xl font-semibold mt-4">
           Order ID:{" "}
-          <span className="text-base md:text-lg font-medium">#{order.id}</span>
+          <span className="text-base md:text-lg font-medium">
+            #{order.orderNumber}
+          </span>
+        </p>
+        <p className="text-sm md:text-lg font-semibold mt-2">
+          Track ID:{" "}
+          <span className="text-xs md:text-base font-medium">#{order.id}</span>
         </p>
         <div className="mt-2">{renderOrderStatus()}</div>
       </div>
