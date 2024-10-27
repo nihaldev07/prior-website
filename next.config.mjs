@@ -36,10 +36,6 @@ const nextConfig = {
           key: "Cache-Control",
           value: "public, max-age=31536000, immutable", // Cache assets for 1 year
         },
-        {
-          key: "Content-Security-Policy",
-          value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://trusted-scripts-source.com; style-src 'self' 'unsafe-inline' https://trusted-styles-source.com;", // Content Security Policy example (customize per your needs)
-        },
       ],
     },
   ],
