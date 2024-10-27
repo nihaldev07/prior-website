@@ -523,6 +523,22 @@ export const BDDistrictList = [
     lat: "22.7185",
     long: "89.0705",
   },
+   {
+    id: "65",
+    division_id: "3",
+    name: "Tongi",
+    bn_name: "টঙ্গী",
+    lat: "24.0022858",
+    long: "90.4264283",
+  },
+  {
+    id: "66",
+    division_id: "3",
+    name: "Savar",
+    bn_name: "সাভার",
+    lat: "24.0022858",
+    long: "90.4264283",
+  },
 ];
 
 export const BDDivisions = [

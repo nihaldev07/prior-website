@@ -12,16 +12,14 @@ const SectionProducts = dynamic(() => import("./products"), { ssr: false });
 
 // Define the interface for the component props
 interface HomePageProps {
-  categories: any[]; // Adjust this type according to your category data structure
   products: IProduct[];
 }
 
 // Define the HomePage component with typed props
-const HomePage: React.FC<HomePageProps> = ({ categories, products }) => {
+const HomePage: React.FC<HomePageProps> = ({ products }) => {
   return (
     <div className="w-full">
       <HeroSection />
-      {/* <AdvertiseView /> */}
       <CampaignPage />
       <NewSectionView products={products} />
       <SectionProducts />

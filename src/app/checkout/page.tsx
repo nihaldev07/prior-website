@@ -49,7 +49,7 @@ const CheckoutPage = () => {
     district: "",
     division: "",
     address: "",
-    postalCode: "",
+    postalCode: "1234",
   });
 
   const handleInputChange = (
@@ -127,9 +127,16 @@ const CheckoutPage = () => {
         formData.district.toLowerCase().includes("dhaka") &&
         formData.division.toLowerCase().includes("dhaka")
       ) {
-        deliveryChargeX = 100;
+        deliveryChargeX = 80;
+      } else if (
+        formData.division.toLowerCase().includes("dhaka") &&
+        ["gazipur", "tongi", "narayanganj", "savar"].includes(
+          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+        )
+      ) {
+        deliveryChargeX = 130;
       } else {
-        deliveryChargeX = 180;
+        deliveryChargeX = 150;
       }
 
       transectionData.remaining =
@@ -143,7 +150,7 @@ const CheckoutPage = () => {
       });
     }
     //eslint-disable-next-line
-  }, [formData?.division, formData?.district]);
+  }, [formData?.district]);
 
   const renderProduct = (item: CartItem) => {
     const {
@@ -245,7 +252,11 @@ const CheckoutPage = () => {
       transectionData?.discount > 0
         ? 200
         : !formData.district.toLowerCase().includes("dhaka")
-        ? 150
+        ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
+            formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+          )
+          ? 130
+          : 150
         : 0;
     const orderData = {
       customerInformation: {
@@ -287,6 +298,11 @@ const CheckoutPage = () => {
         }
       }
     } catch (error) {
+      Swal.fire(
+        "Failed to place order ☠️",
+        "Something went wrong, please try again",
+        "error"
+      );
       console.log("error");
     }
     setLoading(false);

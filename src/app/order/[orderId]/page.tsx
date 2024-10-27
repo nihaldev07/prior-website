@@ -69,7 +69,7 @@ const OrderDetails = async ({
             variant={"destructive"}
             className="text-base px-4 py-2 rounded-full border-0"
           >
-            Order Status: {order.status}{" "}
+            Order Status: {order.status === 'cancel' ? 'cancelled' : order?.status}{" "}
             <LucideInfo className="inline-block text-white mx-2" />
           </Badge>
         ) : (

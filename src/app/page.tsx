@@ -1,26 +1,33 @@
-// src/app/page.tsx
-
 import HomePage from "@/components/pages/Home";
 import { config } from "@/lib/config";
 
 async function fetchCategoriesAndProducts() {
-  const [categoryResponse, productResponse] = await Promise.all([
-    fetch(config.product.getCategories()).then((res) => res.json()),
-    fetch(config.product.getNewProducts()).then((res) => res.json()),
-  ]);
+  try {
+    // Fetch new products, you can also fetch categories if needed
+    const productResponse = await fetch(config.product.getNewProducts(), {
+      method: "GET", // Specify method
+      cache: "force-cache", // Use cache if available
+    });
 
-  const categories = categoryResponse?.success ? categoryResponse.data : [];
-  const products = productResponse ?? [];
+    // Check if the response is OK (status 200)
+    if (!productResponse.ok) {
+      throw new Error("Failed to fetch products");
+    }
 
-  return { categories, products };
+    const products = await productResponse.json();
+    return { products: products || [] }; // Default to an empty array if no products found
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return { products: [] }; // Return an empty array on error
+  }
 }
 
 export default async function Home() {
-  const { categories, products } = await fetchCategoriesAndProducts();
+  const { products } = await fetchCategoriesAndProducts();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <HomePage categories={categories} products={products} />
+      <HomePage products={products} />
     </main>
   );
 }

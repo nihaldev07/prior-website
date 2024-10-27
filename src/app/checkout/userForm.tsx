@@ -1,6 +1,5 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -206,13 +205,13 @@ const UserInformation: React.FC<IProps> = ({
           formData["address"]
         )}
         <br />
-        {renderFormView(
+        {/* {renderFormView(
           "Postal Code",
           "text",
           "postalCode",
           "Enter Postal Code",
           formData["postalCode"]
-        )}
+        )} */}
       </CardContent>
     </Card>
   );

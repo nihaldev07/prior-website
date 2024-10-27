@@ -1,6 +1,6 @@
 // Import necessary hooks and components
 "use client";
-import React, { Suspense, memo } from "react";
+import React, { memo } from "react";
 import dynamic from "next/dynamic";
 import { productsSection } from "@/data/content";
 import { ProductType } from "@/data/types";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import useProductFetch from "@/hooks/useProductFetch";
 import Heading from "@/shared/Heading/Heading";
 import Filter from "@/components/Filter";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 
 // Dynamically import ProductCard for better SSR support and lazy load
 const ProductCard = dynamic(() => import("@/shared/productCard"), {
@@ -21,6 +22,7 @@ const MemoizedFilter = memo(Filter);
 const MemoizedHeading = memo(Heading);
 
 const SectionProducts = () => {
+  useScrollRestoration();
   const {
     products,
     loading,
