@@ -134,7 +134,7 @@ const CheckoutPage = () => {
           formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
         )
       ) {
-        deliveryChargeX = 130;
+        deliveryChargeX = 55;
       } else {
         deliveryChargeX = 150;
       }
@@ -255,7 +255,7 @@ const CheckoutPage = () => {
         ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
             formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
           )
-          ? 130
+          ? 55
           : 150
         : 0;
     const orderData = {
