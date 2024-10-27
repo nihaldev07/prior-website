@@ -110,7 +110,7 @@ const CheckoutPage = () => {
           formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
         )
       ) {
-        deliveryCharge = 11;
+        deliveryCharge = 130;
       } else {
         deliveryCharge = 150;
       }
@@ -141,7 +141,7 @@ const CheckoutPage = () => {
           formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
         )
       ) {
-        deliveryChargeX = 11;
+        deliveryChargeX = 130;
       } else {
         deliveryChargeX = 150;
       }
@@ -262,7 +262,7 @@ const CheckoutPage = () => {
         ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
             formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
           )
-          ? 11
+          ? 130
           : 150
         : 0;
     const orderData = {
