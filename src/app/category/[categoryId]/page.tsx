@@ -26,7 +26,12 @@ const SingleCategoryPage = ({
     setFilterData,
     filterData,
     handleLoadMore,
-  } = useProductFetch(1, { categoryId, color: "", size: "", price: "" });
+  } = useProductFetch(1, {
+    categoryId,
+    color: "",
+    size: "",
+    price: "",
+  });
   const [sheetOpen, setSheetOpen] = useState(false);
   return (
     <div className="my-6">

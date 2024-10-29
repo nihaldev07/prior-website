@@ -19,6 +19,22 @@ export const fetchProductById = async (
 };
 
 
+export const fetchAllProducts = async (
+): Promise<SingleProductType[]> => {
+  try {
+    const response = await fetch(`${config.product.getProducts()}?limit=${500}`);
+    if (!response.ok) {
+      return [];
+    }
+    const productData = await response.json();
+    return productData.products as SingleProductType[] ?? []; // Assuming your API response matches Product interface
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return [];
+  }
+};
+
+
 export const fetchOrderDetails = async (
   orderId: string
 ): Promise<Order | null> => {

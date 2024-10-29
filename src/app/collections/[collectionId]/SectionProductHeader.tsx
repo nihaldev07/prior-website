@@ -264,11 +264,15 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
         )}
 
         <div className="text-base font-medium text-gray-700 text-left mt-4">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 ">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">
             Description
           </h2>
           <Separator className="text-gray-300 w-full my-2" />
-          {product?.description}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: product?.description?.replace(/\n/g, "<br />"),
+            }}
+          />
         </div>
       </div>
     </div>

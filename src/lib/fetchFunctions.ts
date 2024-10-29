@@ -1,6 +1,6 @@
 import { Order } from "@/app/order/interface";
 import { SingleProductType } from "@/data/types";
-import { fetchOrderDetails, fetchProductById } from "@/services/productServices";
+import { fetchAllProducts, fetchOrderDetails, fetchProductById } from "@/services/productServices";
 
 export const getProductDataById = async (
   id: string
@@ -11,6 +11,18 @@ export const getProductDataById = async (
   } catch (error) {
     console.error("Error fetching product:", error);
     return null;
+  }
+};
+
+
+export const getAllProducts = async (
+): Promise<SingleProductType[]> => {
+  try {
+    const response = await fetchAllProducts();
+    return response;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return [];
   }
 };
 

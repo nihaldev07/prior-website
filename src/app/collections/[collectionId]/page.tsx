@@ -2,7 +2,17 @@ import React from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
-import { getProductDataById } from "@/lib/fetchFunctions";
+import { getProductDataById, getAllProducts } from "@/lib/fetchFunctions";
+
+// Specify the static paths that should be pre-rendered
+export async function generateStaticParams() {
+  const products = await getAllProducts();
+  if (!!products && products.length > 0)
+    return products.map((product) => ({ collectionId: product?.id }));
+  else return [];
+}
+
+export const revalidate = 604800; // Revalidate every 7 days for ISR
 
 const SingleProductPage = async ({
   params: { collectionId },
@@ -39,16 +49,13 @@ const SingleProductPage = async ({
   const prevPrice = !!discount && !!updatedPrice ? unitPrice : 0;
   const currentPrice = !!discount && !!updatedPrice ? updatedPrice : unitPrice;
 
-  // Creating image data array
   let imageData = [thumbnail];
-  if (!!images && images?.length > 0) imageData = [...imageData, ...images];
+  if (images && images.length > 0) imageData = [...imageData, ...images];
 
-  // SEO Metadata
   const title = `${name} | Prior - Your Priority in Fashion`;
   const metaDescription = `${description} Get it now at Prior!`;
   const ogImage = thumbnail;
 
-  // Return metadata in the form of an object
   return (
     <>
       <head>

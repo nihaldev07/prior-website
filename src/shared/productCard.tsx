@@ -17,16 +17,16 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
   return (
     <Link href={`/collections/${product?.id}`} prefetch={false}>
       <Card className="rounded-xl shadow-none border-0 bg-transparent">
-        <CardHeader className="relative flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 overflow-hidden">
+        <CardHeader className="relative flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 space-y-0">
           {/* Badge for Discount */}
           {product?.hasDiscount &&
             product?.discount &&
             product?.updatedPrice && (
               <Badge
                 variant="secondary"
-                className="absolute top-1 right-0 z-50 text-base font-semibold p-2 bg-orange-100 uppercase rounded-tr-md rounded-bl-lg shadow-lg"
+                className="absolute mt-0 top-1 right-1 z-50 text-xs sm:text-base font-semibold sm:p-2  uppercase rounded-tr-md rounded-bl-lg shadow-lg"
               >
-                <Tag className="w-4 h-4 mr-1" />
+                <Tag className=" w-3 sm:w-4 h-4 mr-1" />
                 {product?.discountType !== "%"
                   ? `${product?.discount}৳`
                   : `${product?.discount}%`}{" "}
@@ -43,8 +43,12 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
             blurDataURL={product?.thumbnail || imagePlaceHolder.src} // Blur placeholder for improved LCP
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 80vw, (max-width: 1024px) 50vw, 33vw"
-            style={{ objectFit: "cover", objectPosition: "center" }}
-            className="rounded-sm"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+              marginTop: "0px !important",
+            }}
+            className="rounded-sm space-y-0"
           />
         </CardHeader>
 
