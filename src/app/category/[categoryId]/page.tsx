@@ -10,14 +10,23 @@ import { Filter, LoaderCircle } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
+import { Button } from "@/components/ui/button";
 
 const SingleCategoryPage = ({
   params: { categoryId },
 }: {
   params: { categoryId: string };
 }) => {
-  const { products, loading, distictFilterValues, setFilterData, filterData } =
-    useProductFetch(1, { categoryId, color: "", size: "", price: "" });
+  const {
+    products,
+    loading,
+    totalPages,
+    currentPage,
+    distictFilterValues,
+    setFilterData,
+    filterData,
+    handleLoadMore,
+  } = useProductFetch(1, { categoryId, color: "", size: "", price: "" });
   const [sheetOpen, setSheetOpen] = useState(false);
   return (
     <div className="my-6">
@@ -92,16 +101,31 @@ const SingleCategoryPage = ({
             </div> */}
           {/* </div> */}
           <div className="grid flex-1 gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-10 grid-cols-2 xl:grid-cols-3 ">
-            {!loading &&
+            {!!products &&
               products.map((item: ProductType) => (
                 <ProductCard product={item} key={item.id} />
               ))}
-            {loading && (
-              <span className="flex justify-center items-center gap-2">
-                loading... <LoaderCircle className="w-5 h-5 ml-2" />
-              </span>
-            )}
           </div>
+          {loading && (
+            <div className="w-full p-12 bg-gray-200 flex justify-center items-center">
+              <span className="flex justify-center items-center gap-2 text-black">
+                Loading... <LoaderCircle className="w-5 h-5 ml-2 text-black" />
+              </span>
+            </div>
+          )}
+          {!loading && currentPage < totalPages && (
+            <div className="mt-14 flex items-center justify-center">
+              <Button
+                variant={"default"}
+                className="mx-auto px-3 py-2"
+                onClick={() => {
+                  handleLoadMore();
+                }}
+              >
+                View More
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
