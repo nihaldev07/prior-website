@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import type { FC } from "react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ImageShowCase from "@/components/ImageShowCase";
 // import ButtonCircle3 from "@/shared/Button/ButtonCircle3";
@@ -90,7 +90,9 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       categoryName: product?.categoryName,
       hasVariation: product?.hasVariation,
       variation: selectedVariant,
-      maxQuantity: product?.quantity,
+      maxQuantity: !!selectedVariant
+        ? selectedVariant?.quantity
+        : product?.quantity,
     };
     //@ts-ignore
     addToCart(productData);
@@ -104,6 +106,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       }
     });
   };
+
   return (
     <div className=" sm:items-stretch justify-between space-y-10 lg:flex lg:space-y-0">
       <div className="basis-[50%]">
@@ -204,7 +207,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
               selected={!!selectedVariant ? selectedVariant?.color : ""}
               onVariantChange={(variant: Variation) => {
                 setSelectedVariant(variant);
-                product?.quantity < pQuantity && setPQuantity(0);
+                variant?.quantity < pQuantity && setPQuantity(0);
               }}
             />
           )}
@@ -217,22 +220,32 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
               selected={!!selectedVariant ? selectedVariant?.size : ""}
               onVariantChange={(variant: Variation) => {
                 setSelectedVariant(variant);
-                product?.quantity < pQuantity && setPQuantity(0);
+                variant?.quantity < pQuantity && setPQuantity(0);
               }}
             />
           )}
         </div>
 
-        <InputNumber
-          defaultValue={pQuantity}
-          min={0}
-          max={product?.quantity ?? 0}
-          onChange={(value) => {
-            setPQuantity(value);
-          }}
-        />
+        {(!!selectedVariant
+          ? selectedVariant?.quantity > 0
+          : product?.quantity > 0) && (
+          <InputNumber
+            defaultValue={pQuantity}
+            min={0}
+            max={
+              !!selectedVariant
+                ? selectedVariant?.quantity
+                : product?.quantity ?? 0
+            }
+            onChange={(value) => {
+              setPQuantity(value);
+            }}
+          />
+        )}
 
-        {product?.quantity > 0 &&
+        {(!!selectedVariant
+          ? selectedVariant?.quantity > 0
+          : product?.quantity > 0) &&
           (pQuantity > 0 ? (
             <div className="mt-8 flex items-center gap-5">
               <ButtonPrimary
@@ -257,7 +270,9 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
               AVAILABLE IN STOCK
             </div>
           ))}
-        {product?.quantity < 1 && (
+        {(!!selectedVariant
+          ? selectedVariant?.quantity < 1
+          : product?.quantity < 1) && (
           <div className="mt-5 w-full flex items-center justify-center px-5 py-4 bg-gray-200 text-red-500 font-semibold">
             OUT OF STOCK
           </div>
