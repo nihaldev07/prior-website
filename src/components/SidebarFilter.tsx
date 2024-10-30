@@ -39,7 +39,7 @@ const SidebarFilters: React.FC<Props> = ({
   useEffect(() => {
     handleFilterChange({
       ...filterData,
-      categoryId: activeCategory,
+      categoryId: showCategory ? activeCategory : selectedCategory,
       color: activeColor,
       size: activeSize,
     });

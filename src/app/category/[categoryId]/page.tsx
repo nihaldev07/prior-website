@@ -78,6 +78,9 @@ const SingleCategoryPage = ({
           <SidebarFilters
             filterData={filterData}
             showCategory={false}
+            selectedCategory={categoryId}
+            selectedColor={filterData?.color}
+            selectedSize={filterData?.size}
             categories={distictFilterValues.categories}
             colors={distictFilterValues.colors.filter((i) => i !== "")}
             sizes={distictFilterValues.sizes.filter((i) => i !== "")}
