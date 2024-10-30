@@ -13,6 +13,8 @@ import Carousel from "@/components/Carosol/Swiper";
 import { Button } from "@/components/ui/button";
 import { DoubleArrowRightIcon } from "@radix-ui/react-icons";
 import { Badge } from "@/components/ui/badge";
+import useCategory from "@/hooks/useCategory";
+import useThrottledEffect from "@/hooks/useThrottleEffect";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -31,6 +33,23 @@ const CampaignPage = () => {
   const [productImgs, setProductImgs] = useState<string[]>([]);
   const { fetchActiveCampaign } = useCampaign();
   const router = useRouter();
+
+  const [flashSaleCategory, setFlashSaleCategory] = useState<any>({});
+  const { fetchCategories } = useCategory();
+
+  useThrottledEffect(
+    async () => {
+      const data = await fetchCategories();
+      const cat = data.filter(
+        (d: any) => d.id === "3cc953ce-d453-4f5d-99df-5f31b0342e15"
+      );
+      if (!!cat && cat.length > 0) {
+        setFlashSaleCategory(cat[0]);
+      }
+    },
+    [],
+    2000
+  );
 
   useEffect(() => {
     const fetchCampaign = async () => {
@@ -85,6 +104,29 @@ const CampaignPage = () => {
     if (campaign?.id) {
       router.push(`/campaign/${campaign.id}`);
     }
+  };
+
+  const renderFlashSaleCategory = () => {
+    return (
+      <div
+        className="flex items-center justify-center min-h-[20vh] bg-gradient-to-r from-indigo-600 to-pink-500 mt-4 py-2 cursor-pointer"
+        onClick={() => {
+          router.push("/category/3cc953ce-d453-4f5d-99df-5f31b0342e15");
+        }}
+      >
+        {/* <!-- Outer Box with animated background --> */}
+        <div className="relative w-full h-48 sm:h-60 lg:h-96 bg-gradient-to-r from-purple-500 via-red-500 to-yellow-500 rounded-lg overflow-hidden shadow-2xl animate-pulse">
+          {/* <!-- Inner Box with Flash Sale text --> */}
+          <div className="absolute inset-0 flex items-center justify-center ">
+            <div className="bg-white bg-opacity-80 text-center p-6 rounded-lg shadow-lg backdrop-blur-sm">
+              <h1 className="text-base sm:text-lg lg:text-3xl font-extrabold text-gray-800 uppercase animate-pulse">
+                {flashSaleCategory?.name ?? ""}
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -188,6 +230,10 @@ const CampaignPage = () => {
           </div>
         </div>
       )}
+
+      {!!flashSaleCategory &&
+        flashSaleCategory?.active &&
+        renderFlashSaleCategory()}
     </>
   );
 };
