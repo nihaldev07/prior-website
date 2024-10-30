@@ -1,6 +1,6 @@
 {
   "name": "prior-website",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "@netlify/functions": "^2.8.2",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",

@@ -23,23 +23,21 @@ const nextConfig = {
         port: "",
       },
     ],
-    deviceSizes: [320, 420, 768, 1024, 1200], // Device sizes for responsive image optimization
+    deviceSizes: [320, 420, 768, 1024, 1200],
   },
-  swcMinify: true, // Use SWC for minification
-  reactStrictMode: true, // Enable React strict mode for better error detection in development
-
+  swcMinify: true,
+  reactStrictMode: true,
   headers: async () => [
     {
-      source: "/(.*)", // Apply headers to all routes
+      source: "/(.*)",
       headers: [
         {
           key: "Cache-Control",
-          value: "public, max-age=31536000, immutable", // Cache assets for 1 year
+          value: "public, max-age=31536000, immutable",
         },
       ],
     },
   ],
-
   async rewrites() {
     return [
       // Add rewrites if needed

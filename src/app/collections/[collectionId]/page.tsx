@@ -1,25 +1,37 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
-import { getProductDataById, getAllProducts } from "@/lib/fetchFunctions";
+import { getProductDataById } from "@/lib/fetchFunctions";
+import { SingleProductType } from "@/data/types";
 
-// Specify the static paths that should be pre-rendered
-export async function generateStaticParams() {
-  const products = await getAllProducts();
-  if (!!products && products.length > 0)
-    return products.map((product) => ({ collectionId: product?.id }));
-  else return [];
-}
-
-export const revalidate = 60; // Revalidate every 7 days for ISR
-
-const SingleProductPage = async ({
+const SingleProductPage = ({
   params: { collectionId },
 }: {
   params: { collectionId: string };
 }) => {
-  const product = await getProductDataById(collectionId);
+  const [product, setProduct] = useState<SingleProductType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await getProductDataById(collectionId);
+        setProduct(data);
+      } catch (error) {
+        console.error("Failed to fetch product data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [collectionId]);
+
+  if (loading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
 
   if (!product) {
     return (
@@ -46,11 +58,10 @@ const SingleProductPage = async ({
     categoryId,
   } = product;
 
-  const prevPrice = !!discount && !!updatedPrice ? unitPrice : 0;
-  const currentPrice = !!discount && !!updatedPrice ? updatedPrice : unitPrice;
-
-  let imageData = [thumbnail];
-  if (images && images.length > 0) imageData = [...imageData, ...images];
+  const prevPrice = discount && updatedPrice ? unitPrice : 0;
+  const currentPrice = discount && updatedPrice ? updatedPrice : unitPrice;
+  const imageData =
+    images && images.length > 0 ? [thumbnail, ...images] : [thumbnail];
 
   const title = `${name} | Prior - Your Priority in Fashion`;
   const metaDescription = `${description} Get it now at Prior!`;
@@ -69,7 +80,7 @@ const SingleProductPage = async ({
           property="og:url"
           content={`https://priorbd.com/collections/${id}`}
         />
-        <meta name="twitter:card" content={ogImage} />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogImage} />
