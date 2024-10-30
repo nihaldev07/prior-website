@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ProductCard from "@/shared/productCard";
 import SidebarFilters from "@/components/SidebarFilter";
@@ -32,6 +32,10 @@ const SingleCategoryPage = ({
     size: "",
     price: "",
   });
+
+  useEffect(() => {
+    setFilterData({ ...filterData, categoryId });
+  }, [categoryId]);
   const [sheetOpen, setSheetOpen] = useState(false);
   return (
     <div className="my-6">
@@ -57,6 +61,7 @@ const SingleCategoryPage = ({
               <SidebarFilters
                 filterData={filterData}
                 showCategory={false}
+                selectedCategory={categoryId}
                 selectedColor={filterData?.color}
                 selectedSize={filterData?.size}
                 categories={distictFilterValues.categories}
