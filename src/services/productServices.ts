@@ -6,7 +6,7 @@ export const fetchProductById = async (
   productId: string
 ): Promise<SingleProductType | null> => {
   try {
-    const response = await fetch(config.product.getProductById(productId));
+    const response = await fetch(config.product.getProductById(productId),{ cache: "no-store" });
     if (!response.ok) {
       return null;
     }
@@ -39,7 +39,7 @@ export const fetchOrderDetails = async (
   orderId: string
 ): Promise<Order | null> => {
   try {
-    const response = await fetch(config.order.getOrderDetails(orderId));
+    const response = await fetch(config.order.getOrderDetails(orderId), { cache: 'no-store' });
     if (!response.ok) {
       return null;
     }

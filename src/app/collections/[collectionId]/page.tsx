@@ -1,36 +1,31 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
 import { getProductDataById } from "@/lib/fetchFunctions";
 import { SingleProductType } from "@/data/types";
+import Head from "next/head";
 
-const SingleProductPage = ({
-  params: { collectionId },
-}: {
+interface SingleProductPageProps {
   params: { collectionId: string };
-}) => {
-  const [product, setProduct] = useState<SingleProductType | null>(null);
-  const [loading, setLoading] = useState(true);
+}
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const data = await getProductDataById(collectionId);
-        setProduct(data);
-      } catch (error) {
-        console.error("Failed to fetch product data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+const SingleProductPage = async ({
+  params: { collectionId },
+}: SingleProductPageProps) => {
+  // Fetch product data directly in the server component
+  let product: SingleProductType | null = null;
+  let error = null;
 
-    fetchProduct();
-  }, [collectionId]);
+  try {
+    product = await getProductDataById(collectionId);
+  } catch (err) {
+    console.error("Failed to fetch product data:", err);
+    error = "Failed to load product. Please try again later.";
+  }
 
-  if (loading) {
-    return <div className="text-center mt-10">Loading...</div>;
+  if (error) {
+    return <div className="text-center mt-10 text-red-500">{error}</div>;
   }
 
   if (!product) {
@@ -69,7 +64,7 @@ const SingleProductPage = ({
 
   return (
     <>
-      <head>
+      <Head>
         <title>{title}</title>
         <meta name="description" content={metaDescription} />
         <meta property="og:title" content={title} />
@@ -84,7 +79,7 @@ const SingleProductPage = ({
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogImage} />
-      </head>
+      </Head>
 
       <div className="px-4 sm:px-0 sm:container">
         <div className="mt-4 mb-4 sm:mb-20">

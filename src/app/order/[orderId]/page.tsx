@@ -16,7 +16,6 @@ const OrderDetails = async ({
   params: { orderId: string };
 }) => {
   const order = await getOrderDetails(orderId);
-
   if (!order) {
     return (
       <div className="w-full flex justify-center items-center">
