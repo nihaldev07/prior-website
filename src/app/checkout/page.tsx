@@ -257,13 +257,13 @@ const CheckoutPage = () => {
       !formData.district.toLowerCase().includes("dhaka");
     const paymentAmount =
       transectionData?.discount > 0
-        ? 200
+        ? Math.min(200, transectionData?.remaining)
         : !formData.district.toLowerCase().includes("dhaka")
         ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
             formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
           )
-          ? 130
-          : 150
+          ? Math.min(130, transectionData?.remaining)
+          : Math.min(150, transectionData?.remaining)
         : 0;
     const orderData = {
       customerInformation: {
@@ -289,7 +289,9 @@ const CheckoutPage = () => {
         const orderId = response?.data?.order?.id;
         if (hasPayment) {
           bkashCheckout(
-            paymentMethod === "bkash" ? 10 : paymentAmount,
+            paymentMethod === "bkash"
+              ? transectionData?.remaining
+              : paymentAmount,
             orderId,
             formData?.name,
             formData?.mobileNumber
