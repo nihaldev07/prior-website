@@ -289,9 +289,7 @@ const CheckoutPage = () => {
         const orderId = response?.data?.order?.id;
         if (hasPayment) {
           bkashCheckout(
-            paymentMethod === "bkash"
-              ? transectionData?.remaining
-              : paymentAmount,
+            paymentMethod === "bkash" ? 10 : paymentAmount,
             orderId,
             formData?.name,
             formData?.mobileNumber
