@@ -58,34 +58,40 @@ const SelectDemo: React.FC<Props> = ({
   };
 
   return (
-    <Select
-      value={selected}
-      onValueChange={(value: string) =>
-        //@ts-ignore
-        handleVariantChange(value)
-      }
-    >
-      <SelectTrigger className="w-full">
-        <SelectValue
-          placeholder={`SELECT A ${type.toUpperCase()}`}
-          onClick={(e) => e.stopPropagation()}
-        />
-      </SelectTrigger>
-      <SelectContent position="popper" className="z-30 select-content-up">
-        <SelectGroup>
-          <SelectLabel>{type.toUpperCase()}</SelectLabel>
-          {list.map((v, i) => (
-            <SelectItem
-              key={i}
-              value={v}
-              onClick={(event) => event.stopPropagation()}
-            >
-              {v.toUpperCase()}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <>
+      {!!list && (
+        <Select
+          value={selected}
+          onValueChange={(value: string) =>
+            //@ts-ignore
+            handleVariantChange(value)
+          }
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue
+              placeholder={`SELECT A ${type.toUpperCase()}`}
+              onClick={(e) => e.stopPropagation()}
+            />
+          </SelectTrigger>
+          <SelectContent position="popper" className="z-30 select-content-up">
+            <SelectGroup>
+              <SelectLabel>{type.toUpperCase()}</SelectLabel>
+              {list
+                .filter((l) => !!l)
+                .map((v, i) => (
+                  <SelectItem
+                    key={i}
+                    value={v}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    {v.toUpperCase()}
+                  </SelectItem>
+                ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      )}
+    </>
   );
 };
 

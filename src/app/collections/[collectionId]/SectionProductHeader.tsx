@@ -51,9 +51,15 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
   useEffect(() => {
     if (!!product) {
       setUniqueColors([
-        ...new Set(product?.variation.map((v) => v.color) ?? []),
+        ...new Set(
+          product?.variation.filter((c) => !!c.color).map((v) => v.color) ?? []
+        ),
       ]);
-      setUniqueSizes([...new Set(product?.variation.map((v) => v.size) ?? [])]);
+      setUniqueSizes([
+        ...new Set(
+          product?.variation.filter((s) => !!s.size).map((v) => v.size) ?? []
+        ),
+      ]);
     }
   }, [product]);
 
