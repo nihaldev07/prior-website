@@ -211,22 +211,27 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
           />
         )}
 
-        <div className="mt-8 flex items-center gap-5">
-          <ButtonPrimary
-            disabled={pQuantity < 1}
-            className="w-full"
-            onClick={() => handleCartSelection(true)}
-          >
-            Buy Now
-          </ButtonPrimary>
-          <ButtonSecondary
-            disabled={pQuantity < 1}
-            className="flex w-full items-center gap-1 border-2 border-primary text-primary"
-            onClick={() => handleCartSelection()}
-          >
-            <Briefcase /> Add to cart
-          </ButtonSecondary>
-        </div>
+        {!(
+          (!!selectedVariant && selectedVariant?.quantity < 1) ||
+          product.quantity < 1
+        ) && (
+          <div className="mt-8 flex items-center gap-5">
+            <ButtonPrimary
+              disabled={pQuantity < 1}
+              className="w-full"
+              onClick={() => handleCartSelection(true)}
+            >
+              Buy Now
+            </ButtonPrimary>
+            <ButtonSecondary
+              disabled={pQuantity < 1}
+              className="flex w-full items-center gap-1 border-2 border-primary text-primary"
+              onClick={() => handleCartSelection()}
+            >
+              <Briefcase /> Add to cart
+            </ButtonSecondary>
+          </div>
+        )}
 
         {((!!selectedVariant && selectedVariant?.quantity < 1) ||
           product.quantity < 1) && (
