@@ -2,13 +2,17 @@
 import React, { useEffect, useState } from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
-import SectionProductHeader from "./SectionProductHeader";
+
 import { getProductDataById } from "@/lib/fetchFunctions";
 import { SingleProductType } from "@/data/types";
 import Head from "next/head";
 import useThrottledEffect from "@/hooks/useThrottleEffect";
 import { Cat, LoaderPinwheel } from "lucide-react";
 import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
+const SectionProductHeader = dynamic(() => import("./SectionProductHeader"), {
+  ssr: false,
+});
 
 const SingleProductPage = () => {
   // Fetch product data directly in the server component

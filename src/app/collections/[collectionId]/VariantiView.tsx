@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SingleProductType, Variation } from "@/data/types";
-import Swal from "sweetalert2";
 
 interface Props {
   type: "size" | "color";
@@ -30,23 +29,32 @@ const SelectDemo: React.FC<Props> = ({
   selectedVariant,
   onVariantChange,
 }) => {
+  const [variations, setVariations] = React.useState<any[]>([]);
+  React.useEffect(() => {
+    if (!!selectedProduct && !!selectedProduct?.variation) {
+      setVariations(selectedProduct?.variation ?? []);
+    }
+    //eslint-disable-next-line
+  }, [selectedProduct]);
   const handleVariantChange = (value: string) => {
     const vType: "size" | "color" = type;
 
     const rType = vType === "color" ? "size" : "color";
     const selectedRev = !!selectedVariant ? selectedVariant[rType] ?? "" : "";
 
-    const filteredVariants = selectedProduct.variation.filter(
-      (variant: Variation) => {
-        return variant[vType] === value && variant[rType] === selectedRev;
-      }
-    );
+    console.log("varation:", variations);
+
+    const filteredVariants = variations.filter((variant: Variation) => {
+      return (
+        variant[vType].includes(value) && variant[rType].includes(selectedRev)
+      );
+    });
 
     if (filteredVariants.length > 0) {
       const selectedVariantData = filteredVariants[0];
       onVariantChange(selectedVariantData);
     } else {
-      Swal.fire("Out Of Stock", "This variant is out of stock", "error");
+      console.log("Out Of Stock", "This variant is out of stock", "error");
     }
   };
 
