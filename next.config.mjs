@@ -25,7 +25,6 @@ const nextConfig = {
     ],
     deviceSizes: [320, 420, 768, 1024, 1200],
   },
-  swcMinify: true,
   reactStrictMode: true,
   headers: async () => [
     {

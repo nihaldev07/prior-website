@@ -11,12 +11,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
 
-const SingleCategoryPage = ({
-  params: { categoryId },
-}: {
-  params: { categoryId: string };
-}) => {
+const SingleCategoryPage = () => {
+  const params = useParams(); // Fetch route parameters
+  const categoryId = params.categoryId;
+
   const {
     products,
     loading,
@@ -27,6 +27,7 @@ const SingleCategoryPage = ({
     filterData,
     handleLoadMore,
   } = useProductFetch(1, {
+    //@ts-ignore
     categoryId,
     color: "",
     size: "",
@@ -34,7 +35,9 @@ const SingleCategoryPage = ({
   });
 
   useEffect(() => {
+    //@ts-ignore
     setFilterData({ ...filterData, categoryId });
+    //eslint-disable-next-line
   }, [categoryId]);
   const [sheetOpen, setSheetOpen] = useState(false);
   return (
@@ -61,6 +64,7 @@ const SingleCategoryPage = ({
               <SidebarFilters
                 filterData={filterData}
                 showCategory={false}
+                //@ts-ignore
                 selectedCategory={categoryId}
                 selectedColor={filterData?.color}
                 selectedSize={filterData?.size}
@@ -78,6 +82,7 @@ const SingleCategoryPage = ({
           <SidebarFilters
             filterData={filterData}
             showCategory={false}
+            //@ts-ignore
             selectedCategory={categoryId}
             selectedColor={filterData?.color}
             selectedSize={filterData?.size}

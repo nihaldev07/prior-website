@@ -1,30 +1,56 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
 import { getProductDataById } from "@/lib/fetchFunctions";
 import { SingleProductType } from "@/data/types";
 import Head from "next/head";
+import useThrottledEffect from "@/hooks/useThrottleEffect";
+import { Cat, LoaderPinwheel } from "lucide-react";
+import { useParams } from "next/navigation";
 
-interface SingleProductPageProps {
-  params: { collectionId: string };
-}
-
-const SingleProductPage = async ({
-  params: { collectionId },
-}: SingleProductPageProps) => {
+const SingleProductPage = () => {
   // Fetch product data directly in the server component
-  let product: SingleProductType | null = null;
-  let error = null;
 
-  try {
-    product = await getProductDataById(collectionId);
-  } catch (err) {
-    console.error("Failed to fetch product data:", err);
-    error = "Failed to load product. Please try again later.";
+  const [product, setProduct] = useState<SingleProductType | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const params = useParams(); // Fetch route parameters
+  const collectionId = params.collectionId;
+
+  const fetchProduct = async () => {
+    setLoading(true);
+    try {
+      //@ts-ignore
+      const productdata = await getProductDataById(collectionId ?? "");
+      setProduct(productdata);
+    } catch (err) {
+      console.error("Failed to fetch product data:", err);
+      setError("Failed to load product. Please try again later.");
+    }
+    setLoading(false);
+  };
+
+  useThrottledEffect(
+    () => {
+      fetchProduct();
+    },
+    [collectionId],
+    1500
+  );
+
+  if (loading) {
+    return (
+      <div className="rounded-lg w-full p-28 h-auto sm:h-[50vh] text-base sm:text-lg bg-white flex justify-center items-center">
+        <Cat className="size-10 mr-2" /> Loading please wait...{" "}
+        <LoaderPinwheel className="size-5 ml-2 text-primary animate-spin" />
+      </div>
+    );
   }
 
-  if (error) {
+  if (!!error) {
     return <div className="text-center mt-10 text-red-500">{error}</div>;
   }
 

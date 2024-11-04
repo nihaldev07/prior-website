@@ -17,11 +17,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-// import {
-//   HoverCard,
-//   HoverCardContent,
-//   HoverCardTrigger,
-// } from "@/components/ui/hover-card";
+
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 
 interface SectionProductHeaderProps {
@@ -207,7 +203,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
               selected={!!selectedVariant ? selectedVariant?.color : ""}
               onVariantChange={(variant: Variation) => {
                 setSelectedVariant(variant);
-                variant?.quantity < pQuantity && setPQuantity(0);
+                if (variant?.quantity < pQuantity) setPQuantity(0);
               }}
             />
           )}
