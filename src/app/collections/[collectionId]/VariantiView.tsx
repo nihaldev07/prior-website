@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 
 import {
@@ -37,10 +38,7 @@ const SelectDemo: React.FC<Props> = ({
 
     const filteredVariants = selectedProduct.variation.filter(
       (variant: Variation) => {
-        return (
-          variant[vType] === value &&
-          (variant[rType] === selectedRev || variant.quantity > 0)
-        );
+        return variant[vType] === value && variant[rType] === selectedRev;
       }
     );
 
