@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   else return [];
 }
 
-export const revalidate = 604800; // Revalidate every 7 days for ISR
+export const revalidate = 30; // Revalidate every 7 days for ISR
 
 const SingleProductPage = async ({
   params: { collectionId },
