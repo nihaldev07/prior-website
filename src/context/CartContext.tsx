@@ -1,6 +1,7 @@
 "use client";
 // context/CartContext.tsx
 import { Variation } from "@/data/types";
+import { trackEvent } from "@/lib/firebase-event";
 import React, {
   createContext,
   ReactElement,
@@ -59,6 +60,12 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
   const [cart, setCart] = useState<CartItem[]>([]);
 
   const addToCart = (item: CartItem) => {
+    trackEvent("add_to_cart", {
+      item_id: item?.id,
+      item_name: item?.name,
+      price: item?.unitPrice,
+      currency: "BDT",
+    });
     setCart((prevCart) => {
       const foundObject = prevCart.find((itemY) => itemY.id === item.id);
       if (foundObject) {
@@ -90,6 +97,14 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
   };
 
   const removeFromCart = (itemId: string) => {
+    const item = cart.find((cartItem) => cartItem.id === itemId);
+    if (!!item)
+      trackEvent("remove_from_cart", {
+        item_id: item?.id,
+        item_name: item?.name,
+        price: item?.unitPrice,
+        currency: "BDT",
+      });
     setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
   };
 

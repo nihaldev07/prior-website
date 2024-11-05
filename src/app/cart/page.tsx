@@ -6,9 +6,25 @@ import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 import { CartItem, useCart } from "@/context/CartContext";
 import { Cat, Star, Trash } from "lucide-react";
+import { trackEvent } from "@/lib/firebase-event";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateToCart } = useCart();
+
+  trackEvent("view_cart", {
+    currency: "BDT",
+    value: cart.reduce((sum, cartdata) => {
+      sum =
+        Number(sum) +
+        Number(cartdata.quantity) *
+          Number(
+            !!cartdata?.hasDiscount
+              ? cartdata?.updatedPrice ?? cartdata?.unitPrice
+              : cartdata?.unitPrice
+          );
+      return sum;
+    }, 0),
+  });
 
   const renderProduct = (
     item: CartItem,
@@ -25,6 +41,7 @@ const CartPage = () => {
       categoryName,
       quantity,
     } = item;
+
     return (
       <div key={name} className="flex py-5 last:pb-0">
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl md:h-40 md:w-40">

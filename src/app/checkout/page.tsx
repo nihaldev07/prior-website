@@ -17,6 +17,8 @@ import { isValidBangladeshiPhoneNumber } from "@/utils/content";
 import { Loader2, Star, TrashIcon } from "lucide-react";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
+import { trackEvent } from "@/lib/firebase-event";
+import { Value } from "@radix-ui/react-select";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -250,6 +252,12 @@ const CheckoutPage = () => {
   };
 
   const confirmOrderAndCreateOne = async () => {
+    trackEvent("begin_checkout", {
+      value: transectionData?.remaining,
+      currency: "BDT",
+      coupon: "",
+    });
+
     setLoading(true);
     const hasPayment =
       transectionData?.discount > 0 ||
@@ -284,8 +292,25 @@ const CheckoutPage = () => {
       hasPayment,
     };
     try {
+      trackEvent("add_payment_info", {
+        payment_type: hasPayment ? "bkash" : paymentMethod,
+        value:
+          paymentMethod === "bkash"
+            ? transectionData?.remaining
+            : paymentAmount,
+        currency: "BDT",
+      });
       const response = await createOrder(orderData);
+
       if (response.success) {
+        trackEvent("begin_checkout", {
+          transection_id: response?.data?.order?.id,
+          affiliation: "Web-Site",
+          Value: transectionData?.remaining,
+          shipping: transectionData?.deliveryCharge,
+          discount: transectionData?.discount,
+          currency: "BDT",
+        });
         const orderId = response?.data?.order?.id;
         if (hasPayment) {
           bkashCheckout(
