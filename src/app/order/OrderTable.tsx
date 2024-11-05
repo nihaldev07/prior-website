@@ -56,17 +56,23 @@ const OrderTable: React.FC<Props> = ({ order }) => {
                 ৳{product.totalPrice.toFixed(2)}
               </TableCell>
               <TableCell className="text-center">
-                {product.hasVariation ? (
+                {!!product.variation ? (
                   <div className="space-x-1">
                     {product.variation.color && (
-                      <span className="badge bg-blue-100 text-blue-800">
+                      <Badge
+                        variant={"outline"}
+                        className=" bg-blue-100 text-blue-800"
+                      >
                         {product.variation.color}
-                      </span>
+                      </Badge>
                     )}
                     {product.variation.size && (
-                      <span className="badge bg-purple-100 text-purple-800">
+                      <Badge
+                        variant={"outline"}
+                        className="badge bg-purple-100 text-purple-800 ml-1"
+                      >
                         {product.variation.size}
-                      </span>
+                      </Badge>
                     )}
                   </div>
                 ) : (

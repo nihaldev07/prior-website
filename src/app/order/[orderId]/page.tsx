@@ -19,7 +19,7 @@ const OrderDetails = () => {
   const [order, setOrder] = useState<any>(null);
   const params = useParams(); // Fetch route parameters
   //@ts-ignore
-  const orderId: string = params.categoryId;
+  const orderId: string = params.orderId;
 
   const fetchOrderInformation = async () => {
     const orderData = await getOrderDetails(orderId);
