@@ -11,14 +11,29 @@ import { getOrderDetails } from "@/lib/fetchFunctions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useAnalytics from "@/hooks/useAnalytics";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const OrderDetails = async ({
-  params: { orderId },
-}: {
-  params: { orderId: string };
-}) => {
+const OrderDetails = () => {
   useAnalytics();
-  const order = await getOrderDetails(orderId);
+  const [order, setOrder] = useState<any>(null);
+  const params = useParams(); // Fetch route parameters
+  //@ts-ignore
+  const orderId: string = params.categoryId;
+
+  const fetchOrderInformation = async () => {
+    const orderData = await getOrderDetails(orderId);
+    if (!!orderData) {
+      setOrder(orderData);
+    }
+  };
+  useEffect(() => {
+    if (!!orderId) {
+      fetchOrderInformation();
+    }
+    //eslint-disable-next-line
+  }, [orderId]);
+
   if (!order) {
     return (
       <div className="w-full flex justify-center items-center">
