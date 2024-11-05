@@ -68,29 +68,29 @@ const ImageSlider = ({ images }: { images: string[] }) => {
         />
       </div>
       <button
-        className="absolute left-0 top-1/2 transform h-[459px] rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group"
+        className="absolute left-0 top-1/2 transform h-auto rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group"
         onClick={prevSlide}
       >
         <ChevronLeft className="text-gray-400 group-hover:text-white" />
       </button>
       <button
-        className="absolute right-0 top-1/2 transform h-[459px] rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group"
+        className="absolute right-0 top-1/2 transform h-auto rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group"
         onClick={nextSlide}
       >
         <ChevronRight className="text-gray-400 group-hover:text-white" />
       </button>
-      <div className="flex justify-center mt-4">
+      {/* <div className="flex justify-center mt-4 ">
         {images.map((_, index) => (
           <div
             key={index}
             className={`h-1 w-10 mx-1 ${
               index === currentIndex
-                ? "bg-[#beff46] rounded-xl"
+                ? "bg-primary rounded-xl"
                 : "bg-gray-300 rounded-xl"
             } transition-all duration-500 ease-in-out`}
           ></div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

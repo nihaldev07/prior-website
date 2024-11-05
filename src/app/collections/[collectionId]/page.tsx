@@ -1,62 +1,25 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
+import SectionProductHeader from "./SectionProductHeader";
+import { getProductDataById, getAllProducts } from "@/lib/fetchFunctions";
 
-import { getProductDataById } from "@/lib/fetchFunctions";
-import { SingleProductType } from "@/data/types";
-import Head from "next/head";
-import useThrottledEffect from "@/hooks/useThrottleEffect";
-import { Cat, LoaderPinwheel } from "lucide-react";
-import { useParams } from "next/navigation";
-import dynamic from "next/dynamic";
-const SectionProductHeader = dynamic(() => import("./SectionProductHeader"), {
-  ssr: false,
-});
+// Specify the static paths that should be pre-rendered
+export async function generateStaticParams() {
+  const products = await getAllProducts();
+  if (!!products && products.length > 0)
+    return products.map((product) => ({ collectionId: product?.id }));
+  else return [];
+}
 
-const SingleProductPage = () => {
-  // Fetch product data directly in the server component
+export const revalidate = 604800; // Revalidate every 7 days for ISR
 
-  const [product, setProduct] = useState<SingleProductType | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const params = useParams(); // Fetch route parameters
-  const collectionId = params.collectionId;
-
-  const fetchProduct = async () => {
-    setLoading(true);
-    try {
-      //@ts-ignore
-      const productdata = await getProductDataById(collectionId ?? "");
-      setProduct(productdata);
-    } catch (err) {
-      console.error("Failed to fetch product data:", err);
-      setError("Failed to load product. Please try again later.");
-    }
-    setLoading(false);
-  };
-
-  useThrottledEffect(
-    () => {
-      fetchProduct();
-    },
-    [collectionId],
-    1500
-  );
-
-  if (loading) {
-    return (
-      <div className="rounded-lg w-full p-28 h-auto sm:h-[50vh] text-base sm:text-lg bg-white flex justify-center items-center">
-        <Cat className="size-10 mr-2" /> Loading please wait...{" "}
-        <LoaderPinwheel className="size-5 ml-2 text-primary animate-spin" />
-      </div>
-    );
-  }
-
-  if (!!error) {
-    return <div className="text-center mt-10 text-red-500">{error}</div>;
-  }
+const SingleProductPage = async ({
+  params: { collectionId },
+}: {
+  params: { collectionId: string };
+}) => {
+  const product = await getProductDataById(collectionId);
 
   if (!product) {
     return (
@@ -83,10 +46,11 @@ const SingleProductPage = () => {
     categoryId,
   } = product;
 
-  const prevPrice = discount && updatedPrice ? unitPrice : 0;
-  const currentPrice = discount && updatedPrice ? updatedPrice : unitPrice;
-  const imageData =
-    images && images.length > 0 ? [thumbnail, ...images] : [thumbnail];
+  const prevPrice = !!discount && !!updatedPrice ? unitPrice : 0;
+  const currentPrice = !!discount && !!updatedPrice ? updatedPrice : unitPrice;
+
+  let imageData = [thumbnail];
+  if (images && images.length > 0) imageData = [...imageData, ...images];
 
   const title = `${name} | Prior - Your Priority in Fashion`;
   const metaDescription = `${description} Get it now at Prior!`;
@@ -94,7 +58,7 @@ const SingleProductPage = () => {
 
   return (
     <>
-      <Head>
+      <head>
         <title>{title}</title>
         <meta name="description" content={metaDescription} />
         <meta property="og:title" content={title} />
@@ -105,11 +69,11 @@ const SingleProductPage = () => {
           property="og:url"
           content={`https://priorbd.com/collections/${id}`}
         />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:card" content={ogImage} />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogImage} />
-      </Head>
+      </head>
 
       <div className="px-4 sm:px-0 sm:container">
         <div className="mt-4 mb-4 sm:mb-20">
