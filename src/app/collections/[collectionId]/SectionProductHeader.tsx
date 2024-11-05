@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { SingleProductType, Variation } from "@/data/types";
 import { useCart } from "@/context/CartContext";
 import { Briefcase, Info, TagIcon } from "lucide-react";
+import { trackEvent } from "@/lib/firebase-event";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -50,6 +51,12 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
   useEffect(() => {
     if (!!product) {
+      trackEvent("view_item", {
+        item_id: product?.id,
+        item_name: product?.name,
+        price: prevPrice > 0 ? prevPrice : currentPrice,
+        currency: "BDT",
+      });
       setUniqueColors([
         ...new Set(
           product?.variation.filter((c) => !!c.color).map((v) => v.color) ?? []
@@ -107,6 +114,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
     };
     //@ts-ignore
     addToCart(productData);
+
     Swal.fire({
       title: "Added to Cart",
       text: `${product.name} added to cart successfully!`,

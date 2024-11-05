@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
@@ -12,6 +12,7 @@ import { CartItem, useCart } from "@/context/CartContext";
 import { ShoppingCart, Star, Trash } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 import { Badge } from "./ui/badge";
+import { trackEvent } from "@/lib/firebase-event";
 
 export interface CartSideBarProps {}
 const CartSideBar: React.FC<CartSideBarProps> = () => {
@@ -20,6 +21,26 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
   const handleOpenMenu = () => setIsVisable(true);
   const handleCloseMenu = () => setIsVisable(false);
+
+  useEffect(() => {
+    if (isVisable) {
+      trackEvent("view_cart", {
+        currency: "BDT",
+        value: cart.reduce((sum, cartdata) => {
+          sum =
+            Number(sum) +
+            Number(cartdata.quantity) *
+              Number(
+                !!cartdata?.hasDiscount
+                  ? cartdata?.updatedPrice ?? cartdata?.unitPrice
+                  : cartdata?.unitPrice
+              );
+          return sum;
+        }, 0),
+      });
+    }
+    //eslint-disable-next-line
+  }, [isVisable]);
 
   const renderProduct = (item: CartItem) => {
     const {
