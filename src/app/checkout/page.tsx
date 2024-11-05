@@ -18,7 +18,7 @@ import { Loader2, Star, TrashIcon } from "lucide-react";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackEvent } from "@/lib/firebase-event";
-import { Value } from "@radix-ui/react-select";
+import useAnalytics from "@/hooks/useAnalytics";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -29,6 +29,7 @@ export interface UserFormData {
   postalCode?: string;
 }
 const CheckoutPage = () => {
+  useAnalytics();
   const { cart, updateToCart, removeFromCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);

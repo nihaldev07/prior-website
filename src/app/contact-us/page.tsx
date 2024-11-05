@@ -3,12 +3,13 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { createContactInfo, IContact } from "@/services/contactService";
 import Swal from "sweetalert2";
+import useAnalytics from "@/hooks/useAnalytics";
 
 const ContactUs = () => {
+  useAnalytics();
   const [formData, setFormData] = useState({
     name: "",
     email: "",

@@ -10,8 +10,10 @@ import { Filter, LoaderCircle } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
+import useAnalytics from "@/hooks/useAnalytics";
 
 const Page = () => {
+  useAnalytics();
   const { products, loading, distictFilterValues, setFilterData, filterData } =
     useProductFetch();
   const [sheetOpen, setSheetOpen] = useState(false);

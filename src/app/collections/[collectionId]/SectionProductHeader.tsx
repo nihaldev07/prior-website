@@ -19,6 +19,7 @@ import { SingleProductType, Variation } from "@/data/types";
 import { useCart } from "@/context/CartContext";
 import { Briefcase, Info, TagIcon } from "lucide-react";
 import { trackEvent } from "@/lib/firebase-event";
+import useAnalytics from "@/hooks/useAnalytics";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -40,6 +41,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 }) => {
   const { addToCart } = useCart();
   const router = useRouter();
+  useAnalytics();
 
   const [pQuantity, setPQuantity] = useState(product?.quantity > 0 ? 1 : 0);
   const [selectedVariant, setSelectedVariant] = useState<Variation | null>(
@@ -51,6 +53,10 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
   useEffect(() => {
     if (!!product) {
+      trackEvent("select_item", {
+        item_id: product?.id,
+        item_name: product?.name,
+      });
       trackEvent("view_item", {
         item_id: product?.id,
         item_name: product?.name,
@@ -68,6 +74,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
         ),
       ]);
     }
+    //eslint-disable-next-line
   }, [product]);
 
   const handleCartSelection = (isBuy = false) => {

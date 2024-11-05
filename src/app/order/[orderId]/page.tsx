@@ -1,4 +1,5 @@
 // Assuming you're using shadcn components
+"use client";
 import {
   LucideTruck,
   LucideCheckCircle,
@@ -9,12 +10,14 @@ import OrderTable from "../OrderTable";
 import { getOrderDetails } from "@/lib/fetchFunctions";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import useAnalytics from "@/hooks/useAnalytics";
 
 const OrderDetails = async ({
   params: { orderId },
 }: {
   params: { orderId: string };
 }) => {
+  useAnalytics();
   const order = await getOrderDetails(orderId);
   if (!order) {
     return (
