@@ -1,8 +1,10 @@
 import Image from "next/image";
 import React from "react";
 import { headerSection, headerSectionMBL } from "@/data/content";
-import { cn } from "@/lib/utils";
-import ImageSlider from "@/shared/ImageSlider";
+import dynamic from "next/dynamic";
+const ImageSlider = dynamic(() => import("@/shared/ImageSlider"), {
+  ssr: false,
+});
 
 const HeroSection: React.FC = () => {
   const HeroSectionImg = "https://d38c45qguy2pwg.cloudfront.net/hero-img.webp";
