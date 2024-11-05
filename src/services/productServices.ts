@@ -6,7 +6,9 @@ export const fetchProductById = async (
   productId: string
 ): Promise<SingleProductType | null> => {
   try {
-    const response = await fetch(config.product.getProductById(productId),{ cache: "no-store" });
+    const response = await fetch(config.product.getProductById(productId), {
+    next: { revalidate: 30 } // Revalidates every 30 seconds
+  });
     if (!response.ok) {
       return null;
     }
@@ -22,7 +24,9 @@ export const fetchProductById = async (
 export const fetchAllProducts = async (
 ): Promise<SingleProductType[]> => {
   try {
-    const response = await fetch(`${config.product.getProducts()}?limit=${500}`);
+    const response = await fetch(`${config.product.getProducts()}?limit=${500}`, {
+    next: { revalidate: 30 } // Revalidates every 30 seconds
+  });
     if (!response.ok) {
       return [];
     }
