@@ -12,6 +12,7 @@ import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
+import useAnalytics from "@/hooks/useAnalytics";
 
 const SingleCategoryPage = () => {
   const params = useParams(); // Fetch route parameters
@@ -33,6 +34,8 @@ const SingleCategoryPage = () => {
     size: "",
     price: "",
   });
+
+  useAnalytics();
 
   useEffect(() => {
     //@ts-ignore

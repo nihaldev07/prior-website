@@ -6,7 +6,6 @@ import { Tag } from "lucide-react";
 import Link from "next/link";
 import { IProduct } from "@/lib/interface";
 import { ProductType } from "@/data/types";
-import { trackEvent } from "@/lib/firebase-event";
 
 interface IProp {
   product: IProduct | ProductType;
@@ -16,16 +15,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
   const isOutOfStock = !product?.quantity || product?.quantity < 1;
 
   return (
-    <Link
-      href={`/collections/${product?.id}`}
-      prefetch={false}
-      onClick={() =>
-        trackEvent("select_item", {
-          item_id: product?.id,
-          item_name: product?.name,
-        })
-      }
-    >
+    <Link href={`/collections/${product?.id}`} prefetch={false}>
       <Card className="rounded-xl shadow-none border-0 bg-transparent">
         <CardHeader className="relative flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 space-y-0">
           {/* Badge for Discount */}

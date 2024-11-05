@@ -4,7 +4,6 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "./navbar";
 import Footer from "@/shared/Footer/Footer";
-import useAnalytics from "@/hooks/useAnalytics";
 
 const inter = Poppins({
   weight: "400",
@@ -45,7 +44,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  useAnalytics();
+  //useAnalytics();
   return (
     <html lang="en">
       <body className={inter.className}>

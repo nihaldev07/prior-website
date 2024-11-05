@@ -10,9 +10,14 @@ const useAnalytics = () => {
 
   useEffect(() => {
     const logPageView = async () => {
-      const analytics = await getAnalyticsInstance();
-      if (analytics) {
-        logEvent(analytics, "page_view", { page_path: pathname });
+      try {
+        const analytics = await getAnalyticsInstance();
+        console.log("Analytics instance:", analytics); // Log for debugging
+        if (analytics) {
+          logEvent(analytics, "page_view", { page_path: pathname });
+        }
+      } catch (error) {
+        console.error("Error logging page view:", error);
       }
     };
 
