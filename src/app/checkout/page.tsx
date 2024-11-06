@@ -19,6 +19,8 @@ import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackEvent } from "@/lib/firebase-event";
 import useAnalytics from "@/hooks/useAnalytics";
+import { Badge } from "@/components/ui/badge";
+import { formatVariant } from "@/utils/functions";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -81,7 +83,8 @@ const CheckoutPage = () => {
     const discount = cart.reduce((sum, cartdata) => {
       sum =
         Number(sum) +
-        (Number(cartdata.unitPrice) - Number(cartdata.updatedPrice ?? 0));
+        (Number(cartdata.unitPrice) - Number(cartdata.updatedPrice ?? 0)) *
+          cartdata.quantity;
       return sum;
     }, 0);
     transectionData.discount = discount;
@@ -162,7 +165,7 @@ const CheckoutPage = () => {
     //eslint-disable-next-line
   }, [formData?.district]);
 
-  const renderProduct = (item: CartItem) => {
+  const renderProduct = (item: CartItem, index: number) => {
     const {
       name,
       thumbnail,
@@ -171,11 +174,12 @@ const CheckoutPage = () => {
       unitPrice,
       categoryName,
       maxQuantity,
+      variation,
     } = item;
 
     return (
-      <div key={id} className="flex py-5 last:pb-0">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl md:h-40 md:w-40">
+      <div key={index} className="flex py-5 last:pb-0">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
           <Image
             fill
             src={thumbnail}
@@ -196,8 +200,7 @@ const CheckoutPage = () => {
                   {categoryName}
                 </span>
                 <div className="flex items-center gap-1">
-                  <Star className="text-yellow-400" />
-                  <span className="text-sm">{5}</span>
+                  <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
               </div>
               <span className="font-medium md:text-xl">${unitPrice}</span>
@@ -208,7 +211,7 @@ const CheckoutPage = () => {
               <LikeButton />
               <TrashIcon
                 className="size-5 text-red-400"
-                onClick={() => removeFromCart(id)}
+                onClick={() => removeFromCart(index)}
               />
             </div>
             <div>
@@ -427,7 +430,7 @@ const CheckoutPage = () => {
           <div className="w-full lg:w-[36%] ">
             <h3 className="text-lg font-semibold">Order summary</h3>
             <div className="mt-8 divide-y divide-neutral-300">
-              {cart.map((item) => renderProduct(item))}
+              {cart.map((item, index) => renderProduct(item, index))}
             </div>
 
             <div className="mt-10 border-t border-neutral-300 pt-6 text-sm">

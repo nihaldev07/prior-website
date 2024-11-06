@@ -36,7 +36,7 @@ interface CartContextType {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
   updateToCart: (item: CartItem) => void;
-  removeFromCart: (itemId: string) => void;
+  removeFromCart: (index: number) => void;
   clearCart: () => void;
 }
 
@@ -67,7 +67,14 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
       currency: "BDT",
     });
     setCart((prevCart) => {
-      const foundObject = prevCart.find((itemY) => itemY.id === item.id);
+      const foundObject = prevCart.find((itemY) => {
+        if (itemY.id === item.id) {
+          if (itemY.hasVariation && item?.hasVariation) {
+            return itemY.variation?.id === item?.variation?.id;
+          }
+          return false;
+        }
+      });
       if (foundObject) {
         prevCart.forEach((itemX) => {
           if (itemX.id === item.id) {
@@ -76,6 +83,9 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
               ...itemX,
               totalPrice,
               quantity: itemX.quantity++,
+              discount:
+                (itemX.unitPrice - (item.updatedPrice ?? 0)) *
+                (itemX.quantity + 1),
             };
           }
         });
@@ -88,7 +98,14 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
     setCart((prevCart) => {
       return prevCart.map((itemX) => {
         if (itemX.id === item.id) {
-          return item;
+          if (
+            itemX.hasVariation &&
+            item?.hasVariation &&
+            itemX.variation?.id === item?.variation?.id
+          ) {
+            return item;
+          }
+          return itemX;
         } else {
           return itemX;
         }
@@ -96,16 +113,18 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
     });
   };
 
-  const removeFromCart = (itemId: string) => {
-    const item = cart.find((cartItem) => cartItem.id === itemId);
+  const removeFromCart = (index: number) => {
+    if (index < 0) return;
+    const item = cart[index];
     if (!!item)
       trackEvent("remove_from_cart", {
         item_id: item?.id,
         item_name: item?.name,
         price: item?.unitPrice,
+        variation: item?.variation ?? "no variation",
         currency: "BDT",
       });
-    setCart((prevCart) => prevCart.filter((item) => item.id !== itemId));
+    setCart((prevCart) => prevCart.splice(index, 1));
   };
 
   const clearCart = () => {
