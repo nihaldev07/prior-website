@@ -137,7 +137,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       </div>
 
       <div className="basis-[50%] sm:basis-[45%] space-y-4">
-        <h3 className="text-xl font-semibold text-primary text-left">
+        <h3 className="text-xl md:text-2xl md:mt-4 font-semibold text-primary text-left">
           {product?.name}
         </h3>
 
@@ -159,7 +159,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
           </Badge>
         </div>
 
-        <div className="text-2xl font-medium space-y-1">
+        <div className="text-lg font-medium space-y-1">
           {prevPrice > 0 && (
             <p className="text-neutral-500 line-through">৳ {prevPrice}</p>
           )}
@@ -167,9 +167,11 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
         </div>
 
         <div className="flex items-end justify-between mb-5">
-          <p className="text-xl">
-            Available colors {uniqueSizes.length > 0 && "& sizes"}
-          </p>
+          {(uniqueColors.length > 0 || uniqueSizes.length > 0) && (
+            <p className="text-xl">
+              Available colors {uniqueSizes.length > 0 && "& sizes"}
+            </p>
+          )}
           <Dialog>
             <DialogTrigger>
               <p className="text-sm text-neutral-500 flex items-center gap-1">

@@ -7,9 +7,8 @@ import React, { useEffect, useState } from "react";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
 
-import LikeButton from "./LikeButton";
 import { CartItem, useCart } from "@/context/CartContext";
-import { ShoppingCart, Star, Trash } from "lucide-react";
+import { ShoppingCart, Trash } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 import { Badge } from "./ui/badge";
 import { trackEvent } from "@/lib/firebase-event";
@@ -81,9 +80,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                     {name}
                   </Link>
                 </h3>
-                <span className="my-1 text-sm text-neutral-500">
-                  {categoryName}
-                </span>
+
                 <div className="flex items-center gap-1">
                   <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
@@ -94,12 +91,11 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
             </div>
           </div>
           <div className="flex w-full items-end justify-between text-sm">
-            <div className="flex items-center gap-3">
-              <LikeButton />
-              <Trash
-                className="text-2xl"
-                onClick={() => removeFromCart(index)}
-              />
+            <div
+              className="flex items-center gap-2"
+              onClick={() => removeFromCart(index)}
+            >
+              <Trash className=" size-5 " />
             </div>
             <div className="text-sm text-blue-600 font-medium">
               Qty: {quantity}

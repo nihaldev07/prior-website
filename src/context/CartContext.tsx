@@ -124,7 +124,7 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
         variation: item?.variation ?? "no variation",
         currency: "BDT",
       });
-    setCart((prevCart) => prevCart.splice(index, 1));
+    setCart(cart.filter((_, i) => i !== index));
   };
 
   const clearCart = () => {

@@ -53,7 +53,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
           />
         </CardHeader>
 
-        <CardContent className="px-0">
+        <CardContent className=" px-1 md:px-0">
           <div className="w-full">
             <div className="mt-4 flex justify-between">
               <div>
@@ -68,7 +68,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
                 </p>
               </div>
               {product?.hasDiscount && product?.updatedPrice ? (
-                <div className=" flex  gap-2 items-start">
+                <div className=" flex flex-col justify-end gap-2 items-start">
                   <del className="text-sm text-gray-500 font-light">
                     ৳ {product?.unitPrice}
                   </del>
