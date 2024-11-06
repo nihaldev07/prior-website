@@ -6,6 +6,7 @@ import { Tag } from "lucide-react";
 import Link from "next/link";
 import { IProduct } from "@/lib/interface";
 import { ProductType } from "@/data/types";
+import { cn } from "@/lib/utils";
 
 interface IProp {
   product: IProduct | ProductType;
@@ -17,7 +18,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
   return (
     <Link href={`/collections/${product?.id}`} prefetch={false}>
       <Card className="rounded-xl shadow-none border-0 bg-transparent">
-        <CardHeader className="relative flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 space-y-0">
+        <CardHeader className="relative p-0  flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 space-y-0">
           {/* Badge for Discount */}
           {product?.hasDiscount &&
             product?.discount &&
@@ -54,33 +55,41 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
 
         <CardContent className="px-0">
           <div className="w-full">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base md:text-xl text-gray-900 font-semibold truncate max-w-[70%]">
-                {product?.name}
-              </h2>
+            <div className="mt-4 flex justify-between">
+              <div>
+                <h3 className="text-sm text-gray-700">{product.name}</h3>
+                <p
+                  className={cn(
+                    "mt-1 text-sm",
+                    isOutOfStock ? "text-red-700" : "text-gray-500"
+                  )}
+                >
+                  {isOutOfStock ? "Out of Stock" : "In Stock"}
+                </p>
+              </div>
               {product?.hasDiscount && product?.updatedPrice ? (
-                <div className="ml-auto flex gap-2 items-center">
-                  <del className="text-xs text-gray-500 font-light">
+                <div className=" flex  gap-2 items-start">
+                  <del className="text-sm text-gray-500 font-light">
                     ৳ {product?.unitPrice}
                   </del>
-                  <h2 className="text-sm md:text-xl text-blue-900 font-semibold">
+                  <p className="text-sm font-medium text-gray-900">
                     ৳ {product?.updatedPrice}
-                  </h2>
+                  </p>
                 </div>
               ) : (
-                <h2 className="text-sm md:text-xl text-blue-900 font-semibold ml-auto">
-                  ৳ {product?.unitPrice}
-                </h2>
+                <p className="text-sm font-medium text-gray-900">
+                  ৳ {product.unitPrice}
+                </p>
               )}
             </div>
 
-            <div className="w-full flex justify-between items-start my-1">
+            {/* <div className="w-full flex justify-center items-start my-1">
               {isOutOfStock && (
                 <p className="text-red-700 text-xs md:text-base font-medium">
                   Out Of Stock
                 </p>
               )}
-            </div>
+            </div> */}
           </div>
         </CardContent>
       </Card>

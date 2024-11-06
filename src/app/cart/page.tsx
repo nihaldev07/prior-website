@@ -7,6 +7,8 @@ import InputNumber from "@/shared/InputNumber/InputNumber";
 import { CartItem, useCart } from "@/context/CartContext";
 import { Cat, Star, Trash } from "lucide-react";
 import { trackEvent } from "@/lib/firebase-event";
+import { Badge } from "@/components/ui/badge";
+import { formatVariant } from "@/utils/functions";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateToCart } = useCart();
@@ -28,7 +30,8 @@ const CartPage = () => {
 
   const renderProduct = (
     item: CartItem,
-    removeFromCart: (id: string) => void
+    index: number,
+    removeFromCart: (id: number) => void
   ) => {
     const {
       id,
@@ -40,11 +43,12 @@ const CartPage = () => {
       discountType = "%",
       categoryName,
       quantity,
+      variation,
     } = item;
 
     return (
-      <div key={name} className="flex py-5 last:pb-0">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl md:h-40 md:w-40">
+      <div key={index} className="flex py-5 last:pb-0">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
           <Image
             fill
             src={thumbnail}
@@ -65,8 +69,7 @@ const CartPage = () => {
                   {categoryName}
                 </span>
                 <div className="flex items-center gap-1">
-                  <Star className="text-yellow-400" />
-                  <span className="text-sm">{5}</span>
+                  <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
               </div>
               <span className="font-medium md:text-xl">
@@ -76,7 +79,10 @@ const CartPage = () => {
           </div>
           <div className="flex w-full items-end justify-between text-sm">
             <div className="flex items-center gap-3">
-              <Trash className="text-2xl" onClick={() => removeFromCart(id)} />
+              <Trash
+                className="text-2xl"
+                onClick={() => removeFromCart(index)}
+              />
             </div>
             <div>
               <InputNumber
@@ -115,21 +121,43 @@ const CartPage = () => {
         {cart.length > 0 && (
           <div className="flex flex-col lg:flex-row">
             <div className="w-full divide-y divide-neutral-300 lg:w-[60%] xl:w-[55%]">
-              {cart.map((item) => renderProduct(item, removeFromCart))}
+              {cart.map((item, index) =>
+                renderProduct(item, index, removeFromCart)
+              )}
             </div>
             <div className="my-10 shrink-0 border-t border-neutral-300 lg:mx-10 lg:my-0 lg:border-l lg:border-t-0 xl:mx-16 2xl:mx-20" />
             <div className="flex-1">
               <div className="sticky top-28">
                 <h3 className="text-2xl font-semibold">Summary</h3>
                 <div className="mt-7 divide-y divide-neutral-300 text-sm">
-                  <div className="flex justify-between pb-4">
-                    <span>Subtotal</span>
-                    <span className="font-semibold">
-                      {cart.reduce((sum, cartdata) => {
-                        sum = Number(sum) + Number(cartdata.totalPrice);
-                        return sum;
-                      }, 0)}
-                    </span>
+                  <div>
+                    <div className="flex justify-between pb-4">
+                      <span>Subtotal</span>
+                      <span className="font-semibold">
+                        {cart.reduce((sum, cartdata) => {
+                          sum =
+                            Number(sum) +
+                            Number(cartdata.quantity) *
+                              Number(cartdata.unitPrice);
+                          return sum;
+                        }, 0)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between pb-4">
+                      <span>Discount</span>
+                      <span className="font-semibold">
+                        ৳
+                        {cart.reduce((sum, cartdata) => {
+                          sum =
+                            Number(sum) +
+                            Number(cartdata.quantity) *
+                              (Number(cartdata.unitPrice) -
+                                Number(cartdata.updatedPrice ?? 0));
+                          return sum;
+                        }, 0)}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex justify-between pt-4 text-base font-semibold">

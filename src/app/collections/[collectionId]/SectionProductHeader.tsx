@@ -8,7 +8,6 @@ import Swal from "sweetalert2";
 import ImageShowCase from "@/components/ImageShowCase";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import Heading from "@/shared/Heading/Heading";
 import SelectDemo from "./VariantiView";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 import { Badge } from "@/components/ui/badge";
@@ -138,7 +137,9 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       </div>
 
       <div className="basis-[50%] sm:basis-[45%] space-y-4">
-        <Heading className="text-left" isMain title={shoeName} />
+        <h3 className="text-xl font-semibold text-primary text-left">
+          {product?.name}
+        </h3>
 
         <div className="flex items-center space-x-4">
           {!!product.discount && (

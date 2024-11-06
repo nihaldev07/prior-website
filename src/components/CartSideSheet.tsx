@@ -13,6 +13,7 @@ import { ShoppingCart, Star, Trash } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 import { Badge } from "./ui/badge";
 import { trackEvent } from "@/lib/firebase-event";
+import { formatVariant } from "@/utils/functions";
 
 export interface CartSideBarProps {}
 const CartSideBar: React.FC<CartSideBarProps> = () => {
@@ -42,7 +43,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     //eslint-disable-next-line
   }, [isVisable]);
 
-  const renderProduct = (item: CartItem) => {
+  const renderProduct = (item: CartItem, index: number) => {
     const {
       id,
       name,
@@ -52,10 +53,11 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
       updatedPrice,
       categoryName,
       quantity,
+      variation,
     } = item;
 
     return (
-      <div key={id} className="flex py-5 last:pb-0">
+      <div key={index} className="flex py-5 last:pb-0">
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl mr-2">
           <Image
             fill
@@ -83,8 +85,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                   {categoryName}
                 </span>
                 <div className="flex items-center gap-1">
-                  <Star className="text-yellow-400" />
-                  <span className="text-sm">{5}</span>
+                  <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
               </div>
               <span className=" font-medium">
@@ -97,7 +98,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
               <LikeButton />
               <Trash
                 className="text-2xl"
-                onClick={() => removeFromCart(item?.id)}
+                onClick={() => removeFromCart(index)}
               />
             </div>
             <div className="text-sm text-blue-600 font-medium">
@@ -167,7 +168,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
             </div>
             <div className="hiddenScrollbar h-screen overflow-y-auto p-5">
               <div className="divide-y divide-neutral-300">
-                {cart.map((item) => renderProduct(item))}
+                {cart.map((item, index) => renderProduct(item, index))}
               </div>
             </div>
           </div>
