@@ -65,9 +65,6 @@ const CartPage = () => {
                 <h3 className="font-medium md:text-2xl ">
                   <Link href={`/products/${id}`}>{name}</Link>
                 </h3>
-                <span className="my-1 text-sm text-neutral-500">
-                  {categoryName}
-                </span>
                 <div className="flex items-center gap-1">
                   <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
@@ -78,11 +75,11 @@ const CartPage = () => {
             </div>
           </div>
           <div className="flex w-full items-end justify-between text-sm">
-            <div className="flex items-center gap-3">
-              <Trash
-                className="text-2xl"
-                onClick={() => removeFromCart(index)}
-              />
+            <div
+              className="flex items-center gap-3"
+              onClick={() => removeFromCart(index)}
+            >
+              <Trash className=" size-5 " />
             </div>
             <div>
               <InputNumber
