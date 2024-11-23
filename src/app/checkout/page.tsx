@@ -484,7 +484,13 @@ const CheckoutPage = () => {
             <ButtonPrimary
               className="mt-8 w-full"
               disabled={loading || !isTermsChecked}
-              onClick={() => handleConfirmOrder()}
+              onClick={() => {
+                Swal.fire(
+                  "The Website is in maintOur site is currently undergoing maintenance",
+                  "Thank you for your patience and support!",
+                  "info"
+                );
+              }}
             >
               Confirm order{" "}
               {loading && (
