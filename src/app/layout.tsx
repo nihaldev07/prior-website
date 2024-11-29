@@ -50,12 +50,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <CartProvider>
-          {/* <>
+          <>
             <Navbar />
             {children}
             <Footer />
-          </> */}
-          <Maintenance />
+          </>
+          {/* <Maintenance /> */}
         </CartProvider>
       </body>
     </html>

@@ -1,25 +1,61 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
-import { getProductDataById, getAllProducts } from "@/lib/fetchFunctions";
+import { getProductDataById } from "@/lib/fetchFunctions";
+import { useParams } from "next/navigation";
+import { SingleProductType } from "@/data/types";
 
-// Specify the static paths that should be pre-rendered
-export async function generateStaticParams() {
-  const products = await getAllProducts();
-  if (!!products && products.length > 0)
-    return products.map((product) => ({ collectionId: product?.id }));
-  else return [];
-}
+const SingleProductPage = () => {
+  const [product, setProduct] = useState<SingleProductType | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-export const revalidate = 30; // Revalidate every 7 days for ISR
+  const params = useParams(); // Fetch route parameters
+  //@ts-ignore
+  const collectionId: string = params.collectionId;
 
-const SingleProductPage = async ({
-  params: { collectionId },
-}: {
-  params: { collectionId: string };
-}) => {
-  const product = await getProductDataById(collectionId);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        const productData = await getProductDataById(collectionId);
+        if (productData) {
+          setProduct(productData);
+        } else {
+          setError("Product not found.");
+        }
+      } catch (err) {
+        setError("Failed to load product data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [collectionId]);
+
+  if (loading) {
+    return (
+      <div className="container">
+        <SectionNavigation />
+        <h1 className="text-center mt-10">Loading...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container">
+        <SectionNavigation />
+        <h1 className="text-center mt-10">{error}</h1>
+        <div className="mb-28">
+          <SectionMoreProducts categoryId="" />
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (

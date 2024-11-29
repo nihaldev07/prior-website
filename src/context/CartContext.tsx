@@ -6,6 +6,7 @@ import React, {
   createContext,
   ReactElement,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -57,7 +58,19 @@ export const useCart = () => {
 export const CartProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    // Retrieve initial cart data from localStorage
+    if (typeof window !== "undefined") {
+      const savedCart = localStorage.getItem("cart");
+      return savedCart ? JSON.parse(savedCart) : [];
+    }
+    return [];
+  });
+
+  // Sync cart data with localStorage whenever the cart changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   const addToCart = (item: CartItem) => {
     trackEvent("add_to_cart", {
