@@ -36,13 +36,11 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
               <Cat className=" animate-pulse w-16 h-16  md:w-32 md:h-32" />
             </div>
           )}
-          <Image
+          <img
             src={shots[activeImageIndex]}
             alt="shoe image"
-            fill
-            quality={80}
             className={classNames(
-              " absolute top-0 left-0 rounded-sm object-fill  object-center h-full w-full ",
+              " size-full rounded-lg md:rounded-none object-cover",
               isLoading ? "invisible" : "visible"
             )}
             onLoad={() => setIsLoading(false)}

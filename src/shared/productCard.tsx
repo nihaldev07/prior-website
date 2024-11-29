@@ -15,8 +15,8 @@ interface IProp {
 const ProductCard: React.FC<IProp> = ({ product }) => {
   const isOutOfStock = !product?.quantity || product?.quantity < 1;
 
-  return (
-    <Link href={`/collections/${product?.id}`} prefetch={false}>
+  const test = () => {
+    return (
       <Card className="rounded-xl shadow-none border-0 bg-transparent">
         <CardHeader className="relative p-0  flex justify-center items-center h-[190px] sm:h-[300px] md:h-[350px] lg:h-[400px] rounded-sm px-2 space-y-0">
           {/* Badge for Discount */}
@@ -93,6 +93,51 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
           </div>
         </CardContent>
       </Card>
+    );
+  };
+
+  return (
+    <Link href={`/collections/${product?.id}`} prefetch={false}>
+      <div key={product.id} className="group relative">
+        <img
+          alt={product?.name ?? "product"}
+          src={product?.thumbnail ?? imagePlaceHolder}
+          className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
+        />
+        <div className="mt-4 flex justify-between">
+          <div>
+            <h3 className="text-sm text-gray-700">
+              <a href={`/collections/${product?.id}`}>
+                <span aria-hidden="true" className="absolute inset-0" />
+                {product.name}
+              </a>
+            </h3>
+            <p
+              className={cn(
+                "mt-1 text-sm",
+                isOutOfStock ? "text-red-700" : "text-gray-500"
+              )}
+            >
+              {isOutOfStock ? "Out of Stock" : "In Stock"}
+            </p>
+          </div>
+          {product?.hasDiscount && product?.updatedPrice ? (
+            <div className=" flex flex-col justify-end gap-2 items-start">
+              <del className="text-sm text-gray-500 font-light">
+                ৳ {product?.unitPrice}
+              </del>
+              <p className="text-sm font-medium text-gray-900">
+                ৳ {product?.updatedPrice}
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm font-medium text-gray-900">
+              ৳ {product.unitPrice}
+            </p>
+          )}
+          {/* <p className="text-sm font-medium text-gray-900">{product.price}</p> */}
+        </div>
+      </div>
     </Link>
   );
 };
