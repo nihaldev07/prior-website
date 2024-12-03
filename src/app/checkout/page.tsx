@@ -485,11 +485,12 @@ const CheckoutPage = () => {
               className="mt-8 w-full"
               disabled={loading || !isTermsChecked}
               onClick={() => {
-                Swal.fire(
-                  "The Website is in maintOur site is currently undergoing maintenance",
-                  "Thank you for your patience and support!",
-                  "info"
-                );
+                // Swal.fire(
+                //   "The Website is in maintOur site is currently undergoing maintenance",
+                //   "Thank you for your patience and support!",
+                //   "info"
+                // );
+                handleConfirmOrder();
               }}
             >
               Confirm order{" "}

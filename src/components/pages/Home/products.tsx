@@ -1,11 +1,9 @@
-// Import necessary hooks and components
 "use client";
-import React, { memo } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { productsSection } from "@/data/content";
 import { ProductType } from "@/data/types";
 import { Bird, LoaderCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import useProductFetch from "@/hooks/useProductFetch";
 import Heading from "@/shared/Heading/Heading";
 import Filter from "@/components/Filter";
@@ -23,6 +21,7 @@ const MemoizedHeading = memo(Heading);
 
 const SectionProducts = () => {
   useScrollRestoration();
+
   const {
     products,
     loading,
@@ -33,6 +32,31 @@ const SectionProducts = () => {
     setFilterData,
     distictFilterValues,
   } = useProductFetch();
+
+  const observerRef = useRef<HTMLDivElement | null>(null);
+
+  // Observer to detect scroll to the bottom
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting && currentPage < totalPages && !loading) {
+          handleLoadMore();
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 1.0 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [currentPage, totalPages, loading, handleLoadMore]);
 
   return (
     <div className="px-3 lg:mx-20 mb-4">
@@ -55,10 +79,9 @@ const SectionProducts = () => {
           ))}
       </div>
 
+      {/* Observer trigger */}
       {!loading && currentPage < totalPages && (
-        <div className="mt-14 flex items-center justify-center">
-          <Button onClick={handleLoadMore}>View More</Button>
-        </div>
+        <div ref={observerRef} className="h-10"></div>
       )}
 
       {loading && (
