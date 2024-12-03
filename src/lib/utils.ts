@@ -23,7 +23,7 @@ export const  NavItems=[
     icon:"box"
   },{
     id:2,
-    title:"What's New",
+    title:"New Arrival",
     link:"/deals",
     icon:"package-plus"
   },{

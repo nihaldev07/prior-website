@@ -6,7 +6,7 @@ async function fetchCategoriesAndProducts() {
     // Fetch new products, you can also fetch categories if needed
     const productResponse = await fetch(config.product.getNewProducts(), {
       method: "GET", // Specify method
-      cache: "force-cache", // Use cache if available
+      next: { revalidate: 300 },
     });
 
     // Check if the response is OK (status 200)

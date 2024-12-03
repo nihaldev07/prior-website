@@ -6,6 +6,7 @@ import useDebounce from "./useDebounce";
 const useSearchProduct = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [products, setProducsts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const debounceHandler = useDebounce(inputValue, 500);
 
   useEffect(() => {
@@ -15,6 +16,7 @@ const useSearchProduct = () => {
 
   const searchProduct = async (query: string) => {
     try {
+      setLoading(true);
       const response = await axios.get(config.product.searchProducts(), {
         params: {
           query,
@@ -24,12 +26,15 @@ const useSearchProduct = () => {
         //@ts-ignore
         setProducsts([...response?.data]);
       }
+      setLoading(false);
     } catch (e) {
       console.error("error", e);
+      setLoading(false);
     }
   };
 
   return {
+    loading,
     products,
     inputValue,
     setInputValue,

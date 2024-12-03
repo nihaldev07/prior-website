@@ -1,27 +1,24 @@
 "use client";
 
 import * as React from "react";
-
 import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"; // Adjust path as per your project
+import { Input } from "@/components/ui/input";
 import useSearchProduct from "@/hooks/useProductSearch";
 import { ProductType } from "@/data/types";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { BanknoteIcon, BoxIcon, Search, SearchIcon } from "lucide-react";
+import { BanknoteIcon, BoxIcon, RefreshCcw, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function GlobalSearch() {
   const router = useRouter();
-  const { products, inputValue, setInputValue } = useSearchProduct();
+  const { loading, products, inputValue, setInputValue } = useSearchProduct();
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -68,50 +65,80 @@ export function GlobalSearch() {
       >
         Search
       </div>
-      <CommandDialog open={open} onOpenChange={setOpen} modal>
-        <CommandInput
-          placeholder="Type product name to search..."
-          value={inputValue}
-          onValueChange={(query) => setInputValue(query)}
-        />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandSeparator />
-          <CommandGroup heading="Products">
-            {!!products &&
-              products?.map((product: ProductType) => (
-                <CommandItem
-                  key={product?.id}
-                  onSelect={(val) => {
-                    setOpen(false);
-                    router.push(`/collections/${product?.id}`);
-                  }}
-                >
-                  <Image
-                    src={product?.thumbnail || ""}
-                    className="mr-2 h-8 w-8 rounded-md"
-                    alt="product"
-                    width={64}
-                    height={64}
-                  />
-                  <span>{product?.name}</span>
-                  <CommandShortcut>
-                    <Badge variant={"outline"}>
-                      {" "}
-                      <BoxIcon className=" size-2 mr-1" /> {product?.quantity}
-                    </Badge>
-                    <div className="inline h-4 w-[1px] bg-primary mx-1" />
-                    <Badge variant={"outline"}>
-                      {" "}
-                      <BanknoteIcon className=" size-2 mr-1" />{" "}
-                      {product?.unitPrice}
-                    </Badge>
-                  </CommandShortcut>
-                </CommandItem>
-              ))}
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild className="hidden">
+          <button className="px-4 py-2 bg-primary text-white rounded-md">
+            Search Products
+          </button>
+        </DialogTrigger>
+        <DialogContent className="w-full max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Search Products</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Input for searching */}
+            <Input
+              placeholder="Type product name to search..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            {/* Loading State */}
+            {loading ? (
+              <div className="p-6 flex justify-center items-center">
+                Searching... <RefreshCcw className="animate-spin ml-2" />
+              </div>
+            ) : (
+              <div className="p-0 flex justify-center items-center">
+                {/* Empty State */}
+                {!products || products.length === 0 ? (
+                  <p className="text-center text-gray-500">No results found.</p>
+                ) : (
+                  <div className="space-y-4 w-full max-h-[60vh] overflow-y-auto">
+                    {/* Product List */}
+                    {products.map((product: ProductType) => (
+                      <div
+                        key={
+                          product.id ||
+                          product.name ||
+                          Math.random().toString(36)
+                        }
+                        onClick={() => {
+                          setOpen(false);
+                          router.push(`/collections/${product.id}`);
+                        }}
+                        className="flex items-center gap-4 rounded-md hover:bg-gray-100 cursor-pointer w-full"
+                      >
+                        <Image
+                          src={product.thumbnail || "/placeholder-image.jpg"}
+                          className="h-10 w-10 rounded-md"
+                          alt={product.name || "product"}
+                          width={40}
+                          height={40}
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {product.name || "Unnamed Product"}
+                          </p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge variant="outline">
+                              <BoxIcon className="mr-1 h-4 w-4" />{" "}
+                              {product.quantity || 0}
+                            </Badge>
+                            <Badge variant="outline">
+                              <BanknoteIcon className="mr-1 h-4 w-4" />{" "}
+                              {product.unitPrice || "N/A"}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
