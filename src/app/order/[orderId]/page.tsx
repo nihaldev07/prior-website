@@ -170,6 +170,19 @@ const OrderDetails = () => {
         </Card>
       </div>
 
+      {!!order?.notes && (
+        <Card className="my-4">
+          <CardHeader>
+            <CardTitle>Notes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <span className="text-sm text-gray-950 font-medium">
+              {order?.notes}
+            </span>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Order Table */}
       <Card>
         <CardHeader>
