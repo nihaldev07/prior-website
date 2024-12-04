@@ -50,12 +50,12 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
       {/* <Heading isCenter isMain desc={promotionTag?.description}>
         {promotionTag?.heading}
       </Heading> */}
-      <div className="flex justify-between items-center p-2 md:p-4 rounded-md bg-sky-600">
+      <div className="flex justify-between items-center p-2 md:p-4 rounded-md bg-primary">
         <span className=" text-base md:text-lg text-white font-semibold ">
-          New Arrival
+          New Arrival🌟
         </span>
         <Link href={`/deals`} prefetch={false}>
-          <Button className="text-sm md:text-base" variant={"outline"}>
+          <Button className="text-sm md:text-base text-white" variant={"ghost"}>
             See More
           </Button>
         </Link>

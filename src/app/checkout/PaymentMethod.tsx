@@ -15,7 +15,7 @@ const PaymentMethod: FC<Props> = ({
   handlePaymentMethodChange,
 }) => {
   return (
-    <div className="rounded-xl border border-neutral-300 ">
+    <div className="rounded-xl border border-neutral-300 bg-white">
       <div className="flex flex-col items-start p-6 sm:flex-row">
         <span className="hidden sm:block">
           <Coins className="text-3xl text-primary" />

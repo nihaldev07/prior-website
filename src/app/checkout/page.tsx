@@ -21,6 +21,7 @@ import { trackEvent } from "@/lib/firebase-event";
 import useAnalytics from "@/hooks/useAnalytics";
 import { Badge } from "@/components/ui/badge";
 import { formatVariant } from "@/utils/functions";
+import { Textarea } from "@/components/ui/textarea";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -32,7 +33,7 @@ export interface UserFormData {
 }
 const CheckoutPage = () => {
   useAnalytics();
-  const { cart, updateToCart, removeFromCart } = useCart();
+  const { cart, clearCart, updateToCart, removeFromCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
 
@@ -46,6 +47,7 @@ const CheckoutPage = () => {
   });
 
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [notes, setNotes] = useState("");
 
   const [formData, setFormData] = useState<UserFormData>({
     name: "",
@@ -287,6 +289,7 @@ const CheckoutPage = () => {
           address: formData?.address,
         },
       },
+      notes,
       transectionData,
       products: [...orderProducts],
       hasPayment,
@@ -303,6 +306,7 @@ const CheckoutPage = () => {
       const response = await createOrder(orderData);
 
       if (response.success) {
+        clearCart();
         trackEvent("begin_checkout", {
           transection_id: response?.data?.order?.id,
           affiliation: "Web-Site",
@@ -470,6 +474,16 @@ const CheckoutPage = () => {
                 <span>Total</span>
                 <span>{transectionData?.remaining}</span>
               </div>
+            </div>
+
+            <div className="mt-6 p-4 rounded-md shadow w-full bg-white">
+              <Textarea
+                className="w-full"
+                rows={5}
+                value={notes}
+                onChange={(e: any) => setNotes(e.target.value)}
+                placeholder="Write a note..."
+              />
             </div>
 
             <div id="PaymentMethod" className="scroll-mt-24 mt-4">
