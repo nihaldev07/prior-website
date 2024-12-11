@@ -6,11 +6,13 @@ import { Banknote, Coins, Truck } from "lucide-react";
 import Image from "next/image";
 import BkashLogo from "@/images/BKash-Icon-Logo.wine.png";
 interface Props {
+  district?: string;
   paymentMethod: string;
   handlePaymentMethodChange: (value: string) => void;
 }
 
 const PaymentMethod: FC<Props> = ({
+  district = "",
   paymentMethod,
   handlePaymentMethodChange,
 }) => {
@@ -37,7 +39,14 @@ const PaymentMethod: FC<Props> = ({
             variant={paymentMethod === "cashondelivery" ? "default" : "outline"}
             onClick={() => handlePaymentMethodChange("cashondelivery")}
           >
-            <Banknote className="mr-2 size-5" /> Cash On Delivery
+            <Banknote className="mr-2 size-5" />{" "}
+            {district.toLowerCase().includes("dhaka")
+              ? "Cash On Delivery"
+              : ["gazipur", "tongi", "narayanganj", "savar"].includes(
+                  district?.toLowerCase()
+                )
+              ? "Cash On Delivery (Advance 130TK)"
+              : "Cash On Delivery (Advance 150TK)"}
           </Button>
           <Button
             className="flex justify-center items-center"

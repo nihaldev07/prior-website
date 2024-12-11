@@ -243,6 +243,7 @@ const CheckoutPage = () => {
 
         <div id="PaymentMethod" className="scroll-mt-24">
           <PaymentMethod
+            district={formData?.district}
             paymentMethod={paymentMethod}
             handlePaymentMethodChange={(value: string) =>
               setPaymentMethod(value)
