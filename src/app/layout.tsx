@@ -4,7 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "./navbar";
 import Footer from "@/shared/Footer/Footer";
-import Maintenance from "./Maintainance";
+// import Maintenance from "./Maintainance";
 import { PageStateProvider } from "@/context/PageStateContext";
 
 const inter = Poppins({

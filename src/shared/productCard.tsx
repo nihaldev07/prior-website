@@ -106,7 +106,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
         />
         <div className="mt-4 flex justify-between">
           <div>
-            <h3 className="text-sm text-gray-700">
+            <h3 className="text-sm text-primary uppercase">
               <a href={`/collections/${product?.id}`}>
                 <span aria-hidden="true" className="absolute inset-0" />
                 {product.name}

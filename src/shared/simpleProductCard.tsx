@@ -54,9 +54,11 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
 
         <CardContent className=" px-1 md:px-0">
           <div className="w-full">
-            <div className="mt-4 flex justify-between">
+            <div className="mt-2 flex justify-between">
               <div>
-                <h3 className="text-sm text-gray-700">{product.name}</h3>
+                <h3 className="text-sm text-primary uppercase">
+                  {product.name}
+                </h3>
                 <p
                   className={cn(
                     "mt-1 text-sm",

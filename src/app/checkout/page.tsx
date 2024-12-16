@@ -353,12 +353,12 @@ const CheckoutPage = () => {
 
     // Check if customer information is missing
     const { name, mobileNumber } = formData || {};
-    if (!name || !mobileNumber) {
-      return Swal.fire(
-        "Oops!!",
-        "Please enter valid name and mobile number",
-        "error"
-      );
+    if (!name) {
+      return Swal.fire("Oops!!", "Please Enter Your Name", "error");
+    }
+
+    if (!isValidBangladeshiPhoneNumber(mobileNumber)) {
+      return Swal.fire("Oops!!", "Please Enter A Valid Mobile Number", "error");
     }
 
     // Check if shipping address is missing
