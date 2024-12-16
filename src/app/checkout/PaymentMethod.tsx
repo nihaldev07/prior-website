@@ -43,7 +43,7 @@ const PaymentMethod: FC<Props> = ({
             {district.toLowerCase().includes("dhaka")
               ? "Cash On Delivery"
               : ["gazipur", "tongi", "narayanganj", "savar"].includes(
-                  district?.toLowerCase()
+                  district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
                 )
               ? "Cash On Delivery (Advance 130TK)"
               : "Cash On Delivery (Advance 150TK)"}

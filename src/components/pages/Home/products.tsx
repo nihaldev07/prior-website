@@ -1,4 +1,5 @@
 "use client";
+
 import React, { memo, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { productsSection } from "@/data/content";
@@ -7,10 +8,10 @@ import { Bird, LoaderCircle } from "lucide-react";
 import useProductFetch from "@/hooks/useProductFetch";
 import Heading from "@/shared/Heading/Heading";
 import Filter from "@/components/Filter";
-import { useScrollRestoration } from "@/hooks/useScrollRestoration";
+import { usePageState } from "@/context/PageStateContext";
 
 // Dynamically import ProductCard for better SSR support and lazy load
-const ProductCard = dynamic(() => import("@/shared/productCard"), {
+const ProductCard = dynamic(() => import("@/shared/simpleProductCard"), {
   ssr: false,
   loading: () => <LoaderCircle className="w-5 h-5 text-black" />,
 });
@@ -20,8 +21,9 @@ const MemoizedFilter = memo(Filter);
 const MemoizedHeading = memo(Heading);
 
 const SectionProducts = () => {
-  useScrollRestoration();
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
+  // Fetching functions and state from custom hooks
   const {
     products,
     loading,
@@ -33,7 +35,32 @@ const SectionProducts = () => {
     distictFilterValues,
   } = useProductFetch();
 
-  const observerRef = useRef<HTMLDivElement | null>(null);
+  const { state, setState } = usePageState();
+
+  // Restore state on mount
+  useEffect(() => {
+    // Restore scroll position
+    window.scrollTo(0, state.scrollPosition);
+
+    // Restore filter and pagination data
+    //@ts-ignore
+    setFilterData(state.filterData);
+    if (state.currentPage > 1) {
+      //@ts-ignore
+      handleLoadMore(state.currentPage - 1); // Load previous pages if necessary
+    }
+  }, []);
+
+  // Save state before navigation
+  const handleProductClick = (productId: string) => {
+    setState((prev) => ({
+      ...prev,
+      scrollPosition: window.scrollY,
+      filterData,
+      currentPage,
+    }));
+    window.location.href = `/collections/${productId}`; // Navigate to product page
+  };
 
   // Observer to detect scroll to the bottom
   useEffect(() => {
@@ -75,7 +102,12 @@ const SectionProducts = () => {
       <div className="grid gap-3 sm:gap-2 md:gap-4 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {!!products &&
           products?.map((product: ProductType) => (
-            <ProductCard key={product?.id} product={product} />
+            <div
+              key={product?.id}
+              onClick={() => handleProductClick(product.id)}
+            >
+              <ProductCard product={product} />
+            </div>
           ))}
       </div>
 

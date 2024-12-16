@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/CartContext";
 import Navbar from "./navbar";
 import Footer from "@/shared/Footer/Footer";
 import Maintenance from "./Maintainance";
+import { PageStateProvider } from "@/context/PageStateContext";
 
 const inter = Poppins({
   weight: "400",
@@ -49,14 +50,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <CartProvider>
-          <>
-            <Navbar />
-            {children}
-            <Footer />
-          </>
-          {/* <Maintenance /> */}
-        </CartProvider>
+        <PageStateProvider>
+          <CartProvider>
+            <>
+              <Navbar />
+              {children}
+              <Footer />
+            </>
+            {/* <Maintenance /> */}
+          </CartProvider>
+        </PageStateProvider>
       </body>
     </html>
   );
