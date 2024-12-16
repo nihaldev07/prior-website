@@ -30,7 +30,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
     <div className="space-y-3 rounded-sm p-2">
       <div className="relative overflow-hidden rounded-sm h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] bg-gray-200 flex justify-center items-center">
         {/* <LikeButton className="absolute right-5 top-5" /> */}
-        <div className="w-full relative h-full sm:w-[80%]">
+        <div className="w-full relative h-full">
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
               <Cat className=" animate-pulse w-16 h-16  md:w-32 md:h-32" />
@@ -40,7 +40,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
             src={shots[activeImageIndex]}
             alt="shoe image"
             className={classNames(
-              " size-full rounded-lg md:rounded-none object-cover",
+              " size-full rounded-lg  object-cover object-center",
               isLoading ? "invisible" : "visible"
             )}
             onLoad={() => setIsLoading(false)}
@@ -48,7 +48,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
         </div>
       </div>
       {shots.length > 1 && (
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
           {!!shots &&
             shots.map((shot, index) => (
               <div
@@ -77,7 +77,7 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
                     height={100}
                     alt="shoe image"
                     className={classNames(
-                      "h-full w-full object-scale-down object-center",
+                      "h-full w-full object-cover object-center",
                       loadingStates[index] ? "invisible" : "visible"
                     )}
                     onLoad={() => handleImageLoad(index, true)}

@@ -5,7 +5,7 @@ import Heading from "@/shared/Heading/Heading";
 import { ProductType } from "@/data/types";
 import axios from "axios";
 import { config } from "@/lib/config";
-import ProductCard from "@/shared/productCard";
+import ProductCard from "@/shared/simpleProductCard";
 import { Separator } from "@/components/ui/separator";
 interface Props {
   categoryId: string;
@@ -28,6 +28,11 @@ const SectionMoreProducts: React.FC<Props> = ({ categoryId }) => {
   useEffect(() => {
     fetchProducts(); //eslint-disable-next-line
   }, [categoryId]);
+
+  // Save state before navigation
+  const handleProductClick = (productId: string) => {
+    window.location.href = `/collections/${productId}`; // Navigate to product page
+  };
   return (
     <div className="flex-col justify-center items-center">
       <Heading className="mt-6 " isCenter={true} isMain={true}>
@@ -38,7 +43,9 @@ const SectionMoreProducts: React.FC<Props> = ({ categoryId }) => {
 
       <div className="grid gap-2 md:gap-7 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((shoe) => (
-          <ProductCard key={shoe.id} product={shoe} />
+          <div key={shoe.id} onClick={() => handleProductClick(shoe?.id)}>
+            <ProductCard key={shoe.id} product={shoe} />
+          </div>
         ))}
       </div>
     </div>

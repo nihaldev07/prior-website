@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 
-import ProductCard from "@/shared/productCard";
+import ProductCard from "@/shared/simpleProductCard";
 import SidebarFilters from "@/components/SidebarFilter";
 
 import useProductFetch from "@/hooks/useProductFetch";
@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
 import useAnalytics from "@/hooks/useAnalytics";
+import { usePageState } from "@/context/PageStateContext";
 
 const Page = () => {
   useAnalytics();
@@ -39,6 +40,22 @@ const Page = () => {
     [loading, currentPage, totalPages, handleLoadMore]
   );
 
+  const { state, setState } = usePageState();
+
+  // Restore state on mount
+  useEffect(() => {
+    // Restore scroll position
+    window.scrollTo(0, state.scrollPosition);
+
+    // Restore filter and pagination data
+    //@ts-ignore
+    setFilterData(state.filterData);
+    if (state.currentPage > 1) {
+      //@ts-ignore
+      handleLoadMore(state.currentPage - 1); // Load previous pages if necessary
+    }
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
@@ -52,6 +69,17 @@ const Page = () => {
       if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
     };
   }, [handleObserver]);
+
+  // Save state before navigation
+  const handleProductClick = (productId: string) => {
+    setState((prev) => ({
+      ...prev,
+      scrollPosition: window.scrollY,
+      filterData,
+      currentPage,
+    }));
+    window.location.href = `/collections/${productId}`; // Navigate to product page
+  };
 
   return (
     <div className="my-6">
@@ -117,7 +145,12 @@ const Page = () => {
             <div className="grid flex-1 gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-10 grid-cols-2 xl:grid-cols-3">
               {!!products &&
                 products.map((item: ProductType) => (
-                  <ProductCard product={item} key={item.id} />
+                  <div
+                    key={item?.id}
+                    onClick={() => handleProductClick(item.id)}
+                  >
+                    <ProductCard product={item} />
+                  </div>
                 ))}
             </div>
 
