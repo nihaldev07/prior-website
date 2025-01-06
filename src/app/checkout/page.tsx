@@ -255,12 +255,6 @@ const CheckoutPage = () => {
   };
 
   const confirmOrderAndCreateOne = async () => {
-    trackEvent("begin_checkout", {
-      value: transectionData?.remaining,
-      currency: "BDT",
-      coupon: "",
-    });
-
     setLoading(true);
     const hasPayment =
       transectionData?.discount > 0 ||
@@ -311,10 +305,32 @@ const CheckoutPage = () => {
         trackEvent("begin_checkout", {
           transection_id: response?.data?.order?.id,
           affiliation: "Web-Site",
-          Value: transectionData?.remaining,
+          Value: transectionData?.totalPrice,
           shipping: transectionData?.deliveryCharge,
           discount: transectionData?.discount,
           currency: "BDT",
+          items: orderProducts?.map((product, index) => {
+            return {
+              item_id: product?.sku,
+              item_name: product?.name,
+              affiliation: "Prior Web-site Store",
+              coupon: "",
+              discount: product?.discount,
+              index,
+              item_brand: "Prior",
+              item_category: product?.categoryName ?? "",
+              item_category2: "",
+              item_category3: "",
+              item_category4: "",
+              item_category5: "",
+              item_list_id: product?.id,
+              item_list_name: "Related Products",
+              item_variant: formatVariant(product?.variation),
+              location_id: "",
+              price: product?.unitPrice,
+              quantity: product?.quantity,
+            };
+          }),
         });
         const orderId = response?.data?.order?.id;
         if (hasPayment) {
