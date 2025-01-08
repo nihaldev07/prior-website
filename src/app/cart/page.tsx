@@ -104,6 +104,48 @@ const CartPage = () => {
     );
   };
 
+  const handleCheckoutClick = () => {
+    const totalValue = cart.reduce((sum, cartdata) => {
+      sum =
+        Number(sum) +
+        Number(cartdata.quantity) *
+          Number(
+            !!cartdata?.hasDiscount
+              ? cartdata?.updatedPrice ?? cartdata?.unitPrice
+              : cartdata?.unitPrice
+          );
+      return sum;
+    }, 0);
+    trackEvent("begin_checkout", {
+      affiliation: "Web-Site",
+      Value: totalValue ?? 0,
+      coupon: "",
+      currency: "BDT",
+      items: cart?.map((product, index) => {
+        return {
+          item_id: product?.sku,
+          item_name: product?.name,
+          affiliation: "Prior Web-site Store",
+          coupon: "",
+          discount: product?.discount,
+          index,
+          item_brand: "Prior",
+          item_category: product?.categoryName ?? "",
+          item_category2: "",
+          item_category3: "",
+          item_category4: "",
+          item_category5: "",
+          item_list_id: product?.id,
+          item_list_name: "Related Products",
+          item_variant: formatVariant(product?.variation),
+          location_id: "",
+          price: product?.unitPrice,
+          quantity: product?.quantity,
+        };
+      }),
+    });
+  };
+
   return (
     <div className="nc-CartPage">
       <main className="container py-16 lg:pb-28 lg:pt-20 ">
@@ -175,7 +217,11 @@ const CartPage = () => {
                     </span>
                   </div>
                 </div>
-                <ButtonPrimary href="/checkout" className="mt-8 w-full">
+                <ButtonPrimary
+                  href={"/checkout"}
+                  onClick={() => handleCheckoutClick()}
+                  className="mt-8 w-full"
+                >
                   Checkout Now
                 </ButtonPrimary>
               </div>

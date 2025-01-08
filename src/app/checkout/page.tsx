@@ -302,7 +302,7 @@ const CheckoutPage = () => {
 
       if (response.success) {
         clearCart();
-        trackEvent("begin_checkout", {
+        trackEvent("purchase", {
           transection_id: response?.data?.order?.id,
           affiliation: "Web-Site",
           Value: transectionData?.totalPrice,
