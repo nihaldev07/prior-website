@@ -17,6 +17,7 @@ import { formatVariant } from "@/utils/functions";
 export interface CartSideBarProps {}
 const CartSideBar: React.FC<CartSideBarProps> = () => {
   const { removeFromCart, cart } = useCart();
+
   const [isVisable, setIsVisable] = useState(false);
 
   const handleOpenMenu = () => setIsVisable(true);
@@ -106,6 +107,51 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     );
   };
 
+  const handleCheckoutClick = () => {
+    const totalValue = cart.reduce((sum, cartdata) => {
+      sum =
+        Number(sum) +
+        Number(cartdata.quantity) *
+          Number(
+            !!cartdata?.hasDiscount
+              ? cartdata?.updatedPrice ?? cartdata?.unitPrice
+              : cartdata?.unitPrice
+          );
+      return sum;
+    }, 0);
+    trackEvent("begin_checkout", {
+      affiliation: "Web-Site",
+      Value: totalValue ?? 0,
+      coupon: "",
+      currency: "BDT",
+      items: cart?.map((product, index) => {
+        return {
+          item_id: product?.sku,
+          item_name: product?.name,
+          affiliation: "Prior Web-site Store",
+          coupon: "",
+          discount: product?.discount,
+          index,
+          item_brand: "Prior",
+          item_category: product?.categoryName ?? "",
+          item_category2: "",
+          item_category3: "",
+          item_category4: "",
+          item_category5: "",
+          item_list_id: product?.id,
+          item_list_name: "Related Products",
+          item_variant: formatVariant(product?.variation),
+          location_id: "",
+          price: product?.unitPrice,
+          quantity: product?.quantity,
+        };
+      }),
+    });
+
+    console.log("wow");
+    handleCloseMenu();
+  };
+
   const renderSideSheet = () => {
     return (
       <Sheet
@@ -148,7 +194,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
               <div className="mt-5 flex items-center gap-5">
                 <ButtonPrimary
                   href="/checkout"
-                  onClick={() => handleCloseMenu()}
+                  onClick={() => handleCheckoutClick()}
                   className="w-full flex-1"
                 >
                   Checkout
