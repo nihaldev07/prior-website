@@ -3,7 +3,7 @@ export const isValidBangladeshiPhoneNumber = (number: string) => {
   const cleanedNumber = number.replace(/\D/g, "");
 
   // Regular expression to match a valid Bangladeshi phone number
-  const bdPhoneNumberPattern = /^01[3-9]\d{8}$/;
+  const bdPhoneNumberPattern = /^01[3-9][0-9]{8}$/;
 
   // Test the cleaned number against the regular expression
   return bdPhoneNumberPattern.test(cleanedNumber);
