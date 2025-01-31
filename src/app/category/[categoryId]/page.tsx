@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import ProductCard from "@/shared/productCard";
+import ProductCard from "@/shared/simpleProductCard";
 import SidebarFilters from "@/components/SidebarFilter";
 import useProductFetch from "@/hooks/useProductFetch";
 import { ProductType } from "@/data/types";
@@ -10,9 +10,12 @@ import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
 import { useParams } from "next/navigation";
 import useAnalytics from "@/hooks/useAnalytics";
+import { usePageState } from "@/context/PageStateContext";
 
 const SingleCategoryPage = () => {
   const params = useParams(); // Fetch route parameters
+  const { state, setState } = usePageState();
+
   const categoryId = params.categoryId;
 
   const {
@@ -65,6 +68,31 @@ const SingleCategoryPage = () => {
       if (observerRef.current) observer.unobserve(observerRef.current);
     };
   }, [currentPage, totalPages, loading, handleLoadMore]);
+
+  // Restore state on mount
+  useEffect(() => {
+    // Restore scroll position
+    window.scrollTo(0, state.scrollPosition);
+
+    // Restore filter and pagination data
+    //@ts-ignore
+    setFilterData(state.filterData);
+    if (state.currentPage > 1) {
+      //@ts-ignore
+      handleLoadMore(state.currentPage - 1); // Load previous pages if necessary
+    }
+  }, []);
+
+  // Save state before navigation
+  const handleProductClick = (productId: string) => {
+    setState((prev) => ({
+      ...prev,
+      scrollPosition: window.scrollY,
+      filterData,
+      currentPage,
+    }));
+    window.location.href = `/collections/${productId}`; // Navigate to product page
+  };
 
   return (
     <div className="my-6">
@@ -133,7 +161,12 @@ const SingleCategoryPage = () => {
             <div className="grid flex-1 gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-10 grid-cols-2 xl:grid-cols-3 ">
               {!!products &&
                 products.map((item: ProductType) => (
-                  <ProductCard product={item} key={item.id} />
+                  <div
+                    key={item?.id}
+                    onClick={() => handleProductClick(item.id)}
+                  >
+                    <ProductCard product={item} />
+                  </div>
                 ))}
             </div>
             {loading && (
