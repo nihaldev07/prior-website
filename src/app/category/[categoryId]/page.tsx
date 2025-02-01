@@ -75,8 +75,9 @@ const SingleCategoryPage = () => {
     window.scrollTo(0, state.scrollPosition);
 
     // Restore filter and pagination data
-    //@ts-ignore
-    setFilterData(state.filterData);
+    if (!filterData?.categoryId)
+      //@ts-ignore
+      setFilterData(state.filterData);
     if (state.currentPage > 1) {
       //@ts-ignore
       handleLoadMore(state.currentPage - 1); // Load previous pages if necessary
