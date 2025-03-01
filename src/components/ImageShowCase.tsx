@@ -27,18 +27,18 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
   };
 
   return (
-    <div className="space-y-3 rounded-sm p-2">
-      <div className="relative overflow-hidden rounded-sm h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] bg-gray-200 flex justify-center items-center">
+    <div className='space-y-3 rounded-sm p-2'>
+      <div className='relative overflow-hidden rounded-sm h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] bg-gray-200 flex justify-center items-center'>
         {/* <LikeButton className="absolute right-5 top-5" /> */}
-        <div className="w-full relative h-full">
+        <div className='w-full relative h-full'>
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
-              <Cat className=" animate-pulse w-16 h-16  md:w-32 md:h-32" />
+            <div className='absolute inset-0 flex items-center justify-center bg-gray-200 z-10'>
+              <Cat className=' animate-pulse w-16 h-16  md:w-32 md:h-32' />
             </div>
           )}
           <img
             src={shots[activeImageIndex]}
-            alt="shoe image"
+            alt='shoe image'
             className={classNames(
               " size-full rounded-lg  object-cover object-center",
               isLoading ? "invisible" : "visible"
@@ -48,34 +48,32 @@ const ImageShowCase: FC<ImageShowCaseProps> = ({ shots }) => {
         </div>
       </div>
       {shots.length > 1 && (
-        <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+        <div className='grid grid-cols-4 sm:grid-cols-5 gap-3'>
           {!!shots &&
             shots.map((shot, index) => (
               <div
                 key={index}
                 className={`${
                   activeImageIndex === index ? "border-2 border-gray-500" : ""
-                } h-[100px] overflow-hidden rounded-lg`}
-              >
+                } h-[100px] overflow-hidden rounded-lg`}>
                 <button
-                  className="h-full w-full bg-gray-200 relative"
-                  type="button"
+                  className='h-full w-full bg-gray-200 relative'
+                  type='button'
                   onClick={() => {
                     setActiveImageIndex(index);
                     setIsLoading(true);
-                  }}
-                >
+                  }}>
                   {/* Loading state indicator */}
                   {loadingStates[index] && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
-                      <PawPrint className=" animate-pulse w-8 h-8  md:w-16 md:h-16" />
+                    <div className='absolute inset-0 flex items-center justify-center bg-gray-200 z-10'>
+                      <PawPrint className=' animate-pulse w-8 h-8  md:w-16 md:h-16' />
                     </div>
                   )}
-                  <Image
+                  <img
                     src={shot}
                     width={100}
                     height={100}
-                    alt="shoe image"
+                    alt='shoe'
                     className={classNames(
                       "h-full w-full object-cover object-center",
                       loadingStates[index] ? "invisible" : "visible"
