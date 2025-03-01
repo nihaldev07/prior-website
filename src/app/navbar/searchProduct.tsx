@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import * as React from "react";
@@ -110,7 +111,6 @@ export function GlobalSearch() {
                           alt={product.name || "product"}
                           width={40}
                           height={40}
-                          alt={product?.name}
                         />
                         <div className='flex-1'>
                           <p className='text-sm font-medium text-gray-900'>
