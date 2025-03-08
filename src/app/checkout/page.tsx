@@ -180,37 +180,36 @@ const CheckoutPage = () => {
     } = item;
 
     return (
-      <div key={index} className="flex py-5 last:pb-0">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl">
+      <div key={index} className='flex py-5 last:pb-0'>
+        <div className='relative h-24 w-24 shrink-0 overflow-hidden rounded-xl'>
           <Image
             fill
             src={thumbnail}
             alt={name}
-            className="h-full w-full object-contain object-center"
+            className='h-full w-full object-contain object-center'
           />
-          <Link className="absolute inset-0" href={`/products/${id}`} />
+          <Link className='absolute inset-0' href={`/products/${id}`} />
         </div>
 
-        <div className="ml-4 flex flex-1 flex-col justify-between">
+        <div className='ml-4 flex flex-1 flex-col justify-between'>
           <div>
-            <div className="flex justify-between ">
+            <div className='flex justify-between '>
               <div>
-                <h3 className="font-medium md:text-2xl ">
+                <h3 className='font-medium md:text-2xl '>
                   <Link href={`/products/${id}`}>{name}</Link>
                 </h3>
-                <div className="flex items-center gap-1">
+                <div className='flex items-center gap-1'>
                   <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
               </div>
-              <span className="font-medium md:text-xl">${unitPrice}</span>
+              <span className='font-medium md:text-xl'>${unitPrice}</span>
             </div>
           </div>
-          <div className="flex w-full items-end justify-between text-sm">
+          <div className='flex w-full items-end justify-between text-sm'>
             <div
-              className="flex items-center gap-3"
-              onClick={() => removeFromCart(index)}
-            >
-              <TrashIcon className="size-5 text-red-400" />
+              className='flex items-center gap-3'
+              onClick={() => removeFromCart(index)}>
+              <TrashIcon className='size-5 text-red-400' />
             </div>
             <div>
               <InputNumber
@@ -234,14 +233,14 @@ const CheckoutPage = () => {
 
   const renderLeft = () => {
     return (
-      <div className="space-y-8">
+      <div className='space-y-8'>
         <UserInformation
           formData={formData}
           handleInputChange={handleInputChange}
           handleInputChange2={handleInputChange2}
         />
 
-        <div id="PaymentMethod" className="scroll-mt-24">
+        <div id='PaymentMethod' className='scroll-mt-24'>
           <PaymentMethod
             district={formData?.district}
             paymentMethod={paymentMethod}
@@ -257,19 +256,15 @@ const CheckoutPage = () => {
   const confirmOrderAndCreateOne = async () => {
     setLoading(true);
     const hasPayment =
-      transectionData?.discount > 0 ||
       paymentMethod === "bkash" ||
       !formData.district.toLowerCase().includes("dhaka");
-    const paymentAmount =
-      transectionData?.discount > 0
-        ? Math.min(200, transectionData?.remaining)
-        : !formData.district.toLowerCase().includes("dhaka")
-        ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
-            formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
-          )
-          ? Math.min(130, transectionData?.remaining)
-          : Math.min(150, transectionData?.remaining)
-        : 0;
+    const paymentAmount = !formData.district.toLowerCase().includes("dhaka")
+      ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
+          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+        )
+        ? Math.min(130, transectionData?.remaining)
+        : Math.min(150, transectionData?.remaining)
+      : 0;
     const orderData = {
       customerInformation: {
         //@ts-ignore
@@ -431,26 +426,26 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="nc-CheckoutPage">
-      <main className="container py-16 lg:pb-28">
-        <div className="mb-4">
-          <h2 className="block text-2xl font-semibold sm:text-3xl lg:text-4xl ">
+    <div className='nc-CheckoutPage'>
+      <main className='container py-16 lg:pb-28'>
+        <div className='mb-4'>
+          <h2 className='block text-2xl font-semibold sm:text-3xl lg:text-4xl '>
             Checkout
           </h2>
         </div>
 
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex-1">{renderLeft()}</div>
+        <div className='flex flex-col lg:flex-row'>
+          <div className='flex-1'>{renderLeft()}</div>
 
-          <div className="my-10 shrink-0 border-t border-neutral-300 lg:mx-10 lg:my-0 lg:border-l lg:border-t-0 xl:lg:mx-14 2xl:mx-16 " />
+          <div className='my-10 shrink-0 border-t border-neutral-300 lg:mx-10 lg:my-0 lg:border-l lg:border-t-0 xl:lg:mx-14 2xl:mx-16 ' />
 
-          <div className="w-full lg:w-[36%] ">
-            <h3 className="text-lg font-semibold">Order summary</h3>
-            <div className="mt-8 divide-y divide-neutral-300">
+          <div className='w-full lg:w-[36%] '>
+            <h3 className='text-lg font-semibold'>Order summary</h3>
+            <div className='mt-8 divide-y divide-neutral-300'>
               {cart.map((item, index) => renderProduct(item, index))}
             </div>
 
-            <div className="mt-10 border-t border-neutral-300 pt-6 text-sm">
+            <div className='mt-10 border-t border-neutral-300 pt-6 text-sm'>
               {/* <div>
                 <div className='text-sm'>Discount code</div>
                 <div className='mt-1.5 flex'>
@@ -467,43 +462,43 @@ const CheckoutPage = () => {
                 </div>
               </div> */}
 
-              <div className="mt-4 flex justify-between pb-4">
+              <div className='mt-4 flex justify-between pb-4'>
                 <span>Subtotal</span>
-                <span className="font-semibold">
+                <span className='font-semibold'>
                   {transectionData?.totalPrice}
                 </span>
               </div>
-              <div className="flex justify-between py-4">
+              <div className='flex justify-between py-4'>
                 <span>Estimated Delivery & Handling</span>
-                <span className="font-semibold">
+                <span className='font-semibold'>
                   {transectionData?.deliveryCharge}
                 </span>
               </div>
 
-              <div className="flex justify-between py-4">
+              <div className='flex justify-between py-4'>
                 <span>Discount</span>
-                <span className="font-semibold">
+                <span className='font-semibold'>
                   {transectionData?.discount}
                 </span>
               </div>
 
-              <div className="flex justify-between pt-4 text-base font-semibold">
+              <div className='flex justify-between pt-4 text-base font-semibold'>
                 <span>Total</span>
                 <span>{transectionData?.remaining}</span>
               </div>
             </div>
 
-            <div className="mt-6 p-4 rounded-md shadow w-full bg-white">
+            <div className='mt-6 p-4 rounded-md shadow w-full bg-white'>
               <Textarea
-                className="w-full"
+                className='w-full'
                 rows={5}
                 value={notes}
                 onChange={(e: any) => setNotes(e.target.value)}
-                placeholder="Write a note..."
+                placeholder='Write a note...'
               />
             </div>
 
-            <div id="PaymentMethod" className="scroll-mt-24 mt-4">
+            <div id='PaymentMethod' className='scroll-mt-24 mt-4'>
               <TermsCondition
                 checked={isTermsChecked}
                 handleTermCondition={(value: boolean) =>
@@ -513,7 +508,7 @@ const CheckoutPage = () => {
             </div>
 
             <ButtonPrimary
-              className="mt-8 w-full"
+              className='mt-8 w-full'
               disabled={loading || !isTermsChecked}
               onClick={() => {
                 // Swal.fire(
@@ -522,11 +517,10 @@ const CheckoutPage = () => {
                 //   "info"
                 // );
                 handleConfirmOrder();
-              }}
-            >
+              }}>
               Confirm order{" "}
               {loading && (
-                <Loader2 className=" animate-spin w-5 h-5 text-white ml-2" />
+                <Loader2 className=' animate-spin w-5 h-5 text-white ml-2' />
               )}
             </ButtonPrimary>
           </div>
