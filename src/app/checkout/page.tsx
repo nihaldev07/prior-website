@@ -257,8 +257,8 @@ const CheckoutPage = () => {
     setLoading(true);
     const hasPayment =
       paymentMethod === "bkash" ||
-      !formData.district.toLowerCase().includes("dhaka");
-    const paymentAmount = !formData.district.toLowerCase().includes("dhaka")
+      !formData.district.toLowerCase().includes("dhaka") || (!!transectionData?.discount && transectionData?.discount>0);
+    const paymentAmount = !formData.district.toLowerCase().includes("dhaka") ||  (!!transectionData?.discount && transectionData?.discount>0)
       ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
           formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
         )
@@ -394,9 +394,14 @@ const CheckoutPage = () => {
 
     // Check for deliveries outside Dhaka and prompt for prepayment
     if (transectionData?.discount > 0) {
+      const advancePayment= ["gazipur", "tongi", "narayanganj", "savar"].includes(
+          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+        )
+        ? Math.min(130, transectionData?.remaining)
+        : Math.min(150, transectionData?.remaining)
       return Swal.fire({
         title: "Terms & Condition",
-        text: "A prepayment of 200 taka is required for dicounted products.",
+        text: `A prepayment of ${advancePayment} taka is required for dicounted products.`,
         showDenyButton: false,
         showCancelButton: true,
         confirmButtonText: "Continue",
