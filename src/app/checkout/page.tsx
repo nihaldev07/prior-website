@@ -22,6 +22,7 @@ import useAnalytics from "@/hooks/useAnalytics";
 import { Badge } from "@/components/ui/badge";
 import { formatVariant } from "@/utils/functions";
 import { Textarea } from "@/components/ui/textarea";
+import useCampaign from "@/hooks/useCampaign";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -33,6 +34,7 @@ export interface UserFormData {
 }
 const CheckoutPage = () => {
   useAnalytics();
+  const { checkPrepaymentProducts, calculatePrepaymentAmount } = useCampaign();
   const { cart, clearCart, updateToCart, removeFromCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
@@ -58,6 +60,31 @@ const CheckoutPage = () => {
     address: "",
     postalCode: "1234",
   });
+
+  const [prePaymentAmount, setPrePaymentAmount] = useState<number>(0);
+  const [hasPrepayment, setHasPrepayment] = useState<boolean>(false);
+
+  const checkPrepaymentProductData = async () => {
+    const response = await checkPrepaymentProducts(
+      cart.map((item: CartItem) => item?.id)
+    );
+    setHasPrepayment(response?.hasPrepaymentRequirement ?? false);
+  };
+
+  const calculateOrderPrepayment = async (deliveryChargeAmount = 0) => {
+    const orderItems = cart.map((item) => ({
+      productId: item?.id,
+      quantity: item?.quantity,
+      unitPrice: item?.unitPrice,
+    }));
+    const deliveryCharge = deliveryChargeAmount;
+    const response = await calculatePrepaymentAmount(
+      orderItems,
+      deliveryCharge
+    );
+
+    setPrePaymentAmount(response?.totalPrepayment ?? 0);
+  };
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -98,6 +125,7 @@ const CheckoutPage = () => {
       transectionData.paid;
     setTransectionData(transectionData);
     setOrderProduct([...cart]);
+    checkPrepaymentProductData();
     //eslint-disable-next-line
   }, [cart]);
 
@@ -163,6 +191,7 @@ const CheckoutPage = () => {
         ...transectionData,
         deliveryCharge: deliveryChargeX,
       });
+      if (hasPrepayment) calculateOrderPrepayment(deliveryChargeX);
     }
     //eslint-disable-next-line
   }, [formData?.district]);
@@ -242,6 +271,13 @@ const CheckoutPage = () => {
 
         <div id='PaymentMethod' className='scroll-mt-24'>
           <PaymentMethod
+            prePaymentAmount={
+              hasPrepayment && prePaymentAmount > 0
+                ? prePaymentAmount
+                : transectionData?.discount > 0
+                ? 200
+                : 0
+            }
             district={formData?.district}
             paymentMethod={paymentMethod}
             handlePaymentMethodChange={(value: string) =>
@@ -257,14 +293,17 @@ const CheckoutPage = () => {
     setLoading(true);
     const hasPayment =
       paymentMethod === "bkash" ||
-      !formData.district.toLowerCase().includes("dhaka") || (!!transectionData?.discount && transectionData?.discount>0);
-    const paymentAmount = !formData.district.toLowerCase().includes("dhaka") ||  (!!transectionData?.discount && transectionData?.discount>0)
-      ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
-          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
-        )
-        ? Math.min(130, transectionData?.remaining)
-        : Math.min(150, transectionData?.remaining)
-      : 0;
+      !formData.district.toLowerCase().includes("dhaka") ||
+      (!!transectionData?.discount && transectionData?.discount > 0);
+    const paymentAmount =
+      !formData.district.toLowerCase().includes("dhaka") ||
+      (!!transectionData?.discount && transectionData?.discount > 0)
+        ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
+            formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+          )
+          ? Math.min(130, transectionData?.remaining)
+          : Math.min(150, transectionData?.remaining)
+        : 0;
     const orderData = {
       customerInformation: {
         //@ts-ignore
@@ -393,15 +432,12 @@ const CheckoutPage = () => {
     }
 
     // Check for deliveries outside Dhaka and prompt for prepayment
-    if (transectionData?.discount > 0) {
-      const advancePayment= ["gazipur", "tongi", "narayanganj", "savar"].includes(
-          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
-        )
-        ? Math.min(130, transectionData?.remaining)
-        : Math.min(150, transectionData?.remaining)
+    if (transectionData?.discount > 0 || hasPrepayment) {
       return Swal.fire({
         title: "Terms & Condition",
-        text: `A prepayment of ${advancePayment} taka is required for dicounted products.`,
+        text: `A prepayment of ${
+          !!prePaymentAmount && prePaymentAmount > 0 ? prePaymentAmount : 200
+        } taka is required for dicounted products.`,
         showDenyButton: false,
         showCancelButton: true,
         confirmButtonText: "Continue",
@@ -493,7 +529,7 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            <div className='mt-6 p-4 rounded-md shadow w-full bg-white'>
+            <div className='mt-6 p-2 rounded-md  w-full bg-gray-100'>
               <Textarea
                 className='w-full'
                 rows={5}

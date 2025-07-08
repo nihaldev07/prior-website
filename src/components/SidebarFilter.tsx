@@ -48,24 +48,22 @@ const SidebarFilters: React.FC<Props> = ({
 
   const renderTabsCategories = () => {
     return (
-      <div className="relative flex flex-col space-y-2 md:space-y-4 pb-2 md:pb-8">
-        <h3 className="mb-2.5 text-xl font-medium  border-b border-gray-950  py-3 px-1">
+      <div className='relative flex flex-col space-y-2 md:space-y-4 pb-2 md:pb-8'>
+        <h3 className='mb-2.5 text-xl font-medium  border-b border-gray-950  py-3 px-1'>
           Categories
         </h3>
-        <div className="grid grid-cols-2 gap-4">
+        <div className='grid grid-cols-2 gap-4'>
           <Button
             key={"001"}
             variant={activeCategory === "" ? "default" : "outline"}
-            onClick={() => setActiveCategory("")}
-          >
+            onClick={() => setActiveCategory("")}>
             All
           </Button>
           {categories.map((item) => (
             <Button
               key={item.id}
               onClick={() => setActiveCategory(item.id)}
-              variant={activeCategory === item?.id ? "default" : "outline"}
-            >
+              variant={activeCategory === item?.id ? "default" : "outline"}>
               {item.name}
             </Button>
           ))}
@@ -77,16 +75,15 @@ const SidebarFilters: React.FC<Props> = ({
   // OK
   const renderTabsGender = () => {
     return (
-      <div className="relative flex flex-col space-y-2 md:space-y-4 py-2">
-        <h3 className="mb-2.5 text-xl font-medium  border-b border-gray-950  py-3 px-1">
-          <Palette className="inline" /> Colors
+      <div className='relative flex flex-col space-y-2 md:space-y-4 py-2'>
+        <h3 className='mb-2.5 text-xl font-medium  border-b border-gray-950  py-3 px-1'>
+          <Palette className='inline' /> Colors
         </h3>
-        <div className="grid grid-cols-2 gap-2 md:gap-3 max-h-[40vh] overflow-y-auto">
+        <div className='grid grid-cols-2 gap-2 md:gap-3 max-h-[40vh] overflow-y-auto'>
           <Button
             key={"001"}
             onClick={() => setActiveColor("")}
-            variant={activeColor === "" ? "default" : "outline"}
-          >
+            variant={activeColor === "" ? "default" : "outline"}>
             All
           </Button>
           {/* <button
@@ -103,8 +100,7 @@ const SidebarFilters: React.FC<Props> = ({
             <Button
               key={item}
               onClick={() => setActiveColor(item)}
-              variant={activeColor === item ? "default" : "outline"}
-            >
+              variant={activeColor === item ? "default" : "outline"}>
               {item}
             </Button>
           ))}
@@ -116,16 +112,15 @@ const SidebarFilters: React.FC<Props> = ({
   // OK
   const renderTabsSize = () => {
     return (
-      <div className="relative flex flex-col space-y-2 md:space-y-4 py-2 md:py-8">
-        <h3 className="mb-2.5 text-xl font-medium   border-b border-gray-950  py-3 px-1">
-          <PencilRuler className="inline" /> Sizes
+      <div className='relative flex flex-col space-y-2 md:space-y-4 py-2 md:py-8'>
+        <h3 className='mb-2.5 text-xl font-medium   border-b border-gray-950  py-3 px-1'>
+          <PencilRuler className='inline' /> Sizes
         </h3>
-        <div className="grid grid-cols-2 gap-4 max-h-[30vh] md:max-h-auto overflow-y-auto">
+        <div className='grid grid-cols-2 gap-4 max-h-[30vh] md:max-h-auto overflow-y-auto'>
           <Button
             key={"001"}
             onClick={() => setActiveSize("")}
-            variant={activeColor === "" ? "default" : "outline"}
-          >
+            variant={activeColor === "" ? "default" : "outline"}>
             All
           </Button>
           {/* <button
@@ -142,8 +137,7 @@ const SidebarFilters: React.FC<Props> = ({
             <Button
               key={item}
               variant={activeSize === item ? "default" : "outline"}
-              onClick={() => setActiveSize(item)}
-            >
+              onClick={() => setActiveSize(item)}>
               {item}
             </Button>
             // <button
@@ -255,8 +249,12 @@ const SidebarFilters: React.FC<Props> = ({
   // };
 
   return (
-    <div className="top-4 md:top-28 lg:sticky">
-      <Heading className="mb-0 text-sm md:text-xl">Filter products</Heading>
+    <div className='top-4 md:top-28 lg:sticky'>
+      {activeColor &&
+        activeSize &&
+        (activeColor?.length > 0 || activeSize?.length > 0) && (
+          <Heading className='mb-0 text-sm md:text-xl'>Filter products</Heading>
+        )}
       <div>
         {!!showCategory && renderTabsCategories()}
         {Array.isArray(colors) && colors?.length > 0 && renderTabsGender()}

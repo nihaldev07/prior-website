@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import ProductCard from "@/shared/productCard";
+import ProductCard from "@/shared/simpleProductCard";
 
 import { ProductType } from "@/data/types";
 import { LoaderCircle } from "lucide-react";
@@ -81,71 +81,67 @@ const SingleCampaignPage = ({
       <Head>
         <title>{!!campaign ? campaign?.title : "Prior Campaign"}</title>
         <meta
-          name="description"
+          name='description'
           content={campaign?.description || "Campaign description"}
         />
-        <meta property="og:title" content={campaign?.title || "Campaign"} />
+        <meta property='og:title' content={campaign?.title || "Campaign"} />
         <meta
-          property="og:description"
+          property='og:description'
           content={campaign?.description || "Campaign description"}
         />
         <meta
-          property="og:image"
+          property='og:image'
           content={campaign?.image || "/default-image.jpg"}
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
 
-      <div className="my-6">
-        <h1 className="w-full text-center font-extrabold text-lg md:text-2xl uppercase">
+      <div className='my-6'>
+        <h1 className='w-full text-center font-extrabold text-lg md:text-2xl uppercase'>
           {campaign?.title}
         </h1>
-        <h3 className="w-full text-center font-normal text-zinc-600 text-xs md:text-sm">
+        <h3 className='w-full text-center font-normal text-zinc-600 text-xs md:text-sm'>
           {campaign?.description}
         </h3>
-        <div className="flex flex-col justify-center items-center px-28 py-2 rounded-md">
-          <div className="grid grid-cols-4 gap-4 ml-1 mt-2">
-            <div className="flex flex-col gap-2">
+        <div className='flex flex-col justify-center items-center px-6 md:px-28 py-2 rounded-md'>
+          <div className='grid grid-cols-4 gap-4 mt-2'>
+            <div className='flex flex-col gap-2'>
               <Badge
                 variant={"outline"}
-                className="text-base font-semibold p-10"
-              >
+                className='text-sm md:text-base font-semibold p-6 md:p-10 text-center'>
                 {timeLeft.split(":")[0]}
               </Badge>
-              <span className="text-sm font-semibold uppercase text-center">
+              <span className='text-sm font-semibold uppercase text-center'>
                 Days
               </span>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className='flex flex-col gap-2'>
               <Badge
                 variant={"outline"}
-                className="text-base font-semibold p-10"
-              >
+                className='text-sm md:text-base font-semibold p-6 md:p-10 text-center'>
                 {timeLeft.split(":")[1]}
               </Badge>
-              <span className="text-sm font-semibold uppercase text-center">
+              <span className='text-sm font-semibold uppercase text-center'>
                 Hours
               </span>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className='flex flex-col gap-2'>
               <Badge
                 variant={"outline"}
-                className="text-base font-semibold p-10"
-              >
+                className='text-sm md:text-base font-semibold p-6 md:p-10 text-center'>
                 {timeLeft.split(":")[2]}
               </Badge>
-              <span className="text-sm font-semibold uppercase text-center">
+              <span className='text-sm font-semibold uppercase text-center'>
                 Minutes
               </span>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className='flex flex-col gap-2'>
               <Badge
                 variant={"outline"}
-                className="text-base font-semibold p-10"
-              >
+                className='text-sm md:text-base font-semibold p-6 md:p-10 text-center'>
                 {timeLeft.split(":")[3]}
               </Badge>
-              <span className="text-sm font-semibold uppercase text-center">
+              <span className='text-sm font-semibold uppercase text-center'>
                 Seconds
               </span>
             </div>
@@ -163,20 +159,19 @@ const SingleCampaignPage = ({
           </div>
         )} */}
         <div
-          className="px-4 md:container relative flex flex-col lg:flex-row"
-          id="body"
-        >
-          <div className="mb-4 md:mb-10 shrink-0 border-t lg:mx-4 lg:mb-0 lg:border-t-0" />
-          <div className="relative flex-1">
-            <div className="grid flex-1 mt-10 gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-10 grid-cols-2 xl:grid-cols-4 ">
+          className='px-4 md:container relative flex flex-col lg:flex-row'
+          id='body'>
+          <div className='mb-4 md:mb-10 shrink-0 border-t lg:mx-4 lg:mb-0 lg:border-t-0' />
+          <div className='relative flex-1'>
+            <div className='grid flex-1 mt-10 gap-3 md:gap-x-8 md:gap-y-10 grid-cols-2 xl:grid-cols-4 '>
               {!loading &&
                 !timeLeft.includes("Expired") &&
                 products.map((item: ProductType) => (
                   <ProductCard product={item} key={item.id} />
                 ))}
               {loading && (
-                <span className="flex justify-center items-center gap-2">
-                  loading... <LoaderCircle className="w-5 h-5 ml-2" />
+                <span className='flex justify-center items-center gap-2'>
+                  loading... <LoaderCircle className='w-5 h-5 ml-2' />
                 </span>
               )}
             </div>

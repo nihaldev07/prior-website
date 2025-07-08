@@ -11,10 +11,12 @@ import { Clock } from "lucide-react";
 import { ICampaign, ICampaingProducts } from "@/lib/interface";
 import Carousel from "@/components/Carosol/Swiper";
 import { Button } from "@/components/ui/button";
-import { DoubleArrowRightIcon } from "@radix-ui/react-icons";
 import { Badge } from "@/components/ui/badge";
 import useCategory from "@/hooks/useCategory";
 import useThrottledEffect from "@/hooks/useThrottleEffect";
+import { Separator } from "@/components/ui/separator";
+import CarouselComponent from "@/components/Carosol/SwiperComponent";
+import { placeholderImage } from "@/utils/utils";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -67,8 +69,8 @@ const CampaignPage = () => {
 
     fetchCampaign();
 
-    //eslinst-disable-next-line
-  }, [fetchActiveCampaign]);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (campaign) {
@@ -109,17 +111,16 @@ const CampaignPage = () => {
   const renderFlashSaleCategory = () => {
     return (
       <div
-        className="flex items-center justify-center min-h-[20vh] bg-gradient-to-r from-indigo-600 to-pink-500 mt-4 py-2 cursor-pointer"
+        className='flex items-center justify-center min-h-[20vh] bg-gradient-to-r from-indigo-600 to-pink-500 mt-4 py-2 cursor-pointer'
         onClick={() => {
           router.push("/category/3cc953ce-d453-4f5d-99df-5f31b0342e15");
-        }}
-      >
+        }}>
         {/* <!-- Outer Box with animated background --> */}
-        <div className="relative w-full h-48 sm:h-60 lg:h-96 bg-gradient-to-r from-purple-500 via-red-500 to-yellow-500 rounded-lg overflow-hidden shadow-2xl animate-pulse">
+        <div className='relative w-full h-48 sm:h-60 lg:h-96 bg-gradient-to-r from-purple-500 via-red-500 to-yellow-500 rounded-lg overflow-hidden shadow-2xl animate-pulse'>
           {/* <!-- Inner Box with Flash Sale text --> */}
-          <div className="absolute inset-0 flex items-center justify-center ">
-            <div className="bg-white bg-opacity-80 text-center p-6 rounded-lg shadow-lg backdrop-blur-sm">
-              <h1 className="text-base sm:text-lg lg:text-3xl font-extrabold text-gray-800 uppercase animate-pulse">
+          <div className='absolute inset-0 flex items-center justify-center '>
+            <div className='bg-white bg-opacity-80 text-center p-6 rounded-lg shadow-lg backdrop-blur-sm'>
+              <h1 className='text-base sm:text-lg lg:text-3xl font-extrabold text-gray-800 uppercase animate-pulse'>
                 {flashSaleCategory?.name ?? ""}
               </h1>
             </div>
@@ -129,101 +130,167 @@ const CampaignPage = () => {
     );
   };
 
+  const renderProductCarousel = () => {
+    return (
+      <CarouselComponent
+        slidersPerView={4}
+        items={
+          !campaign?.products
+            ? []
+            : campaign?.products.map(
+                (product: ICampaingProducts, index: number) => (
+                  <div key={index} className='mx-4 my-2'>
+                    <Image
+                      src={product?.thumbnail || placeholderImage}
+                      alt={`Image ${index}`}
+                      fill
+                      quality={90}
+                      className='w-full h-auto object-fill rounded mx-4'
+                    />
+                  </div>
+                )
+              )
+        }
+      />
+    );
+  };
+  const renderMobileCarousel = () => {
+    return (
+      <CarouselComponent
+        slidersPerView={2}
+        items={
+          !campaign?.products
+            ? []
+            : campaign?.products.map(
+                (product: ICampaingProducts, index: number) => (
+                  <div key={index} className='mx-2 py-2'>
+                    <Image
+                      src={product?.thumbnail || placeholderImage}
+                      alt={`Image ${index}`}
+                      quality={90}
+                      className='w-full h-auto object-cover rounded mx-2'
+                    />
+                  </div>
+                )
+              )
+        }
+      />
+    );
+  };
+
   return (
     <>
       <Head>
         <title>{campaign?.title || "Campaign"}</title>
         <meta
-          name="description"
+          name='description'
           content={campaign?.description || "Campaign description"}
         />
-        <meta property="og:title" content={campaign?.title || "Campaign"} />
+        <meta property='og:title' content={campaign?.title || "Campaign"} />
         <meta
-          property="og:description"
+          property='og:description'
           content={campaign?.description || "Campaign description"}
         />
         <meta
-          property="og:image"
+          property='og:image'
           content={campaign?.image || "/default-image.jpg"}
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
 
       {!!campaign && (
-        <div className="md:container mx-auto p-2 md:p-6   rounded-lg mt-4">
-          <div className="w-full flex justify-between items-start">
-            <div className="top-4 left-4 p-2   font-semibold  text-zinc-900 text-xs sm:text-base md:text-lg uppercase">
+        <div className='md:container mx-auto px-4 py-2 md:px-6 md:py-6   rounded-lg mt-4'>
+          <div
+            className='w-full flex flex-col md:flex-row justify-center md:justify-between items-center md:items-start rounded-md '
+            onClick={() => handleNavigate()}>
+            <div className='top-4 left-4 p-2   font-medium text-base sm:text-lg md:text-lg uppercase text-primary'>
               ✨ {campaign?.title}
             </div>
-            <div className="top-4 right-4 p-2 flex items-center justify-between text-zinc-700 text-xs sm:text-base md:text-lg font-medium">
-              <Clock className="mr-2" /> Time left:{" "}
+            <div className='top-4 right-4 p-2 items-center justify-between  text-xs sm:text-base md:text-lg font-medium hidden md:flex text-white'>
+              <Clock className='mr-2 hidden md:inline text-white' />{" "}
+              <span className='text-primary text-sm'>Time left:</span>{" "}
               {timeLeft.includes("Expired") ? (
                 "Expired"
               ) : (
-                <div className="grid grid-cols-4 gap-1 ml-2">
+                <div className='grid grid-cols-4 gap-1 ml-2'>
                   <Badge
                     variant={"outline"}
-                    className="text-base font-semibold"
-                  >
+                    className=' text-xs md:text-base font-medium bg-white rounded-md'>
                     {timeLeft.split(":")[0]} d
                   </Badge>
                   <Badge
                     variant={"outline"}
-                    className="text-base font-semibold"
-                  >
+                    className='ext-xs md:text-base font-medium bg-white rounded-md'>
                     {timeLeft.split(":")[1]} h
                   </Badge>
                   <Badge
                     variant={"outline"}
-                    className="text-base font-semibold"
-                  >
+                    className='ext-xs md:text-base font-medium bg-white rounded-md'>
                     {timeLeft.split(":")[2]} m
                   </Badge>
                   <Badge
                     variant={"outline"}
-                    className="text-base font-semibold text-orange-600"
-                  >
+                    className='ext-xs md:text-base font-medium text-orange-600 bg-white rounded-md'>
                     {timeLeft.split(":")[3]} s
                   </Badge>
                 </div>
               )}
             </div>
-            <Button
+            <div className='top-4 right-4 p-2 items-center justify-between text-zinc-700 text-xs sm:text-base md:text-lg font-medium flex md:hidden'>
+              {timeLeft.includes("Expired") ? (
+                "Expired"
+              ) : (
+                <div className='grid grid-cols-4 gap-1 ml-2'>
+                  <Badge
+                    variant={"outline"}
+                    className=' text-xs md:text-base font-medium bg-white rounded-md'>
+                    {timeLeft.split(":")[0]} d
+                  </Badge>
+                  <Badge
+                    variant={"outline"}
+                    className='text-xs md:text-base font-medium bg-white rounded-md'>
+                    {timeLeft.split(":")[1]} h
+                  </Badge>
+                  <Badge
+                    variant={"outline"}
+                    className='text-xs md:text-base font-medium bg-white rounded-md'>
+                    {timeLeft.split(":")[2]} m
+                  </Badge>
+                  <Badge
+                    variant={"outline"}
+                    className='text-xs md:text-base font-medium text-orange-600 bg-white rounded-md'>
+                    {timeLeft.split(":")[3]} s
+                  </Badge>
+                </div>
+              )}
+            </div>
+            {/* <Button
               variant={"ghost"}
-              className="text-lg"
-              onClick={() => handleNavigate()}
-            >
-              See More <DoubleArrowRightIcon />
-            </Button>
+              className='text-xs md:text-sm  text-white font-semibold hover:bg-gray-100'
+              onClick={() => handleNavigate()}>
+              See More
+            </Button> */}
           </div>
-          <div className="w-full h-[1px] bg-gray-950 my-1" />
-          <div className="flex flex-col items-center">
+          <Separator className='my-4 text-gray-950' />
+          <div className='flex flex-col items-center'>
             {!campaign?.products && !!campaign?.image && (
-              <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] bg-gray-200">
+              <div className='relative w-full h-[200px] sm:h-[250px] md:h-[300px] bg-gray-200'>
                 <Image
                   src={campaign?.image}
                   alt={campaign?.title}
-                  className="w-full h-full object-cover absolute"
+                  className='w-full h-full object-cover absolute'
                   fill
                 />
               </div>
             )}
             {!!campaign?.products && (
               <>
-                <div className="relative w-full h-[280px] sm:h-[300px] md:h-[350px] rounded-md p-2 md:p-5  shadow-md hidden md:block">
-                  <Carousel
-                    images={productImgs}
-                    perView={5}
-                    spaceBetween={10}
-                  />
+                <div className='relative w-full h-[180px] sm:h-[250px] md:h-[300px] rounded-md p-2 md:p-5  shadow-md hidden md:block'>
+                  {renderProductCarousel()}
                 </div>
 
-                <div className="relative w-full h-[280px] sm:h-[300px] md:h-[350px] rounded-md p-2 md:p-5 bg-gradient-to-r from-purple-100 to-pink-100 block md:hidden">
-                  <Carousel
-                    images={productImgs}
-                    perView={2}
-                    spaceBetween={10}
-                  />
+                <div className='relative w-full  h-[180px] sm:h-[250px] md:h-[300px] rounded-md p-2 md:p-5  block md:hidden'>
+                  {renderMobileCarousel()}
                 </div>
               </>
             )}

@@ -14,17 +14,19 @@ export const config = {
   },
   order: {
     createOrder: () => `${baseUrl}/order/create`,
-    getOrderDetails:(orderId:string)=>`${baseUrl}/order/details/${orderId}`
+    getOrderDetails: (orderId: string) => `${baseUrl}/order/details/${orderId}`,
   },
   payment: {
     bkashCheckout: () => `${hostName}/bkash/bkash-checkout`,
     bkashCallback: () => `${hostName}/bkash/bkash-callback`,
   },
-  contact:{
-    createContactQuery:()=>`${baseUrl}/customer-service/contact`
+  contact: {
+    createContactQuery: () => `${baseUrl}/customer-service/contact`,
   },
-  campaign:{
-    getActiveCampaign:()=>`${baseUrl}/campaign/active`,
-    getCampaignById:(id:string)=>`${baseUrl}/campaign/active/${id}`
-  }
+  campaign: {
+    getActiveCampaign: () => `${baseUrl}/campaign/active`,
+    getCampaignById: (id: string) => `${baseUrl}/campaign/active/${id}`,
+    checkPrepayment: () => `${baseUrl}/campaign//check-campaign-product`,
+    calculatePrepayment: () => `${baseUrl}/campaign/calculate-prepayment`,
+  },
 };
