@@ -53,31 +53,28 @@ const ImageSlider = ({ images }: { images: string[] }) => {
   };
 
   return (
-    <div className="relative w-full mx-auto">
+    <div className='relative w-full mx-auto'>
       <div
-        className="relative h-[30vh] mx-0 group hover:-translate-y-2"
+        className='relative h-[30vh] mx-0 group hover:-translate-y-2'
         onMouseOver={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-      >
+        onMouseLeave={handleMouseLeave}>
         <Image
           src={images[currentIndex]}
           alt={`Slider Image ${currentIndex + 1}`}
           quality={100}
           fill
-          className=" transition-all duration-500 ease-in-out cursor-pointer"
+          className=' transition-all duration-500 ease-in-out cursor-pointer'
         />
       </div>
       <button
-        className="absolute left-0 top-1/2 transform h-auto rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group"
-        onClick={prevSlide}
-      >
-        <ChevronLeft className="text-gray-400 group-hover:text-white" />
+        className='absolute left-0 top-1/2 transform h-auto rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group'
+        onClick={prevSlide}>
+        <ChevronLeft className='text-gray-400 group-hover:text-white' />
       </button>
       <button
-        className="absolute right-0 top-1/2 transform h-auto rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group"
-        onClick={nextSlide}
-      >
-        <ChevronRight className="text-gray-400 group-hover:text-white" />
+        className='absolute right-0 top-1/2 transform h-auto rounded-xl  mx-1 -mt-[10px] -translate-y-1/2  text-white p-2 group'
+        onClick={nextSlide}>
+        <ChevronRight className='text-gray-400 group-hover:text-white' />
       </button>
       {/* <div className="flex justify-center mt-4 ">
         {images.map((_, index) => (

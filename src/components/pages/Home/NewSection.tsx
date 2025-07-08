@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import ProductCard from "@/shared/productCard";
+import ProductCard from "@/shared/simpleProductCard";
 import "swiper/css";
 import { IProduct } from "@/lib/interface";
 // import Heading from "@/shared/Heading/Heading";
@@ -21,7 +21,7 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
           !products
             ? []
             : products.map((product: IProduct, index: number) => (
-                <div key={index} className="mx-4">
+                <div key={index} className='mx-4 my-2'>
                   <ProductCard product={product} />
                 </div>
               ))
@@ -37,7 +37,7 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
           !products
             ? []
             : products.map((product: IProduct, index: number) => (
-                <div key={index} className="mx-2">
+                <div key={index} className='mx-2 py-2'>
                   <ProductCard product={product} />
                 </div>
               ))
@@ -46,25 +46,27 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
     );
   };
   return (
-    <div className=" container px-4 my-4  md:my-10">
+    <div className=' container px-4 my-4  md:my-10'>
       {/* <Heading isCenter isMain desc={promotionTag?.description}>
         {promotionTag?.heading}
       </Heading> */}
-      <div className="flex justify-between items-center p-2 md:p-4 rounded-md bg-primary">
-        <span className=" text-base md:text-lg text-white font-semibold ">
+      <div className='flex justify-between items-center p-2 rounded border shadow-sm border-primary bg-white'>
+        <span className=' text-base md:text-lg text-primary font-medium'>
           New Arrival🌟
         </span>
         <Link href={`/deals`} prefetch={false}>
-          <Button className="text-sm md:text-base text-white" variant={"ghost"}>
+          <Button
+            className='text-sm md:text-base text-primary font-normal'
+            variant={"ghost"}>
             See More
           </Button>
         </Link>
       </div>
-      <Separator className="my-4 text-gray-950" />
-      <div className="w-full rounded-xl hidden sm:block">
+      <Separator className='my-4 text-gray-950' />
+      <div className='w-full rounded-md hidden sm:block'>
         {renderProductCarousel()}
       </div>
-      <div className="w-full rounded-xl block sm:hidden">
+      <div className='w-full rounded-md block sm:hidden'>
         {renderMobileCarousel()}
       </div>
     </div>

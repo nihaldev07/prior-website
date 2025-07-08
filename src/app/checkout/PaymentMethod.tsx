@@ -6,41 +6,43 @@ import { Banknote, Coins, Truck } from "lucide-react";
 import Image from "next/image";
 import BkashLogo from "@/images/BKash-Icon-Logo.wine.png";
 interface Props {
+  prePaymentAmount?: number;
   district?: string;
   paymentMethod: string;
   handlePaymentMethodChange: (value: string) => void;
 }
 
 const PaymentMethod: FC<Props> = ({
+  prePaymentAmount = 0,
   district = "",
   paymentMethod,
   handlePaymentMethodChange,
 }) => {
   return (
-    <div className="rounded-xl border border-neutral-300 bg-white">
-      <div className="flex flex-col items-start p-6 sm:flex-row">
-        <span className="hidden sm:block">
-          <Coins className="text-3xl text-primary" />
+    <div className='rounded-xl border border-neutral-300 bg-white'>
+      <div className='flex flex-col items-start p-6 sm:flex-row'>
+        <span className='hidden sm:block'>
+          <Coins className='text-3xl text-primary' />
         </span>
-        <div className="flex w-full items-center justify-between">
-          <div className="sm:ml-8">
-            <h3 className="uppercase tracking-tight">PAYMENT METHOD</h3>
-            <div className="mt-1 text-sm font-semibold"></div>
+        <div className='flex w-full items-center justify-between'>
+          <div className='sm:ml-8'>
+            <h3 className='uppercase tracking-tight'>PAYMENT METHOD</h3>
+            <div className='mt-1 text-sm font-semibold'></div>
           </div>
         </div>
       </div>
 
       <div
-        className={`space-y-6 border-t border-neutral-300 px-6 py-7 ${"block"}`}
-      >
+        className={`space-y-6 border-t border-neutral-300 px-6 py-7 ${"block"}`}>
         {/* ==================== */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4'>
           <Button
             variant={paymentMethod === "cashondelivery" ? "default" : "outline"}
-            onClick={() => handlePaymentMethodChange("cashondelivery")}
-          >
-            <Banknote className="mr-2 size-5" />{" "}
-            {district.toLowerCase().includes("dhaka")
+            onClick={() => handlePaymentMethodChange("cashondelivery")}>
+            <Banknote className='mr-2 size-5' />{" "}
+            {!!prePaymentAmount && prePaymentAmount > 0
+              ? `Cash On Delivery (Advance ${prePaymentAmount}TK)`
+              : district.toLowerCase().includes("dhaka")
               ? "Cash On Delivery"
               : ["gazipur", "tongi", "narayanganj", "savar"].includes(
                   district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
@@ -49,16 +51,15 @@ const PaymentMethod: FC<Props> = ({
               : "Cash On Delivery (Advance 150TK)"}
           </Button>
           <Button
-            className="flex justify-center items-center"
+            className='flex justify-center items-center'
             variant={paymentMethod === "bkash" ? "default" : "outline"}
-            onClick={() => handlePaymentMethodChange("bkash")}
-          >
+            onClick={() => handlePaymentMethodChange("bkash")}>
             <Image
               src={BkashLogo}
               width={32}
               height={32}
-              className="mr-2"
-              alt="bkash-logo"
+              className='mr-2'
+              alt='bkash-logo'
             />{" "}
             Pay With Bkash
           </Button>

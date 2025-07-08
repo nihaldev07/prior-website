@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { DM_Serif_Text } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "./navbar";
@@ -8,10 +8,10 @@ import Footer from "@/shared/Footer/Footer";
 import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
 
-const inter = Poppins({
-  weight: "400",
-  style: "normal",
-  subsets: ["latin", "latin-ext"],
+const inter = DM_Serif_Text({
+  weight: "400", // Only one weight available
+  style: "normal", // Or 'italic' if needed
+  subsets: ["latin"], // Or ['latin', 'latin-ext'] if needed
 });
 
 export const metadata: Metadata = {
@@ -49,12 +49,12 @@ export default function RootLayout({
 }>) {
   //useAnalytics();
   return (
-    <html lang="en">
+    <html lang='en'>
       <head>
         {/* Google Tag Manager - head script */}
         <Script
-          id="google-tag-manager"
-          strategy="beforeInteractive"
+          id='google-tag-manager'
+          strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: `
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -70,11 +70,10 @@ export default function RootLayout({
         {/* Google Tag Manager - noscript fallback */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-T2HZLQ22"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
+            src='https://www.googletagmanager.com/ns.html?id=GTM-T2HZLQ22'
+            height='0'
+            width='0'
+            style={{ display: "none", visibility: "hidden" }}></iframe>
         </noscript>
         <PageStateProvider>
           <CartProvider>

@@ -127,21 +127,25 @@ const Page = () => {
           </div>
 
           {/* Desktop Filters */}
-          <div className='pr-4 lg:basis-1/3 xl:basis-1/4 hidden md:block'>
-            <SidebarFilters
-              filterData={filterData}
-              categories={distictFilterValues.categories}
-              colors={distictFilterValues.colors.filter((i) => i !== "")}
-              sizes={distictFilterValues.sizes.filter((i) => i !== "")}
-              handleFilterChange={(value) => {
-                setFilterData(value);
-              }}
-            />
-          </div>
+          {filterData &&
+            (filterData?.color || filterData?.size) &&
+            (filterData?.color.length > 0 || filterData?.size.length > 0) && (
+              <div className='pr-4 lg:basis-1/3 xl:basis-1/4 hidden md:block'>
+                <SidebarFilters
+                  filterData={filterData}
+                  categories={distictFilterValues.categories}
+                  colors={distictFilterValues.colors.filter((i) => i !== "")}
+                  sizes={distictFilterValues.sizes.filter((i) => i !== "")}
+                  handleFilterChange={(value) => {
+                    setFilterData(value);
+                  }}
+                />
+              </div>
+            )}
 
           {/* Products Grid */}
           <div className='relative flex-1'>
-            <div className='grid flex-1 gap-x-4 md:gap-x-8 gap-y-2 md:gap-y-10 grid-cols-2 xl:grid-cols-3'>
+            <div className='grid flex-1 gap-3 md:gap-x-8  md:gap-y-10 grid-cols-2 md:grid-cols-4'>
               {!!products &&
                 products.map((item: ProductType) => (
                   <div
