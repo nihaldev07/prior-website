@@ -529,9 +529,9 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            <div className='mt-6 p-2 rounded-md  w-full bg-gray-100'>
+            <div className='mt-6   w-full bg-gray-100'>
               <Textarea
-                className='w-full'
+                className='w-full border-0 bg-transparent p-4 text-sm placeholder:text-neutral-500 focus:ring-0'
                 rows={5}
                 value={notes}
                 onChange={(e: any) => setNotes(e.target.value)}
