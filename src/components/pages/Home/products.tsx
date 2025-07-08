@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { productsSection } from "@/data/content";
 import { ProductType } from "@/data/types";
@@ -15,10 +15,6 @@ const ProductCard = dynamic(() => import("@/shared/simpleProductCard"), {
   ssr: false,
   loading: () => <LoaderCircle className='w-5 h-5 text-black' />,
 });
-
-// Memoize Filter and Heading to avoid unnecessary re-renders
-const MemoizedFilter = memo(Filter);
-const MemoizedHeading = memo(Heading);
 
 const SectionProducts = () => {
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -88,11 +84,11 @@ const SectionProducts = () => {
 
   return (
     <div className='px-3 lg:mx-20 mb-4'>
-      <MemoizedHeading isCenter isMain desc={productsSection.description}>
+      <Heading isCenter isMain desc={productsSection.description}>
         {productsSection.heading}
-      </MemoizedHeading>
+      </Heading>
 
-      <MemoizedFilter
+      <Filter
         sizes={distictFilterValues?.sizes}
         colors={distictFilterValues?.colors}
         categories={distictFilterValues?.categories}
@@ -136,4 +132,4 @@ const SectionProducts = () => {
   );
 };
 
-export default memo(SectionProducts);
+export default SectionProducts;
