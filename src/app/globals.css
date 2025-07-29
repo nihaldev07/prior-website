@@ -91,10 +91,9 @@ body {
 }
 
 .gradient-animated-border {
-  --borderWidth: 2px;
-  background: #1d1f20;
+  --borderWidth: 4px;
   position: relative;
-  border-radius: var(--borderWidth);
+  border-radius: 4px;
 }
 .gradient-animated-border:after {
   content: "";

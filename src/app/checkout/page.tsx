@@ -293,11 +293,14 @@ const CheckoutPage = () => {
     setLoading(true);
     const hasPayment =
       paymentMethod === "bkash" ||
+      prePaymentAmount > 0 ||
       !formData.district.toLowerCase().includes("dhaka") ||
       (!!transectionData?.discount && transectionData?.discount > 0);
     const paymentAmount =
-      !formData.district.toLowerCase().includes("dhaka") ||
-      (!!transectionData?.discount && transectionData?.discount > 0)
+      prePaymentAmount > 0
+        ? prePaymentAmount
+        : !formData.district.toLowerCase().includes("dhaka") ||
+          (!!transectionData?.discount && transectionData?.discount > 0)
         ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
             formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
           )
