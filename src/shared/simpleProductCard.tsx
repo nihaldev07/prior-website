@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import imagePlaceHolder from "@/images/imagePlaceholder.svg";
-import { Tag } from "lucide-react";
+import { Tag, TagIcon } from "lucide-react";
 import { IProduct } from "@/lib/interface";
 import { ProductType } from "@/data/types";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,23 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
     <div
       key={product.id}
       className='group relative bg-transparent cursor-pointer  rounded-md hover:p-2 hover:border  hover:shadow-lg transition-shadow duration-200 ease-in-out'>
+      {!!product.discount && (
+        <div className='absolute top-1 left-1 z-10'>
+          <Badge className='bg-red-500 hover:bg-red-600 text-white px-2 py-1 text-xs font-semibold shadow-lg animate-pulse'>
+            <TagIcon className='mr-2 w-3 h-3' />
+            {product.discountType === "%" &&
+            !!product?.unitPrice &&
+            !!product?.updatedPrice
+              ? `${Math.round(
+                  ((product.unitPrice - product.updatedPrice) /
+                    product.unitPrice) *
+                    100
+                )}%`
+              : `${product.discount}৳`}{" "}
+            OFF
+          </Badge>
+        </div>
+      )}
       <img
         alt={product?.name ?? "product"}
         src={product?.thumbnail ?? imagePlaceHolder}
