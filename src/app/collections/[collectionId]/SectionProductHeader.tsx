@@ -174,7 +174,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
           <div className='space-y-4'>
             <div className='relative'>
               <ImageShowCase shots={shots} />
-              {discountPercentage > 0 && (
+              {product.discount > 0 && (
                 <div className='absolute top-4 left-4 z-10'>
                   <Badge className='bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 text-sm font-bold shadow-lg'>
                     <TagIcon className='mr-2 w-4 h-4' />
