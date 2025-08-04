@@ -375,8 +375,8 @@ const Navbar = () => {
           </div>
 
           {/* Right: Search + Cart */}
-          <div className='flex items-center justify-between gap-x-2 flex-shrink-0'>
-            <div className='flex flex-1 justify-center px-2 '>
+          <div className='flex items-center justify-between gap-x-2'>
+            <div className='flex flex-1 justify-center px-2 md:mr-4 '>
               <div className='w-full max-w-lg lg:max-w-xs'>
                 <label htmlFor='search' className='sr-only'>
                   Search
