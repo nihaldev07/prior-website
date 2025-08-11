@@ -336,11 +336,13 @@ const CheckoutPage = () => {
         currency: "BDT",
       });
       const response = await createOrder(orderData);
-
+      
       if (response.success) {
         clearCart();
         trackEvent("purchase", {
-          transection_id: response?.data?.order?.id,
+          transection_id: hasPayment
+            ? response?.data?.orderId
+            : response.data?.order?.id,
           affiliation: "Web-Site",
           Value: transectionData?.totalPrice,
           shipping: transectionData?.deliveryCharge,
@@ -369,7 +371,9 @@ const CheckoutPage = () => {
             };
           }),
         });
-        const orderId = response?.data?.order?.id;
+        const orderId = hasPayment
+          ? response?.data?.orderId
+          : response.data?.order?.id;
         if (hasPayment) {
           bkashCheckout(
             paymentMethod === "bkash"
