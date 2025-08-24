@@ -26,7 +26,7 @@ const PaymentMethod: FC<Props> = ({
         </span>
         <div className='flex w-full items-center justify-between'>
           <div className='sm:ml-8'>
-            <h3 className='uppercase tracking-tight'>PAYMENT METHOD</h3>
+            <h3 className='uppercase '>PAYMENT METHOD</h3>
             <div className='mt-1 text-sm font-semibold'></div>
           </div>
         </div>

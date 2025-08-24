@@ -26,6 +26,10 @@ import {
   ChevronRight,
   Grid3X3,
   Package,
+  User,
+  LogOut,
+  Heart,
+  ShoppingBag,
 } from "lucide-react";
 import Link from "next/link";
 import LogoImg from "@/images/logo.png";
@@ -35,11 +39,8 @@ import CartSideBar from "@/components/CartSideSheet";
 import React, { useState } from "react";
 import useCategory from "@/hooks/useCategory";
 import useThrottledEffect from "@/hooks/useThrottleEffect";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import { useAuth } from "@/context/AuthContext";
 
 interface Category {
   id: string;
@@ -61,6 +62,7 @@ const Navbar = () => {
     new Set()
   );
   const { fetchCategories } = useCategory();
+  const { authState, logout } = useAuth();
 
   useThrottledEffect(
     async () => {
@@ -200,7 +202,7 @@ const Navbar = () => {
                 alt='Your Company'
                 src={LogoImg}
                 width={150}
-                height={75}
+                height={80}
                 className='h-10 w-auto'
               />
             </SheetTitle>
@@ -245,6 +247,91 @@ const Navbar = () => {
                   </div>
                 </div>
               )}
+
+              {/* Authentication Section - Mobile */}
+              <div className='space-y-3 md:hidden'>
+                {authState.isAuthenticated ? (
+                  <div className='space-y-3'>
+                    <div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
+                      <div className='w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0'>
+                        {authState.user?.profilePicture ? (
+                          <Image
+                            src={authState.user.profilePicture}
+                            alt={authState.user.name}
+                            width={40}
+                            height={40}
+                            className='w-10 h-10 rounded-full object-cover'
+                          />
+                        ) : (
+                          <User className='w-5 h-5 text-blue-600' />
+                        )}
+                      </div>
+                      <div className='flex-1'>
+                        <p className='text-sm font-medium text-gray-900'>
+                          {authState.user?.name}
+                        </p>
+                        <p className='text-xs text-gray-600'>
+                          {authState.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className='space-y-2'>
+                      <Link
+                        href='/account'
+                        onClick={() => setOpenSheet(false)}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition-all hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700'>
+                        <User className='w-4 h-4' />
+                        Profile
+                      </Link>
+                      <Link
+                        href='/account/orders'
+                        onClick={() => setOpenSheet(false)}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition-all hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700'>
+                        <ShoppingBag className='w-4 h-4' />
+                        Orders
+                      </Link>
+                      <Link
+                        href='/account/wishlist'
+                        onClick={() => setOpenSheet(false)}
+                        className='flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-900 transition-all hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700'>
+                        <Heart className='w-4 h-4' />
+                        Wishlist
+                      </Link>
+                      <Button
+                        onClick={() => {
+                          logout();
+                          setOpenSheet(false);
+                        }}
+                        variant='ghost'
+                        className='w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700'>
+                        <LogOut className='w-4 h-4' />
+                        Logout
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className='space-y-2'>
+                    <Button
+                      asChild
+                      variant='outline'
+                      className='w-full justify-start gap-3'>
+                      <Link href='/login' onClick={() => setOpenSheet(false)}>
+                        <User className='w-4 h-4' />
+                        Login
+                      </Link>
+                    </Button>
+                    <Button asChild className='w-full justify-start gap-3'>
+                      <Link
+                        href='/register'
+                        onClick={() => setOpenSheet(false)}>
+                        <User className='w-4 h-4' />
+                        Register
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+                <Separator />
+              </div>
             </nav>
           </ScrollArea>
         </SheetContent>
@@ -374,7 +461,7 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* Right: Search + Cart */}
+          {/* Right: Search + Auth + Cart */}
           <div className='flex items-center justify-between gap-x-2'>
             <div className='flex flex-1 justify-center px-2 md:mr-4 '>
               <div className='w-full max-w-lg lg:max-w-xs'>
@@ -391,6 +478,123 @@ const Navbar = () => {
             <Button variant='ghost' size='icon' className='relative'>
               <CartSideBar />
             </Button>
+
+            {/* Authentication Section - Desktop */}
+            <div className='hidden md:flex items-center gap-2'>
+              {authState.isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='flex items-center gap-2'>
+                      <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center'>
+                        {authState.user?.profilePicture ? (
+                          <Image
+                            src={authState.user.profilePicture}
+                            alt={authState.user.name}
+                            width={32}
+                            height={32}
+                            className='w-8 h-8 rounded-full object-cover'
+                          />
+                        ) : (
+                          <User className='w-4 h-4 text-blue-600' />
+                        )}
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' className='w-56'>
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href='/account' className='flex items-center gap-2'>
+                        <User className='w-4 h-4' />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={logout}
+                      className='flex items-center gap-2 text-red-600 focus:text-red-600'>
+                      <LogOut className='w-4 h-4' />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='flex items-center gap-2'>
+                      <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center'>
+                        {authState.user?.profilePicture ? (
+                          <Image
+                            src={authState.user.profilePicture}
+                            alt={authState.user.name}
+                            width={32}
+                            height={32}
+                            className='w-8 h-8 rounded-full object-cover'
+                          />
+                        ) : (
+                          <User className='w-4 h-4 text-blue-600' />
+                        )}
+                      </div>
+                      <span className='hidden lg:block text-sm font-medium'>
+                        {authState.user?.name}
+                      </span>
+                      <ChevronDown className='w-4 h-4' />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' className='w-56'>
+                    <DropdownMenuLabel>Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Button variant='ghost' size='sm' asChild>
+                        <Link href='/login'>Login</Link>
+                      </Button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Button size='sm' asChild>
+                        <Link href='/register'>Register</Link>
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+
+            {/* Mobile Auth Indicator
+            <div className='md:hidden'>
+              {authState.isAuthenticated ? (
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => setOpenSheet(true)}>
+                  <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center'>
+                    {authState.user?.profilePicture ? (
+                      <Image
+                        src={authState.user.profilePicture}
+                        alt={authState.user.name}
+                        width={32}
+                        height={32}
+                        className='w-8 h-8 rounded-full object-cover'
+                      />
+                    ) : (
+                      <User className='w-4 h-4 text-blue-600' />
+                    )}
+                  </div>
+                </Button>
+              ) : (
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => setOpenSheet(true)}>
+                  <User className='w-5 h-5' />
+                </Button>
+              )}
+            </div> */}
           </div>
         </div>
       </div>

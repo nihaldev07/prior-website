@@ -1,21 +1,21 @@
-
-export interface INavItem{
- id:number;
- title:string;
- link:string;
- icon:string
+export interface INavItem {
+  id: number;
+  title: string;
+  link: string;
+  icon: string;
 }
 
 interface IProduct {
   id?: number; // or string, depending on your ID type
   name?: string;
+  slug?: string;
   description?: string;
   discount?: number;
-  discountType?:string;
+  discountType?: string;
   quantity?: number;
   unitPrice?: number;
   hasDiscount?: boolean;
-  updatedPrice?:number;
+  updatedPrice?: number;
   thumbnail?: string;
   images?: string[];
   categoryId?: string; // or string, depending on your category ID type
@@ -38,9 +38,9 @@ interface IVariation {
   id?: number;
   name?: string;
   value?: string;
-  size?:string;
-  color?:string;
-  quantity?:number;
+  size?: string;
+  color?: string;
+  quantity?: number;
 }
 
 interface IRatingDetails {
@@ -55,15 +55,14 @@ interface IProductDetailsProps {
   category?: Category;
 }
 
-
-export interface ICampaingProducts{
-    id:string;
-     name:string;
-      description:string;
-       thumbnail:string;
-        quantity:number;
-        active:boolean;
-         unitPrice:number;
+export interface ICampaingProducts {
+  id: string;
+  name: string;
+  description: string;
+  thumbnail: string;
+  quantity: number;
+  active: boolean;
+  unitPrice: number;
 }
 export interface ICampaign {
   id: string;

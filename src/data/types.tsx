@@ -2,6 +2,7 @@ import type { StaticImageData } from "next/image";
 
 export type ProductType = {
   id: string;
+  slug?: string;
   name: string;
   manu_id: string;
   justIn?: boolean;

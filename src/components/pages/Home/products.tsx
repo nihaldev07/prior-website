@@ -9,6 +9,7 @@ import useProductFetch from "@/hooks/useProductFetch";
 import Heading from "@/shared/Heading/Heading";
 import Filter from "@/components/Filter";
 import { usePageState } from "@/context/PageStateContext";
+import YukiChatWidget from "@/components/ChatWidget/yukiChatWidget";
 
 // Dynamically import ProductCard for better SSR support and lazy load
 const ProductCard = dynamic(() => import("@/shared/simpleProductCard"), {

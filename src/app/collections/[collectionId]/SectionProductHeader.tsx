@@ -199,7 +199,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                     className='bg-muted text-muted-foreground hover:bg-muted/80 text-xs font-medium uppercase tracking-wide'>
                     {product.categoryName}
                   </Badge>
-                  <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight tracking-tight uppercase'>
+                  <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight  uppercase'>
                     {product?.name}
                   </h1>
                 </div>
@@ -279,7 +279,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
             {/* Price Section */}
             <div className='space-y-2'>
               <div className='flex items-center space-x-4'>
-                <span className='text-3xl md:text-4xl font-bold text-foreground tracking-tight'>
+                <span className='text-3xl md:text-4xl font-bold text-foreground '>
                   ৳{currentPrice.toLocaleString()}
                 </span>
                 {prevPrice > 0 && (
