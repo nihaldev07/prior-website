@@ -58,7 +58,7 @@ export default function RootLayout({
         <Script src='https://cdn.socket.io/4.7.2/socket.io.min.js' />
 
         <Script
-          src='widget/enhanced-chat-widget.js'
+          src='https://app.priorbd.com/widget/yuki-widget.js'
           data-socket-url='https://yuki.priorbd.com'
           data-position='bottom-right'
         />
