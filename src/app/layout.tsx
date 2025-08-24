@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { DM_Serif_Text } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import Navbar from "./navbar";
 import Footer from "@/shared/Footer/Footer";
 // import Maintenance from "./Maintainance";
@@ -51,6 +53,38 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <head>
+        {/* Chat Widget Script */}
+
+        <Script src='https://cdn.socket.io/4.7.2/socket.io.min.js' />
+
+        <Script
+          src='widget/enhanced-chat-widget.js'
+          data-socket-url='https://yuki.priorbd.com'
+          data-position='bottom-right'
+        />
+
+        {/* Custom Analytics Script */}
+        {/* <Script
+          id='yuki-analytics'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `
+              const originalConsoleLog = console.log;
+              console.log = (...args) => {
+                if (args[0] === "Yuki Chat Widget Event:") {
+                  const eventName = args[1];
+                  if (typeof gtag !== "undefined") {
+                    gtag("event", eventName, {
+                      event_category: "yuki_chat_widget",
+                      company: "yuki"
+                    });
+                  }
+                }
+                originalConsoleLog.apply(console, args);
+              };
+            `,
+          }}
+        /> */}
         {/* Google Tag Manager - head script */}
         <Script
           id='google-tag-manager'
@@ -76,14 +110,18 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}></iframe>
         </noscript>
         <PageStateProvider>
-          <CartProvider>
-            <>
-              <Navbar />
-              {children}
-              <Footer />
-            </>
-            {/* <Maintenance /> */}
-          </CartProvider>
+          <AuthProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <>
+                  <Navbar />
+                  {children}
+                  <Footer />
+                </>
+                {/* <Maintenance /> */}
+              </CartProvider>
+            </WishlistProvider>
+          </AuthProvider>
         </PageStateProvider>
       </body>
     </html>

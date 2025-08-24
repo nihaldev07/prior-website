@@ -10,11 +10,12 @@ import InputNumber from "@/shared/InputNumber/InputNumber";
 
 import PaymentMethod from "./PaymentMethod";
 import { CartItem, useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
 import { isValidBangladeshiPhoneNumber } from "@/utils/content";
-import { Loader2, Star, TrashIcon } from "lucide-react";
+import { Loader2, Star, TrashIcon, User, LogIn } from "lucide-react";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackEvent } from "@/lib/firebase-event";
@@ -23,6 +24,14 @@ import { Badge } from "@/components/ui/badge";
 import { formatVariant } from "@/utils/functions";
 import { Textarea } from "@/components/ui/textarea";
 import useCampaign from "@/hooks/useCampaign";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 export interface UserFormData {
   name: string;
   mobileNumber: string;
@@ -36,6 +45,7 @@ const CheckoutPage = () => {
   useAnalytics();
   const { checkPrepaymentProducts, calculatePrepaymentAmount } = useCampaign();
   const { cart, clearCart, updateToCart, removeFromCart } = useCart();
+  const { authState } = useAuth();
   const [loading, setLoading] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
 
@@ -63,6 +73,23 @@ const CheckoutPage = () => {
 
   const [prePaymentAmount, setPrePaymentAmount] = useState<number>(0);
   const [hasPrepayment, setHasPrepayment] = useState<boolean>(false);
+
+  // Auto-fill form data for logged-in users
+  useEffect(() => {
+    if (authState.isAuthenticated && authState.user) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        name: authState.user?.name || prevFormData.name,
+        email: authState.user?.email || prevFormData.email,
+        mobileNumber: authState.user?.mobileNumber || prevFormData.mobileNumber,
+        district: authState?.user?.address?.district || prevFormData.district,
+        division: authState.user?.address?.division || prevFormData.division,
+        address: authState.user?.address?.address || prevFormData.address,
+        postalCode:
+          authState?.user?.address?.postalCode || prevFormData.postalCode,
+      }));
+    }
+  }, [authState.isAuthenticated, authState.user]);
 
   const checkPrepaymentProductData = async () => {
     const response = await checkPrepaymentProducts(
@@ -263,6 +290,79 @@ const CheckoutPage = () => {
   const renderLeft = () => {
     return (
       <div className='space-y-8'>
+        {/* Login/Register Prompt for Guest Users */}
+        {!authState.isAuthenticated && (
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center'>
+                <User className='h-5 w-5 mr-2' />
+                Sign In for Faster Checkout
+              </CardTitle>
+              <CardDescription>
+                Already have an account? Sign in to auto-fill your information
+                and track your orders.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className='flex flex-col sm:flex-row gap-3'>
+                <Link href={`/login?redirect=/checkout`} className='flex-1'>
+                  <Button variant='outline' className='w-full'>
+                    <LogIn className='h-4 w-4 mr-2' />
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href={`/register?redirect=/checkout`} className='flex-1'>
+                  <Button className='w-full'>
+                    <User className='h-4 w-4 mr-2' />
+                    Create Account
+                  </Button>
+                </Link>
+              </div>
+              <p className='text-xs text-gray-500 mt-3 text-center'>
+                Or continue as guest below
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Logged-in User Info */}
+        {authState.isAuthenticated && authState.user && (
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center'>
+                <User className='h-5 w-5 mr-2' />
+                Welcome back, {authState.user.name?.split(" ")[0]}!
+              </CardTitle>
+              <CardDescription>
+                Your information has been auto-filled. You can edit it below if
+                needed.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center space-x-3'>
+                  <div className='h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center'>
+                    <User className='h-5 w-5 text-blue-600' />
+                  </div>
+                  <div>
+                    <p className='font-medium text-gray-900'>
+                      {authState.user.name}
+                    </p>
+                    <p className='text-sm text-gray-500'>
+                      {authState.user.email || authState.user.mobileNumber}
+                    </p>
+                  </div>
+                </div>
+                <Link href='/account/profile'>
+                  <Button variant='ghost' size='sm'>
+                    Edit Profile
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <UserInformation
           formData={formData}
           handleInputChange={handleInputChange}
@@ -340,7 +440,9 @@ const CheckoutPage = () => {
       if (response.success) {
         clearCart();
         trackEvent("purchase", {
-          transection_id: response?.data?.order?.id,
+          transection_id: hasPayment
+            ? response?.data?.orderId
+            : response.data?.order?.id,
           affiliation: "Web-Site",
           Value: transectionData?.totalPrice,
           shipping: transectionData?.deliveryCharge,
@@ -369,7 +471,9 @@ const CheckoutPage = () => {
             };
           }),
         });
-        const orderId = response?.data?.order?.id;
+        const orderId = hasPayment
+          ? response?.data?.orderId
+          : response.data?.order?.id;
         if (hasPayment) {
           bkashCheckout(
             paymentMethod === "bkash"
@@ -394,8 +498,9 @@ const CheckoutPage = () => {
         "error"
       );
       console.log("error");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleConfirmOrder = () => {
@@ -560,7 +665,9 @@ const CheckoutPage = () => {
                 //   "Thank you for your patience and support!",
                 //   "info"
                 // );
-                handleConfirmOrder();
+                if (!loading) {
+                  handleConfirmOrder();
+                }
               }}>
               Confirm order{" "}
               {loading && (

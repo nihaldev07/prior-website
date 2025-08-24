@@ -1,4 +1,4 @@
-const hostName = "https://app.priorbd.com"; //"https://prior-express.onrender.com";
+export const hostName = "https://app.priorbd.com";
 const baseUrl = `${hostName}/prior`;
 
 export const config = {

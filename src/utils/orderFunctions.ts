@@ -22,7 +22,7 @@ export const handleApiError = (
   }
 };
 
-// Function to create a new product
+// Function to create a new order
 export const createOrder = async (
   orderData: any
 ): Promise<ApiResponse<any>> => {
@@ -31,16 +31,16 @@ export const createOrder = async (
       config.order.createOrder(),
       orderData
     );
-    if (response.status === 200) {
+    if (response.status === 201) {
       return { success: true, data: response.data.data };
     } else {
       return {
         success: false,
-        error: response.data.error || "Failed to create product",
+        error: response.data.error || "Failed to create order",
       };
     }
   } catch (error: any) {
-    console.error("Error creating product:", error.message);
+    console.error("Error creating order:", error.message);
     return handleApiError(error);
   }
 };

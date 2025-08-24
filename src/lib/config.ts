@@ -16,6 +16,22 @@ export const config = {
     createOrder: () => `${baseUrl}/order/create`,
     getOrderDetails: (orderId: string) => `${baseUrl}/order/details/${orderId}`,
   },
+  customer: {
+    orders: () => `${baseUrl}/customer/orders`,
+    orderDetails: (orderId: string) => `${baseUrl}/customer/orders/${orderId}`,
+    stats: () => `${baseUrl}/customer/stats`,
+    wishlist: () => `${baseUrl}/customer/wishlist`,
+    addToWishlist: () => `${baseUrl}/customer/wishlist/add`,
+    removeFromWishlist: (itemId: string) =>
+      `${baseUrl}/customer/wishlist/remove/${itemId}`,
+    clearWishlist: () => `${baseUrl}/customer/wishlist/clear`,
+    trackOrder: (orderId: string) =>
+      `${baseUrl}/customer/orders/${orderId}/track`,
+    reorder: (orderId: string) =>
+      `${baseUrl}/customer/orders/${orderId}/reorder`,
+    downloadInvoice: (orderId: string) =>
+      `${baseUrl}/customer/orders/${orderId}/invoice`,
+  },
   payment: {
     bkashCheckout: () => `${hostName}/bkash/bkash-checkout`,
     bkashCallback: () => `${hostName}/bkash/bkash-callback`,

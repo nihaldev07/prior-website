@@ -17,31 +17,56 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { link } from "fs";
 
 const heroSlides = [
+  // {
+  //   id: 1,
+  //   image:
+  //     "https://d38c45qguy2pwg.cloudfront.net/beach-with-umbrella-summer-vacation-concept-generative-ai.jpg",
+  //   title: "Summer Collection 2025",
+  //   subtitle: "Discover the latest trends for the season",
+  //   cta: "Shop Now",
+  // },
   {
     id: 1,
-    image:
-      "https://d38c45qguy2pwg.cloudfront.net/beach-with-umbrella-summer-vacation-concept-generative-ai.jpg",
-    title: "Summer Collection 2025",
+    image: "https://d38c45qguy2pwg.cloudfront.net/lucide.jpg",
+    title: "Rainy Season Collection 2025",
     subtitle: "Discover the latest trends for the season",
     cta: "Shop Now",
   },
 
   {
     id: 2,
-    image:
-      "https://d38c45qguy2pwg.cloudfront.net/young-woman-holding-phone-shopping-with-satisfaction-generated-by-ai.jpg",
+    image: "https://d38c45qguy2pwg.cloudfront.net/new_gpt_collection_img.png",
+    title: "Carry Your Story",
+    subtitle: "Modern essentials for women who carry confidence everywhere.",
+    cta: "View Offers",
+  },
+
+  //new_gpt_collection_img.png
+
+  {
+    id: 3,
+    image: "https://d38c45qguy2pwg.cloudfront.net/rainy_gpt.png",
     title: "New Arrivals",
     subtitle: "Be the first to shop our latest collection",
     cta: "Explore",
   },
-  {
-    id: 3,
-    image:
-      "https://d38c45qguy2pwg.cloudfront.net/glamorous-stiletto-pair-vibrant-pink-color-generated-by-ai.jpg",
-    title: "Elevate Your Everyday",
-    subtitle: "Refined shoes and bags designed for modern living",
-    cta: "View Offers",
-  },
+
+  // {
+  //   id: 3,
+  //   image:
+  //     "https://d38c45qguy2pwg.cloudfront.net/young-woman-holding-phone-shopping-with-satisfaction-generated-by-ai.jpg",
+  //   title: "New Arrivals",
+  //   subtitle: "Be the first to shop our latest collection",
+  //   cta: "Explore",
+  // },
+  // {
+  //   id: 3,
+  //   image:
+  //     "https://d38c45qguy2pwg.cloudfront.net/glamorous-stiletto-pair-vibrant-pink-color-generated-by-ai.jpg",
+  //   title: "Elevate Your Everyday",
+  //   subtitle: "Refined shoes and bags designed for modern living",
+  //   cta: "View Offers",
+  // },
 ];
 
 const featuredProducts = [
@@ -88,13 +113,13 @@ const HeroSection: React.FC = () => {
 
   return (
     <>
-      <header className='bg-white block min-h-[30vh] md:min-h-[600px] lg:min-h-[700px] relative'>
-        <section className='relative w-full h-[30vh] md:h-[600px] lg:h-[700px] overflow-hidden'>
+      <header className='bg-white block min-h-[35vh] md:min-h-[750px] lg:min-h-[850px] relative'>
+        <section className='relative w-full h-[35vh] md:h-[750px] lg:h-[850px] overflow-hidden'>
           <CarouselComponent
             items={heroSlides.map((slide) => (
               <div
                 key={slide.id}
-                className='relative w-full h-[30vh] md:h-full'>
+                className='relative w-full h-[35vh] md:h-full'>
                 <div className='absolute inset-0 bg-black/40 z-10' />
                 <img
                   src={slide.image}
@@ -110,13 +135,15 @@ const HeroSection: React.FC = () => {
                   </p>
                   <Button
                     size='lg'
-                    className='hidden md:block text-lg px-8'
+                    variant={"outline"}
+                    className='hidden md:block text-lg px-8 text-white font-semibold bg-transparent'
                     onClick={() => (window.location.href = "/collections")}>
                     {slide.cta}
                   </Button>
                   <Button
                     size='sm'
-                    className='text-sm px-4 block md:hidden'
+                    variant={"outline"}
+                    className='text-xs px-4 block md:hidden text-white font-semibold bg-transparent'
                     onClick={() => (window.location.href = "/collections")}>
                     {slide.cta}
                   </Button>
@@ -129,19 +156,19 @@ const HeroSection: React.FC = () => {
           <h2 className=' text-lg md:text-3xl font-semibold text-center mb-2 md:mb-10'>
             Featured Collections
           </h2>
-          <div className='grid grid-cols-3 gap-2 md:gap-6'>
+          <div className='grid grid-cols-3 gap-3 md:gap-6'>
             {featuredProducts.map((product) => (
               <Card
                 key={product.id}
-                className='overflow-hidden hover:shadow-lg transition-all duration-300 flex-1 w-full  border shadow-sm'
+                className='overflow-hidden hover:shadow-md transition-all duration-300 flex-1 w-full  border-2 border-dashed shadow-none'
                 onClick={() => (window.location.href = product.link)}>
                 <CardHeader
-                  className={`flex flex-col items-center justify-center py-2 md:py-8 bg-gray-100 md:${product?.color}`}>
-                  <div className='rounded-full p-4 bg-white/90 dark:bg-black/20 mb-2 md:mb-4'>
+                  className={`flex flex-col items-center justify-center py-2 md:py-8 bg-white shadow-none  md:${product?.color}`}>
+                  <div className='rounded-full p-0 md:p-4 bg-white/90 dark:bg-black/20 mb-2 md:mb-4 shadow-md border border-dashed overflow-hidden'>
                     <img
                       src={product?.icon.src}
                       alt='category'
-                      className={` h-8 w-8 md:h-12 md:w-12 bg-white`}
+                      className={` h-12 w-12 md:h-16 md:w-16 bg-white`}
                     />
                   </div>
                   <CardTitle className=' font-medium md:font-semibold text-center'>
