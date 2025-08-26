@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
 import { isValidBangladeshiPhoneNumber } from "@/utils/content";
-import { Loader2, Star, TrashIcon, User, LogIn } from "lucide-react";
+import { Loader2, Star, TrashIcon, User, LogIn, Disc2 } from "lucide-react";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackEvent } from "@/lib/firebase-event";
@@ -47,6 +47,7 @@ const CheckoutPage = () => {
   const { cart, clearCart, updateToCart, removeFromCart } = useCart();
   const { authState } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
 
   const [orderProducts, setOrderProduct] = useState<CartItem[]>([]);
@@ -475,6 +476,9 @@ const CheckoutPage = () => {
           ? response?.data?.orderId
           : response.data?.order?.id;
         if (hasPayment) {
+          setLoading(false);
+          setRedirecting(true);
+          console.log(hasPayment);
           bkashCheckout(
             paymentMethod === "bkash"
               ? transectionData?.remaining
@@ -485,7 +489,7 @@ const CheckoutPage = () => {
           );
         } else {
           Swal.fire(
-            "Order Create Successfully 🎉",
+            "Order Created Successfully 🎉",
             "Our agent will contact with you shortly",
             "success"
           ).then(() => (window.location.href = `/order/${orderId}`));
@@ -498,7 +502,6 @@ const CheckoutPage = () => {
         "error"
       );
       console.log("error");
-    } finally {
       setLoading(false);
     }
   };
@@ -658,7 +661,7 @@ const CheckoutPage = () => {
 
             <ButtonPrimary
               className='mt-8 w-full'
-              disabled={loading || !isTermsChecked}
+              disabled={loading || !isTermsChecked || redirecting}
               onClick={() => {
                 // Swal.fire(
                 //   "The Website is in maintOur site is currently undergoing maintenance",
@@ -669,9 +672,16 @@ const CheckoutPage = () => {
                   handleConfirmOrder();
                 }
               }}>
-              Confirm order{" "}
+              {redirecting
+                ? "Redirecting to payment..."
+                : loading
+                ? "Processing..."
+                : `Confirm ${hasPrepayment ? "and Pay" : ""}`}
               {loading && (
                 <Loader2 className=' animate-spin w-5 h-5 text-white ml-2' />
+              )}
+              {redirecting && (
+                <Disc2 className=' animate-spin w-5 h-5 text-white ml-2' />
               )}
             </ButtonPrimary>
           </div>
