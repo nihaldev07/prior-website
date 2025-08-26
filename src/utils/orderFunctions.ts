@@ -31,7 +31,7 @@ export const createOrder = async (
       config.order.createOrder(),
       orderData
     );
-    if (response.status === 201) {
+    if (response.status >= 200) {
       return { success: true, data: response.data.data };
     } else {
       return {
