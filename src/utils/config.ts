@@ -1,4 +1,4 @@
-export const hostName = "https://app.priorbd.com";
+export const hostName = process.env.NEXT_PUBLIC_API_URL;
 const baseUrl = `${hostName}/prior`;
 
 export const config = {

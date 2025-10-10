@@ -1,10 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import { FilterData } from "@/types/filter";
 
 interface PageState {
   scrollPosition: number;
-  filterData: Record<string, any>; // Extend this to include other state
+  filterData: FilterData | Record<string, any>;
   currentPage: number;
 }
 

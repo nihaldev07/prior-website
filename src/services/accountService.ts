@@ -113,8 +113,6 @@ export const accountService = {
 
       const data = await response.json();
 
-      console.log("User Orders Response:", data);
-
       if (!response.ok) {
         throw new Error(data.message || "Failed to fetch orders");
       }

@@ -2,13 +2,23 @@
 
 import dynamic from "next/dynamic";
 import { IProduct } from "@/lib/interface";
-import CampaignPage from "./CampaignView";
 import HeroSection from "./HeroSection";
 
-// Lazy load components
-const NewSectionView = dynamic(() => import("./NewSection"), { ssr: false });
-const SectionProducts = dynamic(() => import("./products"), { ssr: false });
-// Category can be lazily loaded if needed
+// Lazy load below-the-fold components with proper SSR
+const CampaignPage = dynamic(() => import("./CampaignView"), {
+  ssr: true,
+  loading: () => <div className="h-64 bg-gray-100 animate-pulse" />,
+});
+
+const NewSectionView = dynamic(() => import("./NewSection"), {
+  ssr: true,
+  loading: () => <div className="h-96 bg-gray-100 animate-pulse" />,
+});
+
+const SectionProducts = dynamic(() => import("./products"), {
+  ssr: true,
+  loading: () => <div className="h-screen bg-gray-100 animate-pulse" />,
+});
 
 // Define the interface for the component props
 interface HomePageProps {

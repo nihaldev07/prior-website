@@ -3,6 +3,7 @@
 import React, {
   createContext,
   ReactElement,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -58,6 +59,7 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
 }) => {
   const { authState } = useAuth();
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
   // Load wishlist data when user logs in
@@ -113,6 +115,7 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
           })
         );
         setWishlist(items);
+        setWishlistIds(new Set(items.map((item) => item.id)));
       }
     } catch (error) {
       console.error("Failed to load wishlist:", error);
@@ -128,10 +131,13 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
       const savedWishlist = localStorage.getItem("guestWishlist");
       if (savedWishlist) {
         try {
-          setWishlist(JSON.parse(savedWishlist));
+          const items = JSON.parse(savedWishlist);
+          setWishlist(items);
+          setWishlistIds(new Set(items.map((item: WishlistItem) => item.id)));
         } catch (error) {
           console.error("Failed to parse guest wishlist:", error);
           setWishlist([]);
+          setWishlistIds(new Set());
         }
       }
     }
@@ -165,6 +171,7 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
 
         if (response.success) {
           setWishlist((prev) => [...prev, newItem]);
+          setWishlistIds((prev) => new Set(prev).add(item.id));
           return true;
         }
         return false;
@@ -178,6 +185,7 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
       // Guest user - save to localStorage
       const updatedWishlist = [...wishlist, newItem];
       setWishlist(updatedWishlist);
+      setWishlistIds((prev) => new Set(prev).add(item.id));
       saveGuestWishlist(updatedWishlist);
       return true;
     }
@@ -194,6 +202,11 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
 
         if (response.success) {
           setWishlist((prev) => prev.filter((item) => item.id !== itemId));
+          setWishlistIds((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(itemId);
+            return newSet;
+          });
           return true;
         }
         return false;
@@ -207,6 +220,11 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
       // Guest user - remove from localStorage
       const updatedWishlist = wishlist.filter((item) => item.id !== itemId);
       setWishlist(updatedWishlist);
+      setWishlistIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(itemId);
+        return newSet;
+      });
       saveGuestWishlist(updatedWishlist);
       return true;
     }
@@ -220,6 +238,7 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
 
         if (response.success) {
           setWishlist([]);
+          setWishlistIds(new Set());
           return true;
         }
         return false;
@@ -232,14 +251,18 @@ export const WishlistProvider: React.FC<{ children: ReactElement }> = ({
     } else {
       // Guest user - clear localStorage
       setWishlist([]);
+      setWishlistIds(new Set());
       saveGuestWishlist([]);
       return true;
     }
   };
 
-  const isInWishlist = (itemId: string): boolean => {
-    return wishlist.some((item) => item.id === itemId);
-  };
+  const isInWishlist = useCallback(
+    (itemId: string): boolean => {
+      return wishlistIds.has(itemId); // O(1) lookup instead of O(n)
+    },
+    [wishlistIds]
+  );
 
   return (
     <WishlistContext.Provider

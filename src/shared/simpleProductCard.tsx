@@ -10,7 +10,7 @@ import { ProductType } from "@/data/types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useWishlist, WishlistItem } from "@/context/WishlistContext";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface IProp {
   product: IProduct | ProductType;
@@ -185,4 +185,11 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
   );
 };
 
-export default ProductCard;
+export default React.memo(ProductCard, (prevProps, nextProps) => {
+  // Only re-render if these specific props change
+  return (
+    prevProps.product.id === nextProps.product.id &&
+    prevProps.product.quantity === nextProps.product.quantity &&
+    prevProps.product.updatedPrice === nextProps.product.updatedPrice
+  );
+});

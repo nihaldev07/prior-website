@@ -60,12 +60,14 @@ const SingleCategoryPage = () => {
       }
     );
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
+    const currentObserverRef = observerRef.current;
+
+    if (currentObserverRef) {
+      observer.observe(currentObserverRef);
     }
 
     return () => {
-      if (observerRef.current) observer.unobserve(observerRef.current);
+      if (currentObserverRef) observer.unobserve(currentObserverRef);
     };
   }, [currentPage, totalPages, loading, handleLoadMore]);
 
