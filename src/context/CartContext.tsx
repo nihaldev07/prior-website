@@ -7,6 +7,7 @@ import React, {
   ReactElement,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -67,10 +68,29 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
     return [];
   });
 
+  // Debounced save to localStorage
+  const debouncedSave = useMemo(() => {
+    let timeoutId: NodeJS.Timeout;
+    return (cartData: CartItem[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        localStorage.setItem("cart", JSON.stringify(cartData));
+      }, 500); // Save after 500ms of no changes
+    };
+  }, []);
+
   // Sync cart data with localStorage whenever the cart changes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    debouncedSave(cart);
+  }, [cart, debouncedSave]);
+
+  // Save immediately on unmount to avoid data loss
+  useEffect(() => {
+    return () => {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    };
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addToCart = (item: CartItem) => {
     trackEvent("add_to_cart", {
@@ -80,30 +100,38 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
       currency: "BDT",
     });
     setCart((prevCart) => {
-      const foundObject = prevCart.find((itemY) => {
+      const existingIndex = prevCart.findIndex((itemY) => {
         if (itemY.id === item.id) {
           if (itemY.hasVariation && item?.hasVariation) {
             return itemY.variation?.id === item?.variation?.id;
           }
-          return false;
+          return !itemY.hasVariation;
         }
+        return false;
       });
-      if (foundObject) {
-        prevCart.forEach((itemX) => {
-          if (itemX.id === item.id) {
-            const totalPrice = itemX.unitPrice * (Number(itemX.quantity) + 1);
-            itemX = {
+
+      if (existingIndex !== -1) {
+        // Create new array with updated item (immutable)
+        return prevCart.map((itemX, idx) => {
+          if (idx === existingIndex) {
+            const newQuantity = itemX.quantity + 1;
+            const totalPrice = itemX.unitPrice * newQuantity;
+            const discount =
+              (itemX.unitPrice - (itemX.updatedPrice ?? 0)) * newQuantity;
+
+            return {
               ...itemX,
+              quantity: newQuantity,
               totalPrice,
-              quantity: itemX.quantity++,
-              discount:
-                (itemX.unitPrice - (item.updatedPrice ?? 0)) *
-                (itemX.quantity + 1),
+              discount,
             };
           }
+          return itemX;
         });
-        return prevCart;
-      } else return [...prevCart, item];
+      }
+
+      // Add new item
+      return [...prevCart, item];
     });
   };
 

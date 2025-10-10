@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+import React, { useCallback, useEffect, useRef } from "react";
 import { productsSection } from "@/data/content";
 import { ProductType } from "@/data/types";
 import { Bird, LoaderCircle } from "lucide-react";
@@ -10,12 +9,8 @@ import Heading from "@/shared/Heading/Heading";
 import Filter from "@/components/Filter";
 import { usePageState } from "@/context/PageStateContext";
 import YukiChatWidget from "@/components/ChatWidget/yukiChatWidget";
-
-// Dynamically import ProductCard for better SSR support and lazy load
-const ProductCard = dynamic(() => import("@/shared/simpleProductCard"), {
-  ssr: false,
-  loading: () => <LoaderCircle className='w-5 h-5 text-black' />,
-});
+import ProductCard from "@/shared/simpleProductCard";
+import { FilterData } from "@/types/filter";
 
 const SectionProducts = () => {
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -34,20 +29,29 @@ const SectionProducts = () => {
 
   const { state, setState } = usePageState();
 
-  // Restore state on mount
+  // Restore filter data on mount
   useEffect(() => {
-    // Restore scroll position
-    window.scrollTo(0, state.scrollPosition);
-
-    // Restore filter and pagination data
-    //@ts-ignore
-    setFilterData(state.filterData);
-    if (state.currentPage > 1) {
-      //@ts-ignore
-      handleLoadMore(state.currentPage - 1); // Load previous pages if necessary
+    // Restore filter data first
+    if (state.filterData && Object.keys(state.filterData).length > 0) {
+      setFilterData(state.filterData as FilterData);
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Restore scroll position only after products are loaded
+  useEffect(() => {
+    if (products.length > 0 && state.scrollPosition > 0) {
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: state.scrollPosition,
+          behavior: 'instant' as ScrollBehavior,
+        });
+        // Clear the saved position to avoid repeated scrolling
+        setState((prev) => ({ ...prev, scrollPosition: 0 }));
+      });
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products.length]);
 
   // Save state before navigation
   const handleProductClick = (productId: string) => {
@@ -60,28 +64,37 @@ const SectionProducts = () => {
     window.location.href = `/collections/${productId}`; // Navigate to product page
   };
 
+  // Memoized callback for intersection observer
+  const handleLoadMoreCallback = useCallback(() => {
+    if (currentPage < totalPages && !loading) {
+      handleLoadMore();
+    }
+  }, [currentPage, totalPages, loading, handleLoadMore]);
+
   // Observer to detect scroll to the bottom
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0];
-        if (target.isIntersecting && currentPage < totalPages && !loading) {
-          handleLoadMore();
+        if (target.isIntersecting) {
+          handleLoadMoreCallback();
         }
       },
-      { root: null, rootMargin: "0px", threshold: 1.0 }
+      { root: null, rootMargin: "100px", threshold: 0.1 } // Load earlier with lower threshold
     );
 
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
+    const currentObserverRef = observerRef.current;
+
+    if (currentObserverRef) {
+      observer.observe(currentObserverRef);
     }
 
     return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
+      if (currentObserverRef) {
+        observer.unobserve(currentObserverRef);
       }
     };
-  }, [currentPage, totalPages, loading, handleLoadMore]);
+  }, [handleLoadMoreCallback]);
 
   return (
     <div className='px-3 lg:mx-20 mb-4'>
@@ -94,7 +107,7 @@ const SectionProducts = () => {
         colors={distictFilterValues?.colors}
         categories={distictFilterValues?.categories}
         filterData={filterData}
-        handleFilterChange={(value: any) => setFilterData(value)}
+        handleFilterChange={(value: FilterData) => setFilterData(value)}
       />
 
       <div className='grid gap-3 sm:gap-3 md:gap-4 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 md:container'>

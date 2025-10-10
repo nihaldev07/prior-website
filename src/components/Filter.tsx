@@ -4,17 +4,9 @@ import React from "react";
 import { prices } from "@/data/content";
 // import Button from "@/shared/Button/Button";
 import Select from "@/shared/Select/Select";
-import { Category } from "@/data/types";
+import { FilterProps } from "@/types/filter";
 
-interface Props {
-  sizes: string[];
-  colors: string[];
-  categories: Category[];
-  filterData: any;
-  handleFilterChange: (filterData: any) => void;
-}
-
-const Filter: React.FC<Props> = ({
+const Filter: React.FC<FilterProps> = ({
   sizes,
   colors,
   categories,

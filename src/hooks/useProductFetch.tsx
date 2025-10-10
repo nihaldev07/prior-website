@@ -3,10 +3,12 @@ import { useState } from "react";
 import axios from "axios";
 import useThrottledEffect from "./useThrottleEffect";
 import { config } from "@/lib/config";
+import { FilterData } from "@/types/filter";
+import { requestDeduper } from "@/lib/request-deduper";
 
 const useProductFetch = (
   initialPage = 1,
-  initialFilters = { categoryId: "", color: "", size: "", price: "" }
+  initialFilters: FilterData = { categoryId: "", color: "", size: "", price: "" }
 ) => {
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -23,13 +25,15 @@ const useProductFetch = (
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(config.product.getProducts(), {
-        params: {
-          page: currentPage,
-          limit,
-          ...filterData,
-        },
-      });
+      const url = config.product.getProducts();
+      const params = { page: currentPage, limit, ...filterData };
+      const cacheKey = `${url}?${new URLSearchParams(params as any).toString()}`;
+
+      const response = await requestDeduper.fetch(
+        cacheKey,
+        () => axios.get(url, { params, timeout: 10000 })
+      );
+
       if (response?.status < 300) {
         setProducts(
           currentPage > 1
@@ -37,10 +41,10 @@ const useProductFetch = (
             : response.data.products
         );
         setTotalPages(Math.ceil(response.data.totalProducts / limit));
-        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -48,28 +52,34 @@ const useProductFetch = (
   const fetchNewProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(config.product.getNewProducts(), {
-        params: {
-          limit: 100,
-        },
-      });
+      const url = config.product.getNewProducts();
+      const cacheKey = `${url}?limit=100`;
+
+      const response = await requestDeduper.fetch(
+        cacheKey,
+        () => axios.get(url, { params: { limit: 100 }, timeout: 10000 })
+      );
+
       if (response?.status < 300) {
         setProducts(response.data);
-        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
       setLoading(false);
     }
   };
 
   const fetchFilterData = async (categoryId = "") => {
     try {
-      const response = await axios.get(config.product.getFilterData(), {
-        params: {
-          categoryId,
-        },
-      });
+      const url = config.product.getFilterData();
+      const cacheKey = `${url}?categoryId=${categoryId}`;
+
+      const response = await requestDeduper.fetch(
+        cacheKey,
+        () => axios.get(url, { params: { categoryId }, timeout: 10000 })
+      );
+
       if (response?.status < 300) {
         setDistictFilterValues({ ...response.data });
       }
@@ -84,7 +94,7 @@ const useProductFetch = (
       //eslint-disable-next-line
     },
     [currentPage],
-    1000
+    300 // Reduced from 1000ms to 300ms
   );
 
   const changeCurrentpageToFetchProduct = () => {
@@ -98,7 +108,7 @@ const useProductFetch = (
       //eslint-disable-next-line
     },
     [filterData],
-    1000
+    300 // Reduced from 1000ms to 300ms
   );
 
   useThrottledEffect(
@@ -107,7 +117,7 @@ const useProductFetch = (
       //eslint-disable-next-line
     },
     [filterData?.categoryId],
-    1000
+    300 // Reduced from 1000ms to 300ms
   );
 
   const handleLoadMore = () => {
