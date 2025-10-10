@@ -123,7 +123,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
         <img
           alt={product?.name ?? "product"}
           src={product?.thumbnail ?? imagePlaceHolder}
-          className='aspect-square w-full object-cover rounded-t-sm transition-transform duration-300 group-hover:scale-105 bg-gray-100'
+          className='aspect-square w-full object-cover rounded-sm transition-transform duration-300 group-hover:scale-105 bg-gray-100'
         />
 
         {/* Overlay on hover */}
