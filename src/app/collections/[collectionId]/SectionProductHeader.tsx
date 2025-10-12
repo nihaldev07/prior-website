@@ -245,7 +245,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                               ? `${discountPercentage}%`
                               : `${product.discount}৳`
                           } OFF. Don't miss out!`
-                        : `This ${product?.categoryName} is only have ৳${maxQuantity} item left. Don't miss out!`
+                        : `This ${product?.categoryName} is only have ${maxQuantity} item left. Don't miss out!`
                     }
                   />
                 </div>

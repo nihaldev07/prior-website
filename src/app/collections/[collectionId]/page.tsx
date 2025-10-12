@@ -48,7 +48,7 @@ export async function generateMetadata({
               )}%`
             : `${product.discount}৳`
         } OFF. Don't miss out!`
-      : `This ${product?.categoryName} has only ৳${product?.quantity} item left. Don't miss out!`) +
+      : `This ${product?.categoryName} has only ${product?.quantity} item left. Don't miss out!`) +
     " " +
     (product.description ||
       `Buy ${product.name} at Prior. Get the best deals on quality products.`);
