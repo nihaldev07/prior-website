@@ -11,9 +11,11 @@ import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
 
 const inter = DM_Serif_Text({
-  weight: "400", // Only one weight available
-  style: "normal", // Or 'italic' if needed
-  subsets: ["latin"], // Or ['latin', 'latin-ext'] if needed
+  weight: "400",
+  style: "normal",
+  subsets: ["latin"],
+  display: "swap", // Prevent blocking during font load
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -53,42 +55,19 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <head>
-        {/* Chat Widget Script */}
+        {/* Preconnect to external domains for faster resource loading */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://d38c45qguy2pwg.cloudfront.net" />
+        <link rel="preconnect" href="https://prior-image.s3.eu-north-1.amazonaws.com" />
+        <link rel="dns-prefetch" href="https://cdn.socket.io" />
+        <link rel="dns-prefetch" href="https://app.priorbd.com" />
+        <link rel="dns-prefetch" href="https://yuki.priorbd.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
-        <Script src='https://cdn.socket.io/4.7.2/socket.io.min.js' />
-
-        <Script
-          src='https://app.priorbd.com/widget/yuki-widget.js'
-          data-socket-url='https://yuki.priorbd.com'
-          data-position='bottom-right'
-        />
-
-        {/* Custom Analytics Script */}
-        {/* <Script
-          id='yuki-analytics'
-          strategy='afterInteractive'
-          dangerouslySetInnerHTML={{
-            __html: `
-              const originalConsoleLog = console.log;
-              console.log = (...args) => {
-                if (args[0] === "Yuki Chat Widget Event:") {
-                  const eventName = args[1];
-                  if (typeof gtag !== "undefined") {
-                    gtag("event", eventName, {
-                      event_category: "yuki_chat_widget",
-                      company: "yuki"
-                    });
-                  }
-                }
-                originalConsoleLog.apply(console, args);
-              };
-            `,
-          }}
-        /> */}
-        {/* Google Tag Manager - head script */}
+        {/* Google Tag Manager - changed to lazyOnload for better initial performance */}
         <Script
           id='google-tag-manager'
-          strategy='beforeInteractive'
+          strategy='lazyOnload'
           dangerouslySetInnerHTML={{
             __html: `
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -98,6 +77,19 @@ export default function RootLayout({
               })(window,document,'script','dataLayer','GTM-T2HZLQ22');
             `,
           }}
+        />
+
+        {/* Chat Widget Scripts - Load after page is interactive */}
+        <Script
+          src='https://cdn.socket.io/4.7.2/socket.io.min.js'
+          strategy='lazyOnload'
+        />
+
+        <Script
+          src='https://app.priorbd.com/widget/yuki-widget.js'
+          data-socket-url='https://yuki.priorbd.com'
+          data-position='bottom-right'
+          strategy='lazyOnload'
         />
       </head>
       <body className={inter.className}>

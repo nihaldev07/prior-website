@@ -3,6 +3,8 @@
 "use client";
 import React from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
+
 const ImageSlider = dynamic(() => import("@/shared/ImageSlider"), {
   ssr: false,
 });
@@ -14,7 +16,6 @@ import Shirt from "@/images/ladies_hijab.png";
 import { Button } from "@/components/ui/button";
 import CarouselComponent from "@/components/Carosol/SwiperComponent";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { link } from "fs";
 
 const heroSlides = [
   // {
@@ -121,10 +122,14 @@ const HeroSection: React.FC = () => {
                 key={slide.id}
                 className='relative w-full h-[35vh] md:h-full'>
                 <div className='absolute inset-0 bg-black/40 z-10' />
-                <img
+                <Image
                   src={slide.image}
                   alt={slide.title}
-                  className='w-full h-full object-fit md:object-cover'
+                  fill
+                  priority={slide.id === 1} // Prioritize first image
+                  sizes="100vw"
+                  className='object-fit md:object-cover'
+                  quality={85}
                 />
                 <div className='absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4'>
                   <h1 className='text-xl md:text-6xl font-bold text-white mb-2 md:mb-4'>
@@ -165,10 +170,12 @@ const HeroSection: React.FC = () => {
                 <CardHeader
                   className={`flex flex-col items-center justify-center py-2 md:py-8 bg-white shadow-none  md:${product?.color}`}>
                   <div className='rounded-full p-0 md:p-4 bg-white/90 dark:bg-black/20 mb-2 md:mb-4 shadow-md border border-dashed overflow-hidden'>
-                    <img
+                    <Image
                       src={product?.icon.src}
                       alt='category'
-                      className={` h-12 w-12 md:h-16 md:w-16 bg-white`}
+                      width={64}
+                      height={64}
+                      className={`h-12 w-12 md:h-16 md:w-16 bg-white`}
                     />
                   </div>
                   <CardTitle className=' font-medium md:font-semibold text-center'>

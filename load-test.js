@@ -5,8 +5,8 @@ export const options = {
   stages: [
     { duration: "30s", target: 100 }, // Ramp up to 100 users
     { duration: "1m", target: 1000 }, // Stay at 1000 users
-    { duration: "30s", target: 2000 }, // Ramp up to 5000 users
-    { duration: "1m", target: 2000 }, // Stay at 5000 users
+    // { duration: "30s", target: 2000 }, // Ramp up to 5000 users
+    // { duration: "1m", target: 2000 }, // Stay at 5000 users
     { duration: "30s", target: 0 }, // Ramp down
   ],
   thresholds: {
@@ -15,7 +15,7 @@ export const options = {
   },
 };
 
-const BASE_URL = "http://localhost:3000"; // Replace with your actual base URL
+const BASE_URL = "https://priorbd.com"; // Replace with your actual base URL
 
 export default function () {
   const res = http.get(`${BASE_URL}/`);
