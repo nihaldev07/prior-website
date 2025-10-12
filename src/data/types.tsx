@@ -68,6 +68,7 @@ export type SingleProductType = {
   categoryName: string;
   categoryImg: string;
   rating: number;
+  slug: string;
   ratingDetails: RatingDetailsType[];
   sku: string; // Index SKU field
   variation: Variation[]; // Adjust the type of `variation` based on its structure

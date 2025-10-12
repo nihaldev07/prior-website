@@ -22,7 +22,11 @@ const config = {
   			'pocifico': [
   				'Pacifico',
   				'cursive'
-  			]
+  			],
+  			'alegreya': ['var(--font-alegreya)', 'serif'],
+  			'oswald': ['var(--font-oswald)', 'sans-serif'],
+  			'sans': ['var(--font-oswald)', 'sans-serif'],
+  			'serif': ['var(--font-alegreya)', 'serif']
   		},
   		colors: {
   			border: 'hsl(var(--border))',

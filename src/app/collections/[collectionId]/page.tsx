@@ -1,67 +1,62 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import SectionMoreProducts from "./SectionMoreProducts";
 import SectionNavigation from "./SectionNavigation";
 import SectionProductHeader from "./SectionProductHeader";
 import { getProductDataById } from "@/lib/fetchFunctions";
-import { useParams } from "next/navigation";
-import { SingleProductType } from "@/data/types";
+import { Metadata } from "next";
 
-const SingleProductPage = () => {
-  const [product, setProduct] = useState<SingleProductType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+export const revalidate = 3600; // ISR: Revalidate every 1 hour
 
-  const params = useParams(); // Fetch route parameters
-  //@ts-ignore
-  const collectionId: string = params.collectionId;
+interface PageProps {
+  params: {
+    collectionId: string;
+  };
+}
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        const productData = await getProductDataById(collectionId);
-        if (productData) {
-          setProduct(productData);
-        } else {
-          setError("Product not found.");
-        }
-      } catch (err) {
-        setError("Failed to load product data.");
-      } finally {
-        setLoading(false);
-      }
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { collectionId } = params;
+  const product = await getProductDataById(collectionId);
+
+  if (!product) {
+    return {
+      title: "Product Not Found | Prior",
+      description: "The product you're looking for could not be found.",
     };
-
-    fetchProduct();
-  }, [collectionId]);
-
-  if (loading) {
-    return (
-      <div className="container">
-        <SectionNavigation />
-        <h1 className="text-center mt-10">Loading...</h1>
-      </div>
-    );
   }
 
-  if (error) {
-    return (
-      <div className="container">
-        <SectionNavigation />
-        <h1 className="text-center mt-10">{error}</h1>
-        <div className="mb-28">
-          <SectionMoreProducts categoryId="" />
-        </div>
-      </div>
-    );
-  }
+  const title = `${product.name} | Prior - Your Priority in Fashion`;
+  const description = product.description || `Buy ${product.name} at Prior. Get the best deals on quality products.`;
+  const ogImage = product.thumbnail || 'https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg';
+  const url = `https://priorbd.com/collections/${product.id}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [ogImage],
+      type: "website",
+      url,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
+
+const SingleProductPage = async ({ params }: PageProps) => {
+  const { collectionId } = params;
+  const product = await getProductDataById(collectionId);
 
   if (!product) {
     return (
       <div className="container">
         <SectionNavigation />
-        <h1 className="text-center mt-10">No Product Found</h1>
+        <h1 className="text-center mt-10 text-2xl text-gray-600">No Product Found</h1>
         <div className="mb-28">
           <SectionMoreProducts categoryId="" />
         </div>
@@ -70,14 +65,12 @@ const SingleProductPage = () => {
   }
 
   const {
-    id,
     name,
     images,
     thumbnail,
     unitPrice,
     discount,
     updatedPrice,
-    description,
     rating,
     categoryId,
   } = product;
@@ -88,48 +81,25 @@ const SingleProductPage = () => {
   let imageData = [thumbnail];
   if (images && images.length > 0) imageData = [...imageData, ...images];
 
-  const title = `${name} | Prior - Your Priority in Fashion`;
-  const metaDescription = `${description} Get it now at Prior!`;
-  const ogImage = thumbnail;
-
   return (
-    <>
-      <head>
-        <title>{title}</title>
-        <meta name="description" content={metaDescription} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:image" content={ogImage} />
-        <meta property="og:type" content="product" />
-        <meta
-          property="og:url"
-          content={`https://priorbd.com/collections/${id}`}
+    <div className="px-4 sm:px-0 sm:container">
+      <div className="mt-4 mb-4 sm:mb-20">
+        <SectionProductHeader
+          product={product}
+          shots={imageData}
+          shoeName={name}
+          prevPrice={prevPrice}
+          currentPrice={currentPrice}
+          rating={rating}
+          pieces_sold={0}
+          reviews={0}
         />
-        <meta name="twitter:card" content={ogImage} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content={ogImage} />
-      </head>
-
-      <div className="px-4 sm:px-0 sm:container">
-        <div className="mt-4 mb-4 sm:mb-20">
-          <SectionProductHeader
-            product={product}
-            shots={imageData}
-            shoeName={name}
-            prevPrice={prevPrice}
-            currentPrice={currentPrice}
-            rating={rating}
-            pieces_sold={0}
-            reviews={0}
-          />
-        </div>
-
-        <div className="mt-16 md:mt-5">
-          <SectionMoreProducts categoryId={categoryId} />
-        </div>
       </div>
-    </>
+
+      <div className="mt-16 md:mt-5">
+        <SectionMoreProducts categoryId={categoryId} />
+      </div>
+    </div>
   );
 };
 

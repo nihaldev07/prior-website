@@ -36,6 +36,7 @@ import {
 import { trackEvent } from "@/lib/firebase-event";
 import useAnalytics from "@/hooks/useAnalytics";
 import EnhancedVariantSelector from "./EnhancedVariantSelector";
+import ShareButton from "@/shared/ShareButton";
 
 interface SectionProductHeaderProps {
   shots: string[];
@@ -167,8 +168,8 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
   const maxQuantity = selectedVariant?.quantity ?? product.quantity;
 
   return (
-    <div className='min-h-screen bg-background'>
-      <div className='md:container mx-auto px-2 md:px-4 py-8 max-w-full'>
+    <div className=' bg-background'>
+      <div className='md:container mx-auto  md:px-2 max-w-full'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16'>
           {/* Image Gallery Section */}
           <div className='space-y-4'>
@@ -194,16 +195,35 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
             <div className='space-y-4'>
               <div className='flex items-start justify-between'>
                 <div className='flex-1 space-y-3'>
+                  <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight  uppercase price'>
+                    {product?.name}
+                  </h1>
                   <Badge
                     variant='secondary'
                     className='bg-muted text-muted-foreground hover:bg-muted/80 text-xs font-medium uppercase tracking-wide'>
                     {product.categoryName}
                   </Badge>
-                  <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-primary leading-tight  uppercase'>
-                    {product?.name}
-                  </h1>
+                  {/* Stock Status */}
+                  <div className='flex justify-start items-center space-x-2'>
+                    <span className='text-sm font-semibold text-zinc-800'>
+                      Availability:{" "}
+                    </span>
+                    {isOutOfStock ? (
+                      <div className='flex items-center space-x-2 text-red-600 px-3 py-1.5 rounded-md'>
+                        <XCircle className='h-4 w-4' />
+                        <span className='text-sm font-medium'>
+                          Out of Stock
+                        </span>
+                      </div>
+                    ) : (
+                      <div className='flex items-center space-x-2 text-green-600'>
+                        <CheckCircle className='h-4 w-4' />
+                        <span className='text-sm font-medium'>In Stock</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className='flex items-center space-x-2 ml-4'>
+                <div className=' flex items-center space-x-2 ml-4 float-right'>
                   <Button
                     variant='ghost'
                     size='icon'
@@ -215,19 +235,20 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                       }`}
                     />
                   </Button>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    className='hover:scale-110 transition-transform duration-200 text-muted-foreground hover:text-foreground'>
-                    <Share2 className='h-5 w-5' />
-                  </Button>
+                  <ShareButton
+                    linkToShare={`https://priorbd.com/collections/${product?.slug}`}
+                    title={`Check out this awesome product: ${product?.name}`}
+                    text={`This ${
+                      product?.categoryName
+                    } is available for just ৳${currentPrice.toLocaleString()}. Don't miss out!`}
+                  />
                 </div>
               </div>
 
               {/* Rating and Sales 
                todo : need to add flex replace of hidden
               */}
-              {(rating > 0 || pieces_sold > 0) && (
+              {/* {(rating > 0 || pieces_sold > 0) && (
                 <div className=' items-center space-x-6 text-sm hidden'>
                   {rating > 0 && (
                     <div className='flex items-center space-x-2'>
@@ -255,40 +276,22 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                     </div>
                   )}
                 </div>
-              )}
-
-              {/* Stock Status */}
-              <div className='flex justify-start items-center space-x-2'>
-                <span className='text-sm font-semibold text-zinc-800'>
-                  Availability:{" "}
-                </span>
-                {isOutOfStock ? (
-                  <div className='flex items-center space-x-2 text-red-600 px-3 py-1.5 rounded-md'>
-                    <XCircle className='h-4 w-4' />
-                    <span className='text-sm font-medium'>Out of Stock</span>
-                  </div>
-                ) : (
-                  <div className='flex items-center space-x-2 text-green-600'>
-                    <CheckCircle className='h-4 w-4' />
-                    <span className='text-sm font-medium'>In Stock</span>
-                  </div>
-                )}
-              </div>
+              )} */}
             </div>
 
             {/* Price Section */}
-            <div className='space-y-2'>
+            <div className='space-y-1'>
               <div className='flex items-center space-x-4'>
-                <span className='text-3xl md:text-4xl font-bold text-foreground '>
+                <span className='text-3xl md:text-4xl font-bold text-foreground price'>
                   ৳{currentPrice.toLocaleString()}
                 </span>
                 {prevPrice > 0 && (
-                  <span className='text-xl text-red-600 line-through'>
+                  <span className='text-xl text-red-600 line-through price'>
                     ৳{prevPrice.toLocaleString()}
                   </span>
                 )}
                 {!!product.discount && (
-                  <Badge className='bg-rose-100 text-rose-800 hover:bg-rose-200 border-rose-200'>
+                  <Badge className='bg-rose-100 text-rose-800 hover:bg-rose-200 border-rose-200 price'>
                     <TagIcon className='mr-1 w-3 h-3' />
                     {product.discountType === "%"
                       ? `${discountPercentage}%`
@@ -423,11 +426,29 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                 </Button>
               </div>
             )}
+            <div className='mt-2 hidden md:block'>
+              <div className='max-w-4xl'>
+                <h2 className='text-2xl font-bold text-foreground mb-6'>
+                  Product Details
+                </h2>
+                <Separator className='mb-6' />
+                <div className='prose prose-gray max-w-none'>
+                  <div
+                    className='text-foreground font-medium leading-relaxed text-base'
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        product.description?.replace(/\n/g, "<br />") ??
+                        "No description available.",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Product Description */}
-        <div className='mt-16'>
+        <div className='mt-6 md:hidden'>
           <div className='max-w-4xl'>
             <h2 className='text-2xl font-bold text-foreground mb-6'>
               Product Details
@@ -435,7 +456,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
             <Separator className='mb-6' />
             <div className='prose prose-gray max-w-none'>
               <div
-                className='text-muted-foreground leading-relaxed text-base'
+                className='text-foreground font-medium leading-relaxed text-base'
                 dangerouslySetInnerHTML={{
                   __html:
                     product.description?.replace(/\n/g, "<br />") ??
