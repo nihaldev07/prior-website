@@ -5,7 +5,7 @@ import SectionProductHeader from "./SectionProductHeader";
 import { getProductDataById } from "@/lib/fetchFunctions";
 import { Metadata } from "next";
 
-export const revalidate = 3600; // ISR: Revalidate every 1 hour
+export const revalidate = 90; // ISR: Revalidate every 90 seconds
 
 interface PageProps {
   params: {
@@ -13,7 +13,9 @@ interface PageProps {
   };
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { collectionId } = params;
   const product = await getProductDataById(collectionId);
 
@@ -25,8 +27,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = `${product.name} | Prior - Your Priority in Fashion`;
-  const description = product.description || `Buy ${product.name} at Prior. Get the best deals on quality products.`;
-  const ogImage = product.thumbnail || 'https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg';
+  const description =
+    product.description ||
+    `Buy ${product.name} at Prior. Get the best deals on quality products.`;
+  const ogImage =
+    product.thumbnail ||
+    "https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg";
   const url = `https://priorbd.com/collections/${product.id}`;
 
   return {
@@ -54,11 +60,13 @@ const SingleProductPage = async ({ params }: PageProps) => {
 
   if (!product) {
     return (
-      <div className="container">
+      <div className='container'>
         <SectionNavigation />
-        <h1 className="text-center mt-10 text-2xl text-gray-600">No Product Found</h1>
-        <div className="mb-28">
-          <SectionMoreProducts categoryId="" />
+        <h1 className='text-center mt-10 text-2xl text-gray-600'>
+          No Product Found
+        </h1>
+        <div className='mb-28'>
+          <SectionMoreProducts categoryId='' />
         </div>
       </div>
     );
@@ -82,8 +90,8 @@ const SingleProductPage = async ({ params }: PageProps) => {
   if (images && images.length > 0) imageData = [...imageData, ...images];
 
   return (
-    <div className="px-4 sm:px-0 sm:container">
-      <div className="mt-4 mb-4 sm:mb-20">
+    <div className='px-4 sm:px-0 sm:container'>
+      <div className='mt-4 mb-4 sm:mb-20'>
         <SectionProductHeader
           product={product}
           shots={imageData}
@@ -96,7 +104,7 @@ const SingleProductPage = async ({ params }: PageProps) => {
         />
       </div>
 
-      <div className="mt-16 md:mt-5">
+      <div className='mt-16 md:mt-5'>
         <SectionMoreProducts categoryId={categoryId} />
       </div>
     </div>
