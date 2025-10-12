@@ -238,9 +238,15 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                   <ShareButton
                     linkToShare={`https://priorbd.com/collections/${product?.slug}`}
                     title={`Check out this awesome product: ${product?.name}`}
-                    text={`This ${
-                      product?.categoryName
-                    } is available for just ৳${currentPrice.toLocaleString()}. Don't miss out!`}
+                    text={
+                      product.discount > 0
+                        ? `This ${product?.categoryName} is now ${
+                            product.discountType === "%"
+                              ? `${discountPercentage}%`
+                              : `${product.discount}৳`
+                          } OFF. Don't miss out!`
+                        : `This ${product?.categoryName} is only have ৳${maxQuantity} item left. Don't miss out!`
+                    }
                   />
                 </div>
               </div>
