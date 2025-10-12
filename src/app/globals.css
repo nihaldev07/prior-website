@@ -4,6 +4,34 @@
 
 body {
   background-color: #ffffff;
+  font-family: var(--font-alegreya), serif;
+}
+
+/* Oswald for headings and numbers */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-oswald), sans-serif;
+  font-weight: 600;
+}
+
+/* Numbers and prices use Oswald */
+.font-number,
+.price,
+[class*="price"],
+input[type="number"] {
+  font-family: var(--font-lobster), sans-serif;
+}
+
+/* Descriptions and paragraphs use Alegreya */
+p,
+span,
+.description,
+.text-content {
+  font-family: var(--font-alegreya), serif;
 }
 
 @layer base {

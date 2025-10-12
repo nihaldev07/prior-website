@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Serif_Text } from "next/font/google";
+import { Alegreya, DM_Serif_Text, Lobster_Two } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -9,13 +9,35 @@ import Footer from "@/shared/Footer/Footer";
 // import Maintenance from "./Maintainance";
 import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
+import { Toaster } from "@/components/ui/sonner";
 
-const inter = DM_Serif_Text({
+// Alegreya for body text and descriptions
+const alegreya = Alegreya({
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  variable: "--font-alegreya",
+});
+
+// Oswald for headings and numbers
+const oswald = DM_Serif_Text({
   weight: "400",
   style: "normal",
   subsets: ["latin"],
-  display: "swap", // Prevent blocking during font load
+  display: "swap",
   preload: true,
+  variable: "--font-oswald",
+});
+
+const lobster = Lobster_Two({
+  weight: "400",
+  style: ["normal"],
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  variable: "--font-lobster",
 });
 
 export const metadata: Metadata = {
@@ -56,13 +78,27 @@ export default function RootLayout({
     <html lang='en'>
       <head>
         {/* Preconnect to external domains for faster resource loading */}
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://d38c45qguy2pwg.cloudfront.net" />
-        <link rel="preconnect" href="https://prior-image.s3.eu-north-1.amazonaws.com" />
-        <link rel="dns-prefetch" href="https://cdn.socket.io" />
-        <link rel="dns-prefetch" href="https://app.priorbd.com" />
-        <link rel="dns-prefetch" href="https://yuki.priorbd.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link
+          rel='preconnect'
+          href='https://d38c45qguy2pwg.cloudfront.net'
+          crossOrigin='anonymous'
+        />
+        <link
+          rel='preconnect'
+          href='https://res.cloudinary.com'
+          crossOrigin='anonymous'
+        />
+        <link
+          rel='preconnect'
+          href='https://prior-image.s3.eu-north-1.amazonaws.com'
+          crossOrigin='anonymous'
+        />
+
+        {/* <link rel='dns-prefetch' href='https://cdn.socket.io' />
+
+        <link rel='dns-prefetch' href='https://yuki.priorbd.com' />
+        <link rel='dns-prefetch' href='https://app.priorbd.com' /> */}
+        <link rel='dns-prefetch' href='https://www.googletagmanager.com' />
 
         {/* Google Tag Manager - changed to lazyOnload for better initial performance */}
         <Script
@@ -80,7 +116,7 @@ export default function RootLayout({
         />
 
         {/* Chat Widget Scripts - Load after page is interactive */}
-        <Script
+        {/* <Script
           src='https://cdn.socket.io/4.7.2/socket.io.min.js'
           strategy='lazyOnload'
         />
@@ -90,9 +126,10 @@ export default function RootLayout({
           data-socket-url='https://yuki.priorbd.com'
           data-position='bottom-right'
           strategy='lazyOnload'
-        />
+        /> */}
       </head>
-      <body className={inter.className}>
+      <body
+        className={`${alegreya.variable} ${oswald.variable} ${lobster.variable}`}>
         {/* Google Tag Manager - noscript fallback */}
         <noscript>
           <iframe
@@ -115,6 +152,7 @@ export default function RootLayout({
             </WishlistProvider>
           </AuthProvider>
         </PageStateProvider>
+        <Toaster />
       </body>
     </html>
   );

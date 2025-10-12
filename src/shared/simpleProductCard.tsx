@@ -134,7 +134,7 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
         {/* Product Name */}
         <div>
           <h4
-            className={`text-lg font-semibold text-primary  line-clamp-2 group-hover:text-primary transition-colors duration-200 text-center uppercase`}>
+            className={`text-lg font-semibold text-primary  price line-clamp-2 group-hover:text-primary transition-colors duration-200 text-center uppercase`}>
             <a href={`/collections/${product?.slug}`} className='block'>
               <span aria-hidden='true' className='absolute inset-0' />
               {product.name}
@@ -146,15 +146,15 @@ const ProductCard: React.FC<IProp> = ({ product }) => {
         <div className='flex items-center justify-center gap-2'>
           {product?.hasDiscount && product?.updatedPrice ? (
             <>
-              <del className='text-sm text-red-500 font-medium'>
+              <del className='text-sm text-red-500 font-medium price'>
                 ৳ {product?.unitPrice?.toLocaleString()}
               </del>
-              <p className='text-base md:text-lg  font-bold text-primary'>
+              <p className='text-base md:text-lg  font-bold text-gray-900 price'>
                 ৳ {product?.updatedPrice?.toLocaleString()}
               </p>
             </>
           ) : (
-            <p className='text-base md:text-lg  font-bold text-gray-900'>
+            <p className='text-base md:text-lg  font-bold text-gray-900 price'>
               ৳ {product.unitPrice?.toLocaleString()}
             </p>
           )}

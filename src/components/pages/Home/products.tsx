@@ -8,7 +8,6 @@ import useProductFetch from "@/hooks/useProductFetch";
 import Heading from "@/shared/Heading/Heading";
 import Filter from "@/components/Filter";
 import { usePageState } from "@/context/PageStateContext";
-import YukiChatWidget from "@/components/ChatWidget/yukiChatWidget";
 import ProductCard from "@/shared/simpleProductCard";
 import { FilterData } from "@/types/filter";
 
@@ -44,7 +43,7 @@ const SectionProducts = () => {
       requestAnimationFrame(() => {
         window.scrollTo({
           top: state.scrollPosition,
-          behavior: 'instant' as ScrollBehavior,
+          behavior: "instant" as ScrollBehavior,
         });
         // Clear the saved position to avoid repeated scrolling
         setState((prev) => ({ ...prev, scrollPosition: 0 }));

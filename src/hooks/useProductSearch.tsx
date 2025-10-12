@@ -15,6 +15,10 @@ const useSearchProduct = () => {
   }, [debounceHandler]);
 
   const searchProduct = async (query: string) => {
+    if (!query || query.trim().length < 2) {
+      setProducsts([]);
+      return;
+    }
     try {
       setLoading(true);
       const response = await axios.get(config.product.searchProducts(), {

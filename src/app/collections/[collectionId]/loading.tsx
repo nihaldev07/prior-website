@@ -1,9 +1,9 @@
 import { LoaderCircle } from "lucide-react";
 
-export default function ProductsLoading() {
+export default function CollectionLoading() {
   return (
-    <div className="px-3 lg:mx-20 mb-4">
-      <div className="min-h-[50vh] flex items-center justify-center mb-8">
+    <div className="px-4 sm:px-0 sm:container">
+      <div className="mt-4 mb-4 sm:mb-20 min-h-[60vh] flex items-center justify-center">
         <div className="text-center space-y-6">
           <div className="relative">
             <LoaderCircle className="w-16 h-16 animate-spin mx-auto text-primary drop-shadow-lg" />
@@ -12,7 +12,7 @@ export default function ProductsLoading() {
             </div>
           </div>
           <div className="space-y-2">
-            <p className="text-lg font-medium text-gray-800 animate-pulse">Loading Collections...</p>
+            <p className="text-lg font-medium text-gray-800 animate-pulse">Loading Product...</p>
             <div className="flex justify-center space-x-1">
               <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
               <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
@@ -20,15 +20,6 @@ export default function ProductsLoading() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="grid gap-3 sm:gap-3 md:gap-4 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-        {[...Array(12)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg mb-2" />
-            <div className="h-4 bg-gray-200 rounded mb-2" />
-            <div className="h-4 bg-gray-200 rounded w-2/3" />
-          </div>
-        ))}
       </div>
     </div>
   );

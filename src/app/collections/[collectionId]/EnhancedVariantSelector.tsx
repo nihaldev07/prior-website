@@ -148,13 +148,7 @@ const EnhancedVariantSelector: React.FC<Props> = ({
         <Separator />
 
         {/* Button Grid for Visual Selection */}
-        <div
-          className={cn(
-            "grid ",
-            type === "color"
-              ? "grid-cols-3 gap-2 sm:grid-cols-6"
-              : "grid-cols-4 gap-2 sm:grid-cols-8 "
-          )}>
+        <div className='flex flex-wrap gap-2'>
           {list
             .filter((item) => !!item)
             .map((value, index) => {
@@ -167,8 +161,8 @@ const EnhancedVariantSelector: React.FC<Props> = ({
                   key={index}
                   variant={isSelected ? "default" : "outline"}
                   className={cn(
-                    "relative h-12 transition-all duration-200 hover:scale-105",
-                    "h-7 border shadow-sm",
+                    "relative h-9 px-4 transition-all duration-200 hover:scale-105",
+                    "border shadow-sm whitespace-nowrap",
                     isOutOfStock ? "text-red-600" : "text-zinc-800",
                     isOutOfStock &&
                       "opacity-50 cursor-not-allowed hover:scale-100",

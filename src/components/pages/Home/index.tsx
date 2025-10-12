@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { IProduct } from "@/lib/interface";
 import HeroSection from "./HeroSection";
 
-// Lazy load below-the-fold components with proper SSR
+// Lazy load below-the-fold components with SSR enabled
 const CampaignPage = dynamic(() => import("./CampaignView"), {
   ssr: true,
   loading: () => <div className="h-64 bg-gray-100 animate-pulse" />,
