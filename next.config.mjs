@@ -50,7 +50,11 @@ const nextConfig = {
       "@radix-ui/react-tabs",
       "@radix-ui/react-tooltip",
       "framer-motion",
+      "firebase",
+      "axios",
+      "sweetalert2",
     ],
+    webpackBuildWorker: true, // Enable parallel builds
   },
   headers: async () => [
     {
