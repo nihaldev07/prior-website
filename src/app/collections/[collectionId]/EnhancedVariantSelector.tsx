@@ -1,7 +1,8 @@
 "use client";
 import * as React from "react";
-import { Check, ChevronDown, Palette, Ruler } from "lucide-react";
+import { Palette, Ruler, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 import {
   Select,
@@ -136,13 +137,13 @@ const EnhancedVariantSelector: React.FC<Props> = ({
           <span className='font-medium text-sm text-zinc-900'>
             {type === "color" ? "Color" : "Size"}
           </span>
-          {selected && (
+          {/* {selected && (
             <Badge
               variant='secondary'
               className='text-xs bg-gray-800 text-white'>
               {selected.toUpperCase()}
             </Badge>
-          )}
+          )} */}
         </div>
 
         <Separator />
@@ -161,37 +162,45 @@ const EnhancedVariantSelector: React.FC<Props> = ({
                   key={index}
                   variant={isSelected ? "default" : "outline"}
                   className={cn(
-                    "relative h-9 px-4 transition-all duration-200 hover:scale-105",
+                    "relative h-9 px-4 transition-all duration-200",
                     "border shadow-sm whitespace-nowrap",
-                    isOutOfStock ? "text-red-600" : "text-zinc-800",
-                    isOutOfStock &&
-                      "opacity-50 cursor-not-allowed hover:scale-100",
+                    isOutOfStock
+                      ? "opacity-60 hover:opacity-80 cursor-pointer hover:scale-105"
+                      : "hover:scale-105",
                     !isOutOfStock && !isSelected && "hover:bg-gray-100"
                   )}
-                  onClick={() => !isOutOfStock && handleVariantChange(value)}
-                  onMouseEnter={() => setHoveredItem(null)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                  disabled={isOutOfStock}>
-                  {!isOutOfStock && (
-                    <span
-                      className={cn(
-                        "font-medium text-sm",
-                        isSelected
-                          ? "text-white"
-                          : "text-zinc-800 dark:text-zinc-200"
-                      )}>
-                      {value.toUpperCase()}
-                    </span>
-                  )}
+                  onClick={() => {
+                    if (isOutOfStock) {
+                      const otherType = type === "color" ? "size" : "color";
+                      const otherValue = selectedVariant?.[otherType] || "";
+                      const colorText = type === "color" ? value : otherValue;
+                      const sizeText = type === "size" ? value : otherValue;
 
-                  {/* Out of stock indicator */}
-                  {isOutOfStock && (
-                    <div className='absolute inset-0 flex items-center justify-center bg-background/80 rounded'>
-                      <span className='text-xs font-medium text-muted-foreground'>
-                        N/A
-                      </span>
-                    </div>
-                  )}
+                      toast.error(
+                        `${
+                          colorText ? `Color: ${colorText.toUpperCase()}` : ""
+                        }${colorText && sizeText ? " | " : ""}${
+                          sizeText ? `Size: ${sizeText.toUpperCase()}` : ""
+                        } is currently out of stock`
+                      );
+                    } else {
+                      handleVariantChange(value);
+                    }
+                  }}
+                  onMouseEnter={() => setHoveredItem(null)}
+                  onMouseLeave={() => setHoveredItem(null)}>
+                  <span
+                    className={cn(
+                      "font-medium text-sm flex items-center gap-1.5",
+                      isSelected
+                        ? "text-white"
+                        : isOutOfStock
+                        ? "text-red-600"
+                        : "text-zinc-800 dark:text-zinc-200"
+                    )}>
+                    {value.toUpperCase()}
+                    {isOutOfStock && <XCircle className='h-3.5 w-3.5' />}
+                  </span>
                 </Button>
               );
             })}

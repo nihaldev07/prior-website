@@ -152,7 +152,7 @@ export default function RootLayout({
             </WishlistProvider>
           </AuthProvider>
         </PageStateProvider>
-        <Toaster />
+        <Toaster position='top-center' />
       </body>
     </html>
   );
