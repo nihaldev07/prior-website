@@ -26,14 +26,39 @@ export async function generateMetadata({
     };
   }
 
+  const calculateDiscountPercentage = (
+    originalPrice: number,
+    discountedPrice: number
+  ) => {
+    if (originalPrice > 0 && discountedPrice > 0) {
+      return Math.round(
+        ((originalPrice - discountedPrice) / originalPrice) * 100
+      );
+    }
+    return 0;
+  };
+
+  const message =
+    (product.discount > 0
+      ? `This ${product?.categoryName} is now ${
+          product.discountType === "%"
+            ? `${calculateDiscountPercentage(
+                product.unitPrice,
+                product.updatedPrice ?? 0
+              )}%`
+            : `${product.discount}৳`
+        } OFF. Don't miss out!`
+      : `This ${product?.categoryName} has only ৳${product?.quantity} item left. Don't miss out!`) +
+    " " +
+    (product.description ||
+      `Buy ${product.name} at Prior. Get the best deals on quality products.`);
+
   const title = `${product.name} | Prior - Your Priority in Fashion`;
-  const description =
-    product.description ||
-    `Buy ${product.name} at Prior. Get the best deals on quality products.`;
+  const description = message;
   const ogImage =
     product.thumbnail ||
     "https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg";
-  const url = `https://priorbd.com/collections/${product.id}`;
+  const url = `https://priorbd.com/collections/${product.slug}`;
 
   return {
     title,
