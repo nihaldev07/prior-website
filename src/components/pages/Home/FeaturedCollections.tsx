@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Shoe from "@/images/ladies_shoe.png";
 import HandbagIcon from "@/images/ladies_bag.png";
 import Shirt from "@/images/ladies_hijab.png";
+import Charms from "@/images/charms.png";
 
 const featuredProducts = [
   {
@@ -32,6 +33,14 @@ const featuredProducts = [
     color: "bg-blue-100 dark:bg-blue-950",
     link: "/category/e425d9b7-bdf6-4268-b203-390dd28d984f",
   },
+  {
+    id: 4,
+    title: "Charms",
+    description: "Add a touch of elegance with our unique charms",
+    icon: Charms,
+    color: "bg-green-100 dark:bg-green-950",
+    link: "/category/charms",
+  },
 ];
 
 export default function FeaturedCollections() {
@@ -40,10 +49,10 @@ export default function FeaturedCollections() {
       <h2 className='text-lg md:text-3xl font-semibold text-center mb-2 md:mb-10'>
         Featured Collections
       </h2>
-      <div className='grid grid-cols-3 gap-3 md:gap-6'>
+      <div className='grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6'>
         {featuredProducts.map((product) => (
           <Link key={product.id} href={product.link} prefetch={false}>
-            <Card className='overflow-hidden hover:shadow-md transition-all duration-300 flex-1 w-full border-2 border-dashed shadow-none cursor-pointer'>
+            <Card className='overflow-hidden hover:shadow-md transition-all duration-300 flex-1 w-full md:border-2 border-none drop-shadow-lg  md:shadow-none cursor-pointer'>
               <CardHeader
                 className={`flex flex-col items-center justify-center py-2 md:py-8 bg-white shadow-none md:${product?.color}`}>
                 <div className='rounded-full p-0 md:p-4 bg-white/90 dark:bg-black/20 mb-2 md:mb-4 shadow-md border border-dashed overflow-hidden'>

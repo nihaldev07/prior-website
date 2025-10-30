@@ -380,9 +380,9 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                   <span className='text-sm font-medium text-gray-800 uppercase tracking-wide'>
                     Quantity
                   </span>
-                  <span className='text-xs text-gray-700'>
+                  {/* <span className='text-xs text-gray-700'>
                     {maxQuantity} available
-                  </span>
+                  </span> */}
                 </div>
                 <div className='flex items-center space-x-4'>
                   <div className='flex items-center border rounded-lg'>

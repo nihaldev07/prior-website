@@ -5,7 +5,7 @@ import FeaturedCollections from "./FeaturedCollections";
 
 const HeroSection: React.FC = () => {
   return (
-    <header className='bg-white block min-h-[35vh] md:min-h-[750px] lg:h-[850px] relative'>
+    <header className='bg-white block min-h-[35vh] md:min-h-[750px] lg:min-h-[850px] relative'>
       <HeroCarousel />
       <FeaturedCollections />
     </header>

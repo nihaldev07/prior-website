@@ -3,6 +3,9 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Autumn1 from "@/images/autumn-00.jpg";
+import Autumn2 from "@/images/autumn-01.jpg";
+import Autumn3 from "@/images/autumn-02.jpg";
 
 // Dynamically import Swiper
 const CarouselComponent = dynamic(
@@ -15,21 +18,21 @@ const CarouselComponent = dynamic(
 const heroSlides = [
   {
     id: 1,
-    image: "/images/autumn-00.png", // 77KB - Smallest! Perfect for LCP
+    image: Autumn1,
     title: "Autumn Harvest Collection 2025",
     subtitle: "Embrace the season in rich tones and cozy textures",
     cta: "Shop Now",
   },
   {
     id: 2,
-    image: "/images/autumn-01.jpg", // 203KB
+    image: Autumn2, // 203KB
     title: "Wrap Yourself in Warmth",
     subtitle: "Essential layers for crisp days and golden evenings",
     cta: "View Offers",
   },
   {
     id: 3,
-    image: "/images/autumn-02.jpg", // 701KB
+    image: Autumn3, // 701KB
     title: "Fall Favorites Just Dropped",
     subtitle: "Be the first to explore our autumn must-haves",
     cta: "Explore",
@@ -38,7 +41,7 @@ const heroSlides = [
 
 export default function HeroCarousel() {
   return (
-    <section className='relative w-full h-[35vh] md:h-[750px] lg:h-[850px] overflow-hidden'>
+    <section className='relative w-full h-[35vh] md:h-[750px] lg:min-h-[850px] overflow-hidden'>
       <CarouselComponent
         items={heroSlides.map((slide) => (
           <div key={slide.id} className='relative w-full h-[35vh] md:h-full'>

@@ -8,6 +8,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
@@ -344,65 +352,91 @@ const Navbar = () => {
     const rootCategories = categories.slice(0, 8); // Limit for better UI
 
     return (
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-0'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-0 min-w-[800px]'>
         {/* Featured Categories */}
-        <div className='col-span-2 p-6 bg-gradient-to-br from-blue-50 to-indigo-50'>
-          <div className='mb-4'>
-            <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+        <div className='col-span-2 p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50'>
+          <div className='mb-5'>
+            <h3 className='text-lg font-semibold text-gray-900 mb-1.5'>
               Featured Categories
             </h3>
             <p className='text-sm text-gray-600'>
               Explore our most popular product categories
             </p>
           </div>
-          <div className='grid grid-cols-2 gap-3'>
+          <div className='grid grid-cols-2 gap-4'>
             {rootCategories.slice(0, 4).map((cat) => (
-              <DropdownMenuItem key={cat.id} asChild>
+              <NavigationMenuLink key={cat.id} asChild>
                 <Link
                   href={`/category/${cat.slug || cat.id}`}
-                  className='flex items-start gap-3 w-full hover:bg-blue-50 rounded-md px-2 py-1'>
+                  className='group flex items-start gap-3 p-3 rounded-lg hover:bg-white/80 hover:shadow-md transition-all duration-200 border border-transparent hover:border-blue-200'>
                   {cat.img && (
-                    <Image
-                      src={cat.img}
-                      alt={cat.name}
-                      width={40}
-                      height={40}
-                      className='rounded object-cover w-10 h-10 bg-gray-100'
-                    />
+                    <div className='w-12 h-12 rounded-lg overflow-hidden bg-white shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform duration-200'>
+                      <Image
+                        src={cat.img}
+                        alt={cat.name}
+                        width={48}
+                        height={48}
+                        className='w-full h-full object-cover'
+                      />
+                    </div>
                   )}
-                  <div className='flex-1 space-y-0.5'>
-                    <p className='text-sm font-medium text-gray-900'>
+                  <div className='flex-1 min-w-0 space-y-1'>
+                    <p className='text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors'>
                       {cat.name}
                     </p>
                     {cat.description && (
-                      <p className='text-xs text-gray-500 line-clamp-2'>
+                      <p className='text-xs text-gray-500 line-clamp-2 leading-relaxed'>
                         {cat.description}
+                      </p>
+                    )}
+                    {cat.totalProducts > 0 && (
+                      <p className='text-xs text-blue-600 font-medium'>
+                        {cat.totalProducts} products
                       </p>
                     )}
                   </div>
                 </Link>
-              </DropdownMenuItem>
+              </NavigationMenuLink>
             ))}
           </div>
         </div>
 
         {/* All Categories List */}
-        <div className='p-6 bg-white border-l'>
+        <div className='p-6 bg-white border-l border-gray-200'>
           <div className='mb-4'>
             <h3 className='text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3'>
               All Categories
             </h3>
           </div>
-          <ScrollArea className='h-[300px]'>
-            <div className='space-y-1'>
-              <Link
-                href='/collections'
-                className='flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-gray-50 text-blue-600 font-medium'>
-                <Grid3X3 className='w-4 h-4' />
-                View All Categories
-              </Link>
-              <Separator className='my-2' />
-              <MobileCategoryTree categories={categories} />
+          <ScrollArea className='h-[320px] pr-3'>
+            <div className='space-y-1.5'>
+              <NavigationMenuLink asChild>
+                <Link
+                  href='/collections'
+                  className='flex items-center gap-2 px-3 py-2.5 text-sm rounded-lg hover:bg-blue-50 text-blue-600 font-medium transition-colors group'>
+                  <Grid3X3 className='w-4 h-4 group-hover:scale-110 transition-transform' />
+                  View All Categories
+                </Link>
+              </NavigationMenuLink>
+              <Separator className='my-3' />
+              <div className='space-y-0.5'>
+                {categories.map((cat) => (
+                  <NavigationMenuLink key={cat.id} asChild>
+                    <Link
+                      href={`/category/${cat.slug || cat.id}`}
+                      className='flex items-center justify-between gap-2 px-3 py-2 text-sm rounded-lg hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-all group'>
+                      <span className='truncate font-medium'>{cat.name}</span>
+                      {cat.totalProducts > 0 && (
+                        <Badge
+                          variant='outline'
+                          className='text-xs px-1.5 py-0.5 text-gray-500 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-200 transition-colors'>
+                          {cat.totalProducts}
+                        </Badge>
+                      )}
+                    </Link>
+                  </NavigationMenuLink>
+                ))}
+              </div>
             </div>
           </ScrollArea>
         </div>
@@ -430,36 +464,34 @@ const Navbar = () => {
           </div>
 
           {/* Middle: Desktop Navigation */}
-          <div className='hidden md:flex md:items-center md:space-x-4 flex-1 min-w-0 overflow-x-auto'>
-            {NavItems.map((item) => {
-              const isCollection =
-                item.title.toLowerCase().includes("collections") &&
-                categories.length > 0;
-              return isCollection ? (
-                <DropdownMenu key={item.id}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant='ghost'
-                      className='flex items-center gap-1 text-sm font-medium'>
-                      <Package className='w-4 h-4 mr-1' />
+          <NavigationMenu className='hidden md:flex'>
+            <NavigationMenuList>
+              {NavItems.map((item) => {
+                const isCollection =
+                  item.title.toLowerCase().includes("collections") &&
+                  categories.length > 0;
+                return isCollection ? (
+                  <NavigationMenuItem key={item.id}>
+                    <NavigationMenuTrigger className='flex items-center gap-1 text-base font-extrabold bg-transparent hover:bg-gray-100'>
+                      <Package className='w-4 h-4' />
                       {item.title}
-                      <ChevronDown className='w-4 h-4' />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className='w-[800px] p-4 grid grid-cols-1 gap-4 max-h-[400px] overflow-y-auto'>
-                    {renderDesktopCategories()}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Link
-                  key={item.id}
-                  href={item.link}
-                  className='text-sm px-4 py-2 rounded-md hover:bg-gray-100 transition'>
-                  {item.title}
-                </Link>
-              );
-            })}
-          </div>
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      {renderDesktopCategories()}
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ) : (
+                  <NavigationMenuItem key={item.id}>
+                    <Link
+                      href={item.link}
+                      className='text-base font-extrabold px-4 py-2 rounded-md hover:bg-gray-100 transition-colors inline-flex items-center justify-center'>
+                      {item.title}
+                    </Link>
+                  </NavigationMenuItem>
+                );
+              })}
+            </NavigationMenuList>
+          </NavigationMenu>
 
           {/* Right: Search + Auth + Cart */}
           <div className='flex items-center justify-between gap-x-2'>
