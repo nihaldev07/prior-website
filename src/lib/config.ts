@@ -42,7 +42,7 @@ export const config = {
   campaign: {
     getActiveCampaign: () => `${baseUrl}/campaign/active`,
     getCampaignById: (id: string) => `${baseUrl}/campaign/active/${id}`,
-    checkPrepayment: () => `${baseUrl}/campaign//check-campaign-product`,
+    checkPrepayment: () => `${baseUrl}/campaign/check-campaign-product`,
     calculatePrepayment: () => `${baseUrl}/campaign/calculate-prepayment`,
   },
 };
