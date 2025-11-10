@@ -373,11 +373,7 @@ const CheckoutPage = () => {
         <div id='PaymentMethod' className='scroll-mt-24'>
           <PaymentMethod
             prePaymentAmount={
-              hasPrepayment && prePaymentAmount > 0
-                ? prePaymentAmount
-                : transectionData?.discount > 0
-                ? 200
-                : 0
+              hasPrepayment && prePaymentAmount > 0 ? prePaymentAmount : 0
             }
             district={formData?.district}
             paymentMethod={paymentMethod}
@@ -395,13 +391,11 @@ const CheckoutPage = () => {
     const hasPayment =
       paymentMethod === "bkash" ||
       prePaymentAmount > 0 ||
-      !formData.district.toLowerCase().includes("dhaka") ||
-      (!!transectionData?.discount && transectionData?.discount > 0);
+      !formData.district.toLowerCase().includes("dhaka");
     const paymentAmount =
       prePaymentAmount > 0
         ? prePaymentAmount
-        : !formData.district.toLowerCase().includes("dhaka") ||
-          (!!transectionData?.discount && transectionData?.discount > 0)
+        : !formData.district.toLowerCase().includes("dhaka")
         ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
             formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
           )
@@ -543,7 +537,7 @@ const CheckoutPage = () => {
     }
 
     // Check for deliveries outside Dhaka and prompt for prepayment
-    if (transectionData?.discount > 0 || hasPrepayment) {
+    if (hasPrepayment) {
       return Swal.fire({
         title: "Terms & Condition",
         text: `A prepayment of ${
