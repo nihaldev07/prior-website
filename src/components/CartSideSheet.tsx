@@ -57,48 +57,47 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     } = item;
 
     return (
-      <div key={index} className="flex py-5 last:pb-0">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl mr-2">
+      <div key={index} className='flex py-5 last:pb-0'>
+        <div className='relative h-24 w-24 shrink-0 overflow-hidden rounded-xl mr-2'>
           <Image
             fill
             src={thumbnail}
             alt={name}
-            className="h-full w-full rounded-xl object-fill object-center"
+            className='h-full w-full rounded-xl object-fill object-center'
           />
           <Link
             onClick={handleCloseMenu}
-            className="absolute inset-0"
+            className='absolute inset-0'
             href={`/collections/${id}`}
           />
         </div>
 
-        <div className="flex flex-1 flex-col justify-between">
+        <div className='flex flex-1 flex-col justify-between'>
           <div>
-            <div className="flex justify-between ">
+            <div className='flex justify-between '>
               <div>
-                <h3 className="font-medium ">
+                <h3 className='font-medium '>
                   <Link onClick={handleCloseMenu} href={`/products/${id}`}>
                     {name}
                   </Link>
                 </h3>
 
-                <div className="flex items-center gap-1">
+                <div className='flex items-center gap-1'>
                   <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
               </div>
-              <span className=" font-medium">
+              <span className=' font-medium'>
                 ৳{hasDiscount ? updatedPrice ?? unitPrice : unitPrice}
               </span>
             </div>
           </div>
-          <div className="flex w-full items-end justify-between text-sm">
+          <div className='flex w-full items-end justify-between text-sm'>
             <div
-              className="flex items-center gap-2"
-              onClick={() => removeFromCart(index)}
-            >
-              <Trash className=" size-5 " />
+              className='flex items-center gap-2'
+              onClick={() => removeFromCart(index)}>
+              <Trash className=' size-5 ' />
             </div>
-            <div className="text-sm text-blue-600 font-medium">
+            <div className='text-sm text-blue-600 font-medium'>
               Qty: {quantity}
             </div>
           </div>
@@ -156,23 +155,22 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
     return (
       <Sheet
         open={isVisable}
-        onOpenChange={(open) => (open ? handleOpenMenu() : handleCloseMenu())}
-      >
-        <SheetContent className="p-0">
-          <SheetHeader className="py-8 px-2 justify-start">
+        onOpenChange={(open) => (open ? handleOpenMenu() : handleCloseMenu())}>
+        <SheetContent className='p-0'>
+          <SheetHeader className='py-8 px-2 justify-start'>
             <SheetTitle> Shopping Cart</SheetTitle>
           </SheetHeader>
 
-          <div className="relative min-h-[80vh] max-h-[89vh] overflow-y-auto bg-white">
-            <div className="absolute bottom-0 left-0 w-full bg-neutral-50 p-5">
-              <p className="flex justify-between">
+          <div className='relative min-h-[80vh] max-h-[89vh] overflow-y-auto bg-white'>
+            <div className='absolute bottom-0 left-0 w-full bg-neutral-50 p-5'>
+              <p className='flex justify-between'>
                 <span>
-                  <span className="font-medium">Subtotal</span>
-                  <span className="block text-sm text-neutral-500">
+                  <span className='font-medium'>Subtotal</span>
+                  <span className='block text-sm text-neutral-500'>
                     Shipping calculated at checkout.
                   </span>
                 </span>
-                <span className="text-xl font-medium">
+                <span className='text-xl font-medium'>
                   ৳
                   {cart.reduce((sum, cartdata) => {
                     const {
@@ -191,25 +189,23 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
                   }, 0)}
                 </span>
               </p>
-              <div className="mt-5 flex items-center gap-5">
+              <div className='mt-5 flex items-center gap-5'>
                 <ButtonPrimary
-                  href="/checkout"
+                  href='/checkout'
                   onClick={() => handleCheckoutClick()}
-                  className="w-full flex-1"
-                >
+                  className='w-full flex-1'>
                   Checkout
                 </ButtonPrimary>
                 <ButtonSecondary
                   onClick={() => handleCloseMenu()}
-                  href="/cart"
-                  className="w-full flex-1 border-2 border-primary text-primary"
-                >
+                  href='/cart'
+                  className='w-full flex-1 border-2 border-primary text-primary'>
                   View cart
                 </ButtonSecondary>
               </div>
             </div>
-            <div className="hiddenScrollbar h-screen overflow-y-auto p-5">
-              <div className="divide-y divide-neutral-300">
+            <div className='hiddenScrollbar h-screen overflow-y-auto p-5'>
+              <div className='divide-y divide-neutral-300'>
                 {cart.map((item, index) => renderProduct(item, index))}
               </div>
             </div>
@@ -226,20 +222,17 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
   return (
     <>
       <button
-        type="button"
+        type='button'
         onClick={() => handleOpenMenu()}
-        className=" sm:mx-5 flex items-center gap-1 rounded-full  p-2 text-primary focus:outline-none"
-      >
-        <div className="inline-block relative">
-          <ShoppingCart className=" text-base text-slate-800 sm:text-2xl sm:text-primary" />{" "}
+        className=' sm:mx-5 flex items-center gap-1 rounded-full  p-2 text-primary focus:outline-none'>
+        <div className='inline-block relative'>
+          <ShoppingCart className=' text-base text-slate-800 sm:text-2xl sm:text-primary' />{" "}
           <Badge
-            variant="destructive"
-            className=" absolute right-[-15px] top-[-10px] text-center items-center rounded-full px-1 py-0 sm:hidden"
-          >
+            variant='destructive'
+            className=' absolute right-[-15px] top-[-10px] text-center items-center rounded-full px-1 py-0'>
             {cart?.length > 99 ? "99+" : cart?.length}
           </Badge>
         </div>
-        <span className="hidden text-sm lg:block">{cart.length} items</span>
       </button>
 
       {renderContent()}
