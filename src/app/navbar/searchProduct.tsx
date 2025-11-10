@@ -69,29 +69,32 @@ export function GlobalSearch() {
             Search Products
           </button>
         </DialogTrigger>
-        <DialogContent className='w-full max-w-lg'>
-          <DialogHeader>
+        <DialogContent className='w-full max-w-lg sm:top-[20%] top-4 translate-y-0 max-h-[85vh] sm:max-h-[80vh] flex flex-col p-4 sm:p-6'>
+          <DialogHeader className='flex-shrink-0'>
             <DialogTitle>Search Products</DialogTitle>
           </DialogHeader>
-          <div className='space-y-4'>
+          <div className='space-y-3 sm:space-y-4 flex-1 flex flex-col min-h-0'>
             {/* Input for searching */}
-            <Input
-              placeholder='Type product name to search...'
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
+            <div className='flex-shrink-0'>
+              <Input
+                placeholder='Type product name to search...'
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className='text-base sm:text-sm'
+              />
+            </div>
             {/* Loading State */}
             {loading ? (
               <div className='p-6 flex justify-center items-center'>
                 Searching... <RefreshCcw className='animate-spin ml-2' />
               </div>
             ) : (
-              <div className='p-0 flex justify-center items-center'>
+              <div className='p-0 flex justify-center items-center flex-1 min-h-0'>
                 {/* Empty State */}
                 {!products || products.length === 0 ? (
                   <p className='text-center text-gray-500'>No results found.</p>
                 ) : (
-                  <div className='space-y-4 w-full max-h-[60vh] overflow-y-auto'>
+                  <div className='space-y-2 sm:space-y-4 w-full h-full overflow-y-auto -mx-4 px-4 sm:mx-0 sm:px-0'>
                     {/* Product List */}
                     {products.map((product: ProductType) => (
                       <div
@@ -104,25 +107,25 @@ export function GlobalSearch() {
                           setOpen(false);
                           router.push(`/collections/${product.id}`);
                         }}
-                        className='flex items-center gap-4 rounded-md hover:bg-gray-100 cursor-pointer w-full'>
+                        className='flex items-center gap-3 sm:gap-4 p-2 sm:p-0 rounded-md hover:bg-gray-100 active:bg-gray-200 cursor-pointer w-full transition-colors'>
                         <img
                           src={product.thumbnail || "/placeholder-image.jpg"}
-                          className='h-10 w-10 rounded-md'
+                          className='h-12 w-12 sm:h-10 sm:w-10 rounded-md flex-shrink-0'
                           alt={product.name || "product"}
                           width={40}
                           height={40}
                         />
-                        <div className='flex-1'>
-                          <p className='text-sm font-medium text-gray-900'>
+                        <div className='flex-1 min-w-0'>
+                          <p className='text-sm font-medium text-gray-900 truncate'>
                             {product.name || "Unnamed Product"}
                           </p>
                           <div className='flex items-center gap-2 mt-1'>
-                            <Badge variant='outline'>
-                              <BoxIcon className='mr-1 h-4 w-4' />{" "}
+                            <Badge variant='outline' className='text-xs'>
+                              <BoxIcon className='mr-1 h-3 w-3' />{" "}
                               {product.quantity || 0}
                             </Badge>
-                            <Badge variant='outline'>
-                              <BanknoteIcon className='mr-1 h-4 w-4' />{" "}
+                            <Badge variant='outline' className='text-xs'>
+                              <BanknoteIcon className='mr-1 h-3 w-3' />{" "}
                               {product.unitPrice || "N/A"}
                             </Badge>
                           </div>
