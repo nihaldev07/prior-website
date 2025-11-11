@@ -144,14 +144,17 @@ const CheckoutPage = () => {
           cartdata.quantity;
       return sum;
     }, 0);
-    transectionData.discount = discount;
-    transectionData.totalPrice = totalPrice;
-    transectionData.remaining =
+    const remaining =
       Number(totalPrice) +
       Number(transectionData?.deliveryCharge) -
-      transectionData.discount -
+      discount -
       transectionData.paid;
-    setTransectionData(transectionData);
+    setTransectionData({
+      ...transectionData,
+      discount,
+      totalPrice,
+      remaining,
+    });
     setOrderProduct([...cart]);
     checkPrepaymentProductData();
     //eslint-disable-next-line
