@@ -5,7 +5,7 @@ import SectionProductHeader from "./SectionProductHeader";
 import { getProductDataById } from "@/lib/fetchFunctions";
 import { Metadata } from "next";
 
-export const revalidate = 90; // ISR: Revalidate every 90 seconds
+export const revalidate = 3; // ISR: Revalidate every 3 seconds
 
 interface PageProps {
   params: {
