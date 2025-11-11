@@ -21,7 +21,12 @@ import TermsCondition from "./agreeToTerns";
 import { trackEvent } from "@/lib/firebase-event";
 import useAnalytics from "@/hooks/useAnalytics";
 import { Badge } from "@/components/ui/badge";
-import { formatVariant } from "@/utils/functions";
+import {
+  formatVariant,
+  formatPrice,
+  ceilPrice,
+  floorPrice,
+} from "@/utils/functions";
 import { Textarea } from "@/components/ui/textarea";
 import useCampaign from "@/hooks/useCampaign";
 import { Button } from "@/components/ui/button";
@@ -132,23 +137,28 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    const totalPrice = cart.reduce((sum, cartdata) => {
-      sum =
-        Number(sum) + Number(cartdata.quantity) * Number(cartdata.unitPrice);
-      return sum;
-    }, 0);
-    const discount = cart.reduce((sum, cartdata) => {
-      sum =
-        Number(sum) +
-        (Number(cartdata.unitPrice) - Number(cartdata.updatedPrice ?? 0)) *
-          cartdata.quantity;
-      return sum;
-    }, 0);
-    const remaining =
+    const totalPrice = formatPrice(
+      cart.reduce((sum, cartdata) => {
+        sum =
+          Number(sum) + Number(cartdata.quantity) * Number(cartdata.unitPrice);
+        return sum;
+      }, 0)
+    );
+    const discount = floorPrice(
+      cart.reduce((sum, cartdata) => {
+        sum =
+          Number(sum) +
+          (Number(cartdata.unitPrice) - Number(cartdata.updatedPrice ?? 0)) *
+            cartdata.quantity;
+        return sum;
+      }, 0)
+    );
+    const remaining = ceilPrice(
       Number(totalPrice) +
-      Number(transectionData?.deliveryCharge) -
-      discount -
-      transectionData.paid;
+        Number(transectionData?.deliveryCharge) -
+        discount -
+        transectionData.paid
+    );
     setTransectionData({
       ...transectionData,
       discount,
@@ -182,12 +192,13 @@ const CheckoutPage = () => {
         deliveryCharge = 150;
       }
 
-      transectionData.remaining =
+      const remaining = ceilPrice(
         Number(transectionData?.totalPrice) +
-        Number(deliveryCharge) -
-        transectionData.discount -
-        transectionData.paid;
-      setTransectionData({ ...transectionData, deliveryCharge });
+          Number(deliveryCharge) -
+          transectionData.discount -
+          transectionData.paid
+      );
+      setTransectionData({ ...transectionData, deliveryCharge, remaining });
     }
     //eslint-disable-next-line
   }, [paymentMethod]);
@@ -213,14 +224,16 @@ const CheckoutPage = () => {
         deliveryChargeX = 150;
       }
 
-      transectionData.remaining =
+      const remaining = ceilPrice(
         Number(transectionData?.totalPrice) +
-        Number(deliveryChargeX) -
-        transectionData.discount -
-        transectionData.paid;
+          Number(deliveryChargeX) -
+          transectionData.discount -
+          transectionData.paid
+      );
       setTransectionData({
         ...transectionData,
         deliveryCharge: deliveryChargeX,
+        remaining,
       });
       if (hasPrepayment) calculateOrderPrepayment(deliveryChargeX);
     }
@@ -246,7 +259,7 @@ const CheckoutPage = () => {
             fill
             src={thumbnail}
             alt={name}
-            className='h-full w-full object-contain object-center'
+            className='h-full w-full object-contain object-center rounded-md'
           />
           <Link className='absolute inset-0' href={`/products/${id}`} />
         </div>
@@ -255,14 +268,16 @@ const CheckoutPage = () => {
           <div>
             <div className='flex justify-between '>
               <div>
-                <h3 className='font-medium md:text-2xl '>
+                <h3 className='font-medium md:text-2xl uppercase'>
                   <Link href={`/products/${id}`}>{name}</Link>
                 </h3>
                 <div className='flex items-center gap-1'>
                   <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
                 </div>
               </div>
-              <span className='font-medium md:text-xl'>${unitPrice}</span>
+              <span className='font-medium md:text-xl'>
+                ৳{formatPrice(unitPrice)}
+              </span>
             </div>
           </div>
           <div className='flex w-full items-end justify-between text-sm'>
@@ -614,13 +629,13 @@ const CheckoutPage = () => {
               <div className='mt-4 flex justify-between pb-4'>
                 <span>Subtotal</span>
                 <span className='font-semibold'>
-                  {transectionData?.totalPrice}
+                  {formatPrice(transectionData?.totalPrice)}
                 </span>
               </div>
               <div className='flex justify-between py-4'>
                 <span>Estimated Delivery & Handling</span>
                 <span className='font-semibold'>
-                  {transectionData?.deliveryCharge}
+                  {formatPrice(transectionData?.deliveryCharge)}
                 </span>
               </div>
 
