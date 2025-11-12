@@ -50,16 +50,14 @@ export default function HeroCarousel() {
 
   useEffect(() => {
     // Check if user has seen the popup in this session
-    const hasSeenPopup = sessionStorage.getItem("hasSeenMarketingPopup");
-
-    if (!hasSeenPopup) {
-      // Show popup after a short delay (1 second)
-      const timer = setTimeout(() => {
-        setShowPopup(true);
-      }, 1000);
-
-      return () => clearTimeout(timer);
-    }
+    // const hasSeenPopup = sessionStorage.getItem("hasSeenMarketingPopup");
+    // if (!hasSeenPopup) {
+    //   // Show popup after a short delay (1 second)
+    //   const timer = setTimeout(() => {
+    //     setShowPopup(true);
+    //   }, 1000);
+    //   return () => clearTimeout(timer);
+    // }
   }, []);
 
   const handleClosePopup = () => {
