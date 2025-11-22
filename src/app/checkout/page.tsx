@@ -506,6 +506,13 @@ const CheckoutPage = () => {
             "success"
           ).then(() => (window.location.href = `/order/${orderId}`));
         }
+      } else {
+        Swal.fire(
+          "Failed to place order ☠️",
+          response.error || "Something went wrong, please try again",
+          "error"
+        );
+        setLoading(false);
       }
     } catch (error) {
       Swal.fire(
