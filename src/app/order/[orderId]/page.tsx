@@ -73,7 +73,7 @@ const OrderDetails = () => {
       },
       processing: {
         variant: "default" as const,
-        className: "bg-yellow-500 hover:bg-yellow-600 animate-pulse",
+        className: "bg-yellow-500 hover:bg-yellow-600",
         icon: TimerIcon,
         label: "Processing",
         description: "We're preparing your order",
@@ -164,261 +164,228 @@ const OrderDetails = () => {
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className='min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50'>
-      <div className='container mx-auto py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl'>
-        {/* Enhanced Header Section */}
-        <div className='text-center mb-10 sm:mb-12 lg:mb-16'>
-          {/* Title with decorative element */}
-          <div className='flex items-center justify-center gap-3 sm:gap-4 mb-4'>
-            <div className='h-1.5 w-12 sm:w-16 bg-gradient-to-r from-primary to-blue-600 rounded-full'></div>
-            <div className='flex items-center gap-3'>
-              <div className='h-12 w-12 sm:h-14 sm:w-14 bg-gradient-to-br from-primary/10 to-blue-600/10 rounded-2xl flex items-center justify-center ring-2 ring-primary/20'>
-                <LucidePackage className='h-6 w-6 sm:h-7 sm:w-7 text-primary' />
+    <div className='min-h-screen bg-gray-50'>
+      <div className='container mx-auto py-4 sm:py-6 lg:py-8 px-3 sm:px-4 max-w-6xl'>
+
+        {/* Elegant Header */}
+        <div className='relative bg-gradient-to-br from-white via-gray-50 to-white rounded-2xl shadow-lg border border-gray-200/60 p-5 sm:p-7 mb-5 sm:mb-7 overflow-hidden'>
+          {/* Decorative background pattern */}
+          <div className='absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/5 to-blue-500/5 rounded-full blur-3xl -z-0'></div>
+
+          <div className='relative z-10'>
+            <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4'>
+              <div className='space-y-2'>
+                <div className='flex items-center gap-3'>
+                  <div className='h-10 w-1 bg-gradient-to-b from-primary via-blue-600 to-primary rounded-full'></div>
+                  <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent'>
+                    Order #{order.orderNumber}
+                  </h1>
+                </div>
+                <p className='text-xs sm:text-sm text-gray-500 ml-4 flex items-center gap-2'>
+                  <LucideClipboardList className='h-3.5 w-3.5' />
+                  Tracking ID: <span className='font-mono font-medium text-gray-700'>{order.id}</span>
+                </p>
               </div>
-              <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent'>
-                Order Details
-              </h1>
-            </div>
-            <div className='h-1.5 w-12 sm:w-16 bg-gradient-to-l from-primary to-blue-600 rounded-full'></div>
-          </div>
-          <p className='text-gray-600 text-sm sm:text-base mb-6'>
-            Track and manage your order information
-          </p>
 
-          {/* Order IDs with enhanced copy functionality */}
-          <div className='flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mb-8'>
-            <div className='flex items-center space-x-2 bg-white px-4 py-2.5 rounded-xl shadow-md border border-gray-200/80 hover:shadow-lg transition-all duration-300'>
-              <span className='text-xs sm:text-sm font-medium text-gray-600'>Order #</span>
-              <Badge variant='outline' className='text-base sm:text-lg px-3 py-1 font-semibold bg-gradient-to-r from-primary/5 to-blue-600/5 border-primary/30'>
-                {order.orderNumber}
-              </Badge>
-              <Button
-                size='sm'
-                variant='ghost'
-                onClick={() => copyToClipboard(order.orderNumber)}
-                className='h-7 w-7 p-0 hover:bg-primary/10 hover:text-primary transition-all'>
-                <LucideCopy className='h-3.5 w-3.5' />
-              </Button>
+              <div className='flex items-center gap-3'>
+                <Badge
+                  variant={statusConfig.variant}
+                  className={`${statusConfig.className} px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300`}>
+                  <StatusIcon className='mr-2 h-4 w-4 sm:h-4.5 sm:w-4.5' />
+                  {statusConfig.label}
+                </Badge>
+                <Button
+                  size='sm'
+                  variant='outline'
+                  onClick={() => copyToClipboard(order.orderNumber)}
+                  className='h-9 w-9 sm:h-10 sm:w-10 p-0 hover:bg-primary/10 hover:border-primary/30 transition-all duration-300 rounded-xl'>
+                  <LucideCopy className='h-4 w-4 text-gray-600' />
+                </Button>
+              </div>
             </div>
-            <div className='flex items-center space-x-2 bg-white px-4 py-2.5 rounded-xl shadow-md border border-gray-200/80 hover:shadow-lg transition-all duration-300'>
-              <span className='text-xs sm:text-sm font-medium text-gray-600'>Track ID</span>
-              <Badge variant='outline' className='text-sm sm:text-base px-3 py-1 font-semibold bg-gradient-to-r from-primary/5 to-blue-600/5 border-primary/30'>
-                #{order.id}
-              </Badge>
-              <Button
-                size='sm'
-                variant='ghost'
-                onClick={() => copyToClipboard(order.id)}
-                className='h-7 w-7 p-0 hover:bg-primary/10 hover:text-primary transition-all'>
-                <LucideCopy className='h-3.5 w-3.5' />
-              </Button>
+
+            {copied && (
+              <Alert className='bg-gradient-to-r from-green-50 to-emerald-50 border-green-300/50 shadow-sm mb-3 animate-in fade-in slide-in-from-top-2 duration-300'>
+                <LucideCheckCircle className='h-4 w-4 text-green-600' />
+                <AlertDescription className='text-green-800 text-sm font-medium'>Order number copied to clipboard!</AlertDescription>
+              </Alert>
+            )}
+
+            <div className='flex items-start gap-3 mt-3 p-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl border border-blue-100/50'>
+              <LucideInfo className='h-5 w-5 text-blue-600 mt-0.5 shrink-0' />
+              <p className='text-sm text-gray-700 leading-relaxed'>
+                {statusConfig.description}
+              </p>
             </div>
           </div>
-
-          {copied && (
-            <Alert className='max-w-sm mx-auto mb-6 bg-green-50 border-green-200 shadow-lg animate-in fade-in slide-in-from-top-2 duration-300'>
-              <LucideCheckCircle className='h-4 w-4 text-green-600' />
-              <AlertDescription className='text-green-800 font-medium'>Copied to clipboard!</AlertDescription>
-            </Alert>
-          )}
-
-          {/* Enhanced Status Badge */}
-          <div className='flex justify-center mb-3'>
-            <div className='relative inline-flex'>
-              <div className={`absolute inset-0 ${statusConfig.className} opacity-20 blur-xl rounded-full`}></div>
-              <Badge
-                variant={statusConfig.variant}
-                className={`relative text-base sm:text-lg px-8 py-3.5 rounded-full ${statusConfig.className} transition-all duration-300 hover:scale-105 shadow-lg`}>
-                <StatusIcon className='mr-2 h-5 w-5 sm:h-6 sm:w-6' />
-                <span className='font-semibold'>{statusConfig.label}</span>
-              </Badge>
-            </div>
-          </div>
-          <p className='text-sm sm:text-base text-gray-600 font-medium'>
-            {statusConfig.description}
-          </p>
         </div>
 
-        {/* Enhanced Main Content Grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 mb-8 sm:mb-10 lg:mb-12'>
-          {/* Customer Information */}
-          <Card className='lg:col-span-1 shadow-xl border-gray-200/80 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden'>
-            <CardHeader className='bg-gradient-to-br from-blue-50 to-white border-b border-gray-100 pb-4'>
-              <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-                <div className='h-10 w-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md'>
-                  <LucideUser className='h-5 w-5 text-white' />
-                </div>
-                <span className='font-bold text-gray-900'>Customer Information</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='space-y-5 pt-6'>
-              <div className='flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors'>
-                <div className='h-9 w-9 bg-gray-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5'>
-                  <LucideUser className='h-4 w-4 text-gray-600' />
-                </div>
-                <div className='flex-1 min-w-0'>
-                  <p className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1'>Name</p>
-                  <p className='font-semibold text-gray-900 text-sm sm:text-base break-words'>{order.customer.name}</p>
-                </div>
-              </div>
+        {/* Main Content Grid */}
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6'>
 
-              {order.customer.email && (
-                <>
-                  <Separator className='bg-gray-200' />
-                  <div className='flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors'>
-                    <div className='h-9 w-9 bg-gray-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5'>
-                      <LucideMail className='h-4 w-4 text-gray-600' />
-                    </div>
-                    <div className='flex-1 min-w-0'>
-                      <p className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1'>Email</p>
-                      <p className='font-semibold text-gray-900 text-sm sm:text-base break-all'>{order.customer.email}</p>
-                    </div>
+          {/* Left Column - Info Cards */}
+          <div className='lg:col-span-1 space-y-4'>
+
+            {/* Customer Info */}
+            <Card className='shadow-md hover:shadow-xl transition-all duration-300 border-gray-200/60 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-blue-50/20'>
+              <CardHeader className='pb-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border-b border-blue-100/50'>
+                <CardTitle className='text-base sm:text-lg flex items-center gap-3 font-bold text-gray-900'>
+                  <div className='h-9 w-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md'>
+                    <LucideUser className='h-4 w-4 sm:h-5 sm:w-5 text-white' />
                   </div>
-                </>
-              )}
+                  Customer Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-4 text-sm pt-5'>
+                <div className='group'>
+                  <p className='text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide'>Full Name</p>
+                  <p className='font-semibold text-gray-900 text-base group-hover:text-primary transition-colors'>{order.customer.name}</p>
+                </div>
+                {order.customer.email && (
+                  <>
+                    <Separator className='bg-gradient-to-r from-transparent via-gray-200 to-transparent' />
+                    <div className='group'>
+                      <p className='text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide'>Email Address</p>
+                      <p className='font-medium text-gray-900 break-all group-hover:text-primary transition-colors'>{order.customer.email}</p>
+                    </div>
+                  </>
+                )}
+                <Separator className='bg-gradient-to-r from-transparent via-gray-200 to-transparent' />
+                <div className='group'>
+                  <p className='text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide'>Phone Number</p>
+                  <p className='font-semibold text-gray-900 text-base font-mono group-hover:text-primary transition-colors'>{order.customer.phoneNumber}</p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <Separator className='bg-gray-200' />
-              <div className='flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors'>
-                <div className='h-9 w-9 bg-gray-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5'>
-                  <LucidePhone className='h-4 w-4 text-gray-600' />
-                </div>
-                <div className='flex-1 min-w-0'>
-                  <p className='text-xs font-medium text-gray-500 uppercase tracking-wide mb-1'>Phone</p>
-                  <p className='font-semibold text-gray-900 text-sm sm:text-base'>{order.customer.phoneNumber}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Shipping Information */}
-          <Card className='lg:col-span-1 shadow-xl border-gray-200/80 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden'>
-            <CardHeader className='bg-gradient-to-br from-green-50 to-white border-b border-gray-100 pb-4'>
-              <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-                <div className='h-10 w-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md'>
-                  <LucideMapPin className='h-5 w-5 text-white' />
-                </div>
-                <span className='font-bold text-gray-900'>Shipping Address</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='pt-6'>
-              <div className='flex items-start space-x-3 p-4 rounded-lg bg-gradient-to-br from-gray-50 to-white border border-gray-200'>
-                <div className='h-9 w-9 bg-green-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5'>
-                  <LucideMapPin className='h-4 w-4 text-green-600' />
-                </div>
-                <div className='space-y-2 flex-1 min-w-0'>
-                  <p className='font-semibold text-gray-900 text-sm sm:text-base leading-relaxed break-words'>
-                    {order?.shipping?.address}
-                  </p>
-                  <div className='flex flex-wrap items-center gap-2 text-xs sm:text-sm'>
-                    <Badge variant='secondary' className='bg-gray-200 text-gray-700 font-medium'>
-                      {order?.shipping?.district}
-                    </Badge>
-                    <span className='text-gray-400'>•</span>
-                    <Badge variant='secondary' className='bg-gray-200 text-gray-700 font-medium'>
-                      {order?.shipping?.division}
-                    </Badge>
+            {/* Shipping Info */}
+            <Card className='shadow-md hover:shadow-xl transition-all duration-300 border-gray-200/60 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-green-50/20'>
+              <CardHeader className='pb-4 bg-gradient-to-r from-green-50/50 to-emerald-50/50 border-b border-green-100/50'>
+                <CardTitle className='text-base sm:text-lg flex items-center gap-3 font-bold text-gray-900'>
+                  <div className='h-9 w-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md'>
+                    <LucideMapPin className='h-4 w-4 sm:h-5 sm:w-5 text-white' />
                   </div>
+                  Shipping Address
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='text-sm pt-5'>
+                <div className='p-4 bg-gradient-to-br from-gray-50 to-green-50/30 rounded-xl border border-green-100/50 mb-4'>
+                  <p className='font-medium text-gray-900 leading-relaxed'>{order?.shipping?.address}</p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+                <div className='flex flex-wrap gap-2'>
+                  <Badge variant='secondary' className='text-xs px-3 py-1.5 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-200 font-semibold shadow-sm'>
+                    📍 {order?.shipping?.district}
+                  </Badge>
+                  <Badge variant='secondary' className='text-xs px-3 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border-blue-200 font-semibold shadow-sm'>
+                    🌍 {order?.shipping?.division}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Order Timeline */}
-          <Card className='md:col-span-2 lg:col-span-1 shadow-xl border-gray-200/80 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden'>
-            <CardHeader className='bg-gradient-to-br from-purple-50 to-white border-b border-gray-100 pb-4'>
-              <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-                <div className='h-10 w-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md'>
-                  <LucideCalendar className='h-5 w-5 text-white' />
-                </div>
-                <span className='font-bold text-gray-900'>Order Timeline</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='pt-6'>
-              <div className='space-y-5'>
-                <div className='flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors'>
-                  <div className='relative mt-1'>
-                    <div className='w-3 h-3 bg-gradient-to-br from-primary to-blue-600 rounded-full ring-4 ring-primary/20'></div>
+            {/* Timeline */}
+            <Card className='shadow-md hover:shadow-xl transition-all duration-300 border-gray-200/60 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-purple-50/20'>
+              <CardHeader className='pb-4 bg-gradient-to-r from-purple-50/50 to-pink-50/50 border-b border-purple-100/50'>
+                <CardTitle className='text-base sm:text-lg flex items-center gap-3 font-bold text-gray-900'>
+                  <div className='h-9 w-9 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-md'>
+                    <LucideCalendar className='h-4 w-4 sm:h-5 sm:w-5 text-white' />
+                  </div>
+                  Order Timeline
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='space-y-4 text-sm pt-5'>
+                <div className='flex gap-4 items-start group'>
+                  <div className='relative'>
+                    <div className='w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300'>
+                      <LucideCheckCircle className='h-5 w-5 text-white' />
+                    </div>
                     {order.status !== "processing" && (
-                      <div className='absolute top-3 left-1.5 w-0.5 h-12 bg-gradient-to-b from-primary/50 to-transparent'></div>
+                      <div className='absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-8 bg-gradient-to-b from-primary to-purple-500'></div>
                     )}
                   </div>
-                  <div className='flex-1'>
-                    <p className='text-sm font-semibold text-gray-900 mb-1'>Order Placed</p>
+                  <div className='flex-1 pt-1.5'>
+                    <p className='font-bold text-gray-900 mb-1'>Order Placed</p>
                     <p className='text-xs text-gray-600 font-medium'>
                       {order?.createdAt
-                        ? new Date(order?.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
+                        ? new Date(order?.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit"
                           })
-                        : "Date not available"}
+                        : "N/A"}
                     </p>
                   </div>
                 </div>
-
                 {order.status !== "processing" && (
-                  <div className='flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors'>
-                    <div className='relative mt-1'>
-                      <div className='w-3 h-3 bg-gradient-to-br from-primary to-blue-600 rounded-full ring-4 ring-primary/20'></div>
+                  <div className='flex gap-4 items-start group'>
+                    <div className='w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300'>
+                      <StatusIcon className='h-5 w-5 text-white' />
                     </div>
-                    <div className='flex-1'>
-                      <p className='text-sm font-semibold text-gray-900 mb-1'>Status Updated</p>
+                    <div className='flex-1 pt-1.5'>
+                      <p className='font-bold text-gray-900 mb-1'>Status Updated</p>
                       <p className='text-xs text-gray-600 font-medium'>
-                        {statusConfig.label} - {new Date(order?.updatedAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
+                        {statusConfig.label} - {new Date(order?.updatedAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit"
                         })}
                       </p>
                     </div>
                   </div>
                 )}
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Order Details */}
+          <div className='lg:col-span-2 space-y-4'>
+
+            {/* Order Notes */}
+            {!!order?.notes && (
+              <Card className='shadow-md hover:shadow-xl transition-all duration-300 border-gray-200/60 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-amber-50/20'>
+                <CardHeader className='pb-4 bg-gradient-to-r from-amber-50/50 to-orange-50/50 border-b border-amber-100/50'>
+                  <CardTitle className='text-base sm:text-lg flex items-center gap-3 font-bold text-gray-900'>
+                    <div className='h-9 w-9 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-md'>
+                      <LucideClipboardList className='h-4 w-4 sm:h-5 sm:w-5 text-white' />
+                    </div>
+                    Order Notes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className='pt-5'>
+                  <div className='p-4 bg-gradient-to-br from-amber-50/50 to-orange-50/30 rounded-xl border border-amber-100/50'>
+                    <p className='text-sm text-gray-700 leading-relaxed italic'>&quot;{order.notes}&quot;</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Order Summary */}
+            <Card className='shadow-lg hover:shadow-2xl transition-all duration-300 border-gray-200/60 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-indigo-50/20'>
+              <CardHeader className='pb-4 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 border-b border-indigo-100/50'>
+                <CardTitle className='text-base sm:text-lg flex items-center gap-3 font-bold text-gray-900'>
+                  <div className='h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md'>
+                    <LucidePackage className='h-4 w-4 sm:h-5 sm:w-5 text-white' />
+                  </div>
+                  Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className='p-0 sm:p-6'>
+                <OrderTable order={order} />
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
-        {/* Enhanced Order Notes */}
-        {!!order?.notes && (
-          <Card className='mb-8 sm:mb-10 shadow-xl border-gray-200/80 hover:shadow-2xl transition-all duration-300 overflow-hidden'>
-            <CardHeader className='bg-gradient-to-br from-amber-50 to-white border-b border-gray-100 pb-4'>
-              <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-                <div className='h-10 w-10 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md'>
-                  <LucideClipboardList className='h-5 w-5 text-white' />
-                </div>
-                <span className='font-bold text-gray-900'>Order Notes</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className='pt-6'>
-              <div className='bg-gradient-to-br from-amber-50/50 to-white rounded-xl p-4 sm:p-5 border border-amber-100'>
-                <p className='text-sm sm:text-base leading-relaxed text-gray-700'>{order.notes}</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Enhanced Order Summary */}
-        <Card className='shadow-xl border-gray-200/80 hover:shadow-2xl transition-all duration-300 overflow-hidden mb-8 sm:mb-10'>
-          <CardHeader className='bg-gradient-to-br from-indigo-50 to-white border-b border-gray-100 pb-4'>
-            <CardTitle className='flex items-center gap-2 text-lg sm:text-xl'>
-              <div className='h-10 w-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md'>
-                <LucidePackage className='h-5 w-5 text-white' />
-              </div>
-              <span className='font-bold text-gray-900'>Order Summary</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='p-0 sm:p-6'>
-            <OrderTable order={order} />
-          </CardContent>
-        </Card>
-
-        {/* Enhanced Action Buttons */}
-        <div className='flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center'>
+        {/* Action Buttons */}
+        <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
           <Button
             variant='outline'
-            size='lg'
             onClick={() => window.history.back()}
-            className='w-full sm:w-auto min-w-[160px] h-12 border-2 border-gray-300 hover:border-primary hover:bg-primary/5 transition-all duration-300 hover:shadow-lg font-semibold'>
+            className='w-full sm:w-auto px-8 py-6 text-base font-semibold rounded-xl border-2 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-300 shadow-md hover:shadow-lg'>
             <svg className='mr-2 h-5 w-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M10 19l-7-7m0 0l7-7m-7 7h18' />
             </svg>
@@ -426,12 +393,8 @@ const OrderDetails = () => {
           </Button>
           {order.status === "shipped" && (
             <Button
-              size='lg'
-              className='w-full sm:w-auto min-w-[180px] h-12 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg hover:shadow-xl transition-all duration-300 font-semibold'
-              onClick={() => {
-                // Add tracking functionality here
-                alert("Tracking feature coming soon!");
-              }}>
+              onClick={() => alert("Tracking feature coming soon!")}
+              className='w-full sm:w-auto px-8 py-6 text-base font-semibold rounded-xl bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105'>
               <LucideTruck className='mr-2 h-5 w-5' />
               Track Package
             </Button>
