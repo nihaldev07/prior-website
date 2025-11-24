@@ -15,7 +15,15 @@ import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
 import { isValidBangladeshiPhoneNumber } from "@/utils/content";
-import { Loader2, Star, TrashIcon, User, LogIn, Disc2 } from "lucide-react";
+import {
+  Loader2,
+  Star,
+  TrashIcon,
+  User,
+  LogIn,
+  Disc2,
+  ShoppingBag,
+} from "lucide-react";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackEvent } from "@/lib/firebase-event";
@@ -253,40 +261,53 @@ const CheckoutPage = () => {
     } = item;
 
     return (
-      <div key={index} className='flex py-5 last:pb-0'>
-        <div className='relative h-24 w-24 shrink-0 overflow-hidden rounded-xl'>
+      <div
+        key={index}
+        className='group relative flex flex-col sm:flex-row gap-4 py-6 last:pb-0 transition-all duration-300 hover:bg-gray-50/50 rounded-xl px-2 sm:px-3'>
+        <div className='relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded-2xl bg-gray-100 shadow-sm ring-1 ring-gray-200/50 transition-all duration-300 group-hover:shadow-md group-hover:ring-gray-300/50'>
           <Image
             fill
             src={thumbnail}
             alt={name}
-            className='h-full w-full object-contain object-center rounded-md'
+            className='h-full w-full object-contain object-center p-2 transition-transform duration-300 group-hover:scale-105'
           />
           <Link className='absolute inset-0' href={`/products/${id}`} />
         </div>
 
-        <div className='ml-4 flex flex-1 flex-col justify-between'>
-          <div>
-            <div className='flex justify-between '>
-              <div>
-                <h3 className='font-medium md:text-2xl uppercase'>
+        <div className='flex flex-1 flex-col justify-between'>
+          <div className='space-y-2'>
+            <div className='flex flex-col sm:flex-row sm:justify-between gap-2'>
+              <div className='flex-1'>
+                <h3 className='font-semibold text-base sm:text-lg md:text-xl text-gray-900 line-clamp-2 hover:text-primary transition-colors'>
                   <Link href={`/products/${id}`}>{name}</Link>
                 </h3>
-                <div className='flex items-center gap-1'>
-                  <Badge variant={"outline"}>{formatVariant(variation)}</Badge>
+                <div className='flex items-center gap-2 mt-2'>
+                  <Badge
+                    variant={"outline"}
+                    className='text-xs font-medium bg-blue-50 text-blue-700 border-blue-200'>
+                    {formatVariant(variation)}
+                  </Badge>
                 </div>
               </div>
-              <span className='font-medium md:text-xl'>
-                ৳{formatPrice(unitPrice)}
-              </span>
+              <div className='flex items-start'>
+                <span className='font-bold text-lg sm:text-xl text-primary whitespace-nowrap'>
+                  ৳{formatPrice(unitPrice * quantity)}
+                </span>
+              </div>
             </div>
           </div>
-          <div className='flex w-full items-end justify-between text-sm'>
-            <div
-              className='flex items-center gap-3'
+
+          <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4'>
+            <button
+              className='flex items-center gap-2 text-sm font-medium text-red-500 hover:text-red-700 transition-colors group/delete'
               onClick={() => removeFromCart(index)}>
-              <TrashIcon className='size-5 text-red-400' />
-            </div>
-            <div>
+              <TrashIcon className='size-4 transition-transform group-hover/delete:scale-110' />
+              <span className='hidden sm:inline'>Remove</span>
+            </button>
+            <div className='flex items-center gap-3'>
+              <span className='text-sm text-gray-600 font-medium hidden sm:inline'>
+                Quantity:
+              </span>
               <InputNumber
                 defaultValue={quantity}
                 min={1}
@@ -597,112 +618,180 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className='nc-CheckoutPage'>
-      <main className='container py-16 lg:pb-28'>
-        <div className='mb-4'>
-          <h2 className='block text-2xl font-semibold sm:text-3xl lg:text-4xl '>
+    <div className='nc-CheckoutPage bg-gradient-to-b from-gray-50 to-white min-h-screen'>
+      <main className='container py-8 sm:py-12 lg:py-16 lg:pb-28'>
+        {/* Enhanced Header */}
+        <div className='mb-8 sm:mb-10 lg:mb-12'>
+          <h2 className='text-2xl sm:ml-20 sm:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 bg-clip-text text-transparent'>
             Checkout
           </h2>
+          <p className='text-gray-600 text-sm sm:text-base ml-0 sm:ml-20 mt-2'>
+            Complete your order in just a few steps
+          </p>
         </div>
 
-        <div className='flex flex-col lg:flex-row'>
-          <div className='flex-1'>{renderLeft()}</div>
+        <div className='flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-12'>
+          {/* Left Section - Forms */}
+          <div className=' flex-1 order-2 lg:order-1'>{renderLeft()}</div>
 
-          <div className='my-10 shrink-0 border-t border-neutral-300 lg:mx-10 lg:my-0 lg:border-l lg:border-t-0 xl:lg:mx-14 2xl:mx-16 ' />
+          {/* Divider */}
+          <div className='hidden lg:block shrink-0 w-px bg-gradient-to-b from-transparent via-gray-200 to-transparent' />
 
-          <div className='w-full lg:w-[36%] '>
-            <h3 className='text-lg font-semibold'>Order summary</h3>
-            <div className='mt-8 divide-y divide-neutral-300'>
-              {cart.map((item, index) => renderProduct(item, index))}
+          {/* Right Section - Order Summary */}
+          <div className='w-full lg:w-[42%] xl:w-[38%] order-2'>
+            <div className='lg:sticky lg:top-24 space-y-6'>
+              {/* Order Summary Card */}
+              <Card className='shadow-xl border-gray-200/80 overflow-hidden'>
+                <CardHeader className='bg-gradient-to-br from-gray-50 to-white border-b border-gray-100 pb-4'>
+                  <CardTitle className='text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2'>
+                    <div className='h-8 w-1 bg-gradient-to-b from-primary to-blue-600 rounded-full'></div>
+                    Order Summary
+                  </CardTitle>
+                  <CardDescription className='text-sm text-gray-600 mt-1'>
+                    Review your items before checkout
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='p-4 sm:p-6'>
+                  {/* Cart Items */}
+                  <div className='divide-y divide-gray-100 -mx-2 sm:-mx-3'>
+                    {cart.length > 0 ? (
+                      cart.map((item, index) => renderProduct(item, index))
+                    ) : (
+                      <div className='py-12 text-center'>
+                        <div className='inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4'>
+                          <svg
+                            className='w-8 h-8 text-gray-400'
+                            fill='none'
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth={2}
+                              d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+                            />
+                          </svg>
+                        </div>
+                        <p className='text-gray-500 text-sm'>
+                          Your cart is empty
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Price Breakdown */}
+                  <div className='mt-8 space-y-4 pt-6 border-t-2 border-gray-100'>
+                    <div className='flex justify-between items-center text-sm sm:text-base'>
+                      <span className='text-gray-600'>Subtotal</span>
+                      <span className='font-semibold text-gray-900'>
+                        ৳{formatPrice(transectionData?.totalPrice)}
+                      </span>
+                    </div>
+
+                    <div className='flex justify-between items-center text-sm sm:text-base'>
+                      <span className='text-gray-600'>Delivery & Handling</span>
+                      <span className='font-semibold text-gray-900'>
+                        ৳{formatPrice(transectionData?.deliveryCharge)}
+                      </span>
+                    </div>
+
+                    {transectionData?.discount > 0 && (
+                      <div className='flex justify-between items-center text-sm sm:text-base'>
+                        <span className='text-gray-600'>Discount</span>
+                        <span className='font-semibold text-green-600'>
+                          -৳{transectionData?.discount}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Total */}
+                    <div className='flex justify-between items-center pt-4 border-t-2 border-gray-200'>
+                      <span className='text-base sm:text-lg font-bold text-gray-900'>
+                        Total
+                      </span>
+                      <span className='text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent'>
+                        ৳{transectionData?.remaining}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Notes Section */}
+                  <div className='mt-6'>
+                    <label className='text-sm font-medium text-gray-700 mb-2 block'>
+                      Order Notes (Optional)
+                    </label>
+                    <Textarea
+                      className='w-full border-gray-200 bg-gray-50/50 p-3 sm:p-4 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all rounded-xl resize-none'
+                      rows={4}
+                      value={notes}
+                      onChange={(e: any) => setNotes(e.target.value)}
+                      placeholder='Add delivery instructions or special requests...'
+                    />
+                  </div>
+
+                  {/* Terms & Conditions */}
+                  <div className='mt-6 p-4 bg-blue-50/50 rounded-xl border border-blue-100'>
+                    <TermsCondition
+                      checked={isTermsChecked}
+                      handleTermCondition={(value: boolean) =>
+                        setIsTermsChecked(value)
+                      }
+                    />
+                  </div>
+
+                  {/* Confirm Button */}
+                  <ButtonPrimary
+                    className='mt-6 w-full h-12 sm:h-14 text-base sm:text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90'
+                    disabled={loading || !isTermsChecked || redirecting}
+                    onClick={() => {
+                      if (!loading) {
+                        handleConfirmOrder();
+                      }
+                    }}>
+                    <span className='flex items-center justify-center gap-2'>
+                      {redirecting
+                        ? "Redirecting to payment..."
+                        : loading
+                        ? "Processing..."
+                        : `Confirm ${hasPrepayment ? "and Pay" : "Order"}`}
+                      {loading && <Loader2 className='animate-spin w-5 h-5' />}
+                      {redirecting && (
+                        <Disc2 className='animate-spin w-5 h-5' />
+                      )}
+                      {!loading && !redirecting && (
+                        <svg
+                          className='w-5 h-5'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M13 7l5 5m0 0l-5 5m5-5H6'
+                          />
+                        </svg>
+                      )}
+                    </span>
+                  </ButtonPrimary>
+
+                  {/* Security Badge */}
+                  <div className='mt-4 flex items-center justify-center gap-2 text-xs text-gray-500'>
+                    <svg
+                      className='w-4 h-4 text-green-600'
+                      fill='currentColor'
+                      viewBox='0 0 20 20'>
+                      <path
+                        fillRule='evenodd'
+                        d='M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                        clipRule='evenodd'
+                      />
+                    </svg>
+                    Secure checkout
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-
-            <div className='mt-10 border-t border-neutral-300 pt-6 text-sm'>
-              {/* <div>
-                <div className='text-sm'>Discount code</div>
-                <div className='mt-1.5 flex'>
-                  <Input
-                    rounded='rounded-lg'
-                    sizeClass='h-12 px-4 py-3'
-                    className='flex-1 border-neutral-300 bg-transparent placeholder:text-neutral-500 focus:border-primary'
-                  />
-                  <button
-                    type='button'
-                    className='ml-3 flex w-24 items-center justify-center rounded-2xl border border-neutral-300 bg-gray px-4 text-sm font-medium transition-colors hover:bg-neutral-100'>
-                    Apply
-                  </button>
-                </div>
-              </div> */}
-
-              <div className='mt-4 flex justify-between pb-4'>
-                <span>Subtotal</span>
-                <span className='font-semibold'>
-                  {formatPrice(transectionData?.totalPrice)}
-                </span>
-              </div>
-              <div className='flex justify-between py-4'>
-                <span>Estimated Delivery & Handling</span>
-                <span className='font-semibold'>
-                  {formatPrice(transectionData?.deliveryCharge)}
-                </span>
-              </div>
-
-              <div className='flex justify-between py-4'>
-                <span>Discount</span>
-                <span className='font-semibold'>
-                  {transectionData?.discount}
-                </span>
-              </div>
-
-              <div className='flex justify-between pt-4 text-base font-semibold'>
-                <span>Total</span>
-                <span>{transectionData?.remaining}</span>
-              </div>
-            </div>
-
-            <div className='mt-6   w-full bg-gray-100'>
-              <Textarea
-                className='w-full border-0 bg-transparent p-4 text-sm placeholder:text-neutral-500 focus:ring-0'
-                rows={5}
-                value={notes}
-                onChange={(e: any) => setNotes(e.target.value)}
-                placeholder='Write a note...'
-              />
-            </div>
-
-            <div id='PaymentMethod' className='scroll-mt-24 mt-4'>
-              <TermsCondition
-                checked={isTermsChecked}
-                handleTermCondition={(value: boolean) =>
-                  setIsTermsChecked(value)
-                }
-              />
-            </div>
-
-            <ButtonPrimary
-              className='mt-8 w-full'
-              disabled={loading || !isTermsChecked || redirecting}
-              onClick={() => {
-                // Swal.fire(
-                //   "The Website is in maintOur site is currently undergoing maintenance",
-                //   "Thank you for your patience and support!",
-                //   "info"
-                // );
-                if (!loading) {
-                  handleConfirmOrder();
-                }
-              }}>
-              {redirecting
-                ? "Redirecting to payment..."
-                : loading
-                ? "Processing..."
-                : `Confirm ${hasPrepayment ? "and Pay" : ""}`}
-              {loading && (
-                <Loader2 className=' animate-spin w-5 h-5 text-white ml-2' />
-              )}
-              {redirecting && (
-                <Disc2 className=' animate-spin w-5 h-5 text-white ml-2' />
-              )}
-            </ButtonPrimary>
           </div>
         </div>
       </main>
