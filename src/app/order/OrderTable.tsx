@@ -19,79 +19,64 @@ const OrderTable: React.FC<Props> = ({ order }) => {
   return (
     <div className="w-full">
       {/* Mobile Card View */}
-      <div className="lg:hidden space-y-4">
+      <div className="lg:hidden space-y-3">
         {/* Products */}
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {order.products.map((product: Product, index: number) => (
             <div
               key={product.id}
-              className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
+              className="bg-white border border-gray-200 rounded-xl p-3 sm:p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300"
             >
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 {/* Product Image */}
-                <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-gray-200">
+                <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-lg bg-gray-50">
                   <Image
                     src={product.thumbnail}
                     alt={product.name}
                     fill
-                    className="object-contain p-2"
+                    className="object-contain p-1.5"
                   />
-                  <div className="absolute -top-2 -left-2 h-7 w-7 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md">
+                  <div className="absolute -top-1.5 -left-1.5 h-5 w-5 sm:h-6 sm:w-6 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold shadow">
                     {index + 1}
                   </div>
                 </div>
 
                 {/* Product Details */}
-                <div className="flex-1 min-w-0 space-y-2">
-                  <h4 className="font-semibold text-sm sm:text-base text-gray-900 line-clamp-2">
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <h4 className="font-semibold text-xs sm:text-sm text-gray-900 line-clamp-2 leading-tight">
                     {product.name}
                   </h4>
 
-                  {/* Variations */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {product.variation?.color && (
-                      <Badge
-                        variant="outline"
-                        className="text-xs bg-blue-50 text-blue-700 border-blue-200"
-                      >
-                        {product.variation.color}
-                      </Badge>
-                    )}
-                    {product.variation?.size && (
-                      <Badge
-                        variant="outline"
-                        className="text-xs bg-purple-50 text-purple-700 border-purple-200"
-                      >
-                        {product.variation.size}
-                      </Badge>
-                    )}
-                    {!product.variation && (
-                      <Badge variant="secondary" className="text-xs">
-                        No Variation
-                      </Badge>
-                    )}
-                  </div>
+                  {/* Variations - Compact */}
+                  {(product.variation?.color || product.variation?.size) && (
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                      {product.variation?.color && (
+                        <span className="px-2 py-0.5 bg-gray-100 rounded">
+                          {product.variation.color}
+                        </span>
+                      )}
+                      {product.variation?.size && (
+                        <span className="px-2 py-0.5 bg-gray-100 rounded">
+                          {product.variation.size}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
-                  {/* Price Info Grid */}
-                  <div className="grid grid-cols-3 gap-2 pt-2">
-                    <div>
-                      <p className="text-xs text-gray-500">Qty</p>
-                      <p className="text-sm font-semibold text-gray-900">
-                        ×{product.quantity}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Unit</p>
-                      <p className="text-sm font-semibold text-gray-900">
+                  {/* Price Info - Horizontal */}
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center gap-3 text-xs">
+                      <span className="text-gray-500">
+                        Qty: <span className="font-semibold text-gray-900">×{product.quantity}</span>
+                      </span>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-500">
                         ৳{product.unitPrice.toFixed(2)}
-                      </p>
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Total</p>
-                      <p className="text-sm font-bold text-primary">
-                        ৳{product.totalPrice.toFixed(2)}
-                      </p>
-                    </div>
+                    <span className="text-sm font-bold text-primary">
+                      ৳{product.totalPrice.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -99,46 +84,46 @@ const OrderTable: React.FC<Props> = ({ order }) => {
           ))}
         </div>
 
-        {/* Summary Card for Mobile */}
-        <div className="bg-gradient-to-br from-indigo-50 to-white border-2 border-indigo-200 rounded-xl p-5 mt-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <div className="h-6 w-1 bg-gradient-to-b from-indigo-500 to-indigo-600 rounded-full"></div>
-            Order Summary
-          </h3>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center py-2">
-              <span className="text-sm text-gray-600">Subtotal</span>
-              <span className="font-semibold text-gray-900">
+        {/* Summary Card for Mobile - Minimal & Elegant */}
+        <div className="bg-white border border-gray-200 rounded-xl p-4 mt-4">
+          <div className="space-y-2.5">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Subtotal</span>
+              <span className="font-medium text-gray-900">
                 ৳{order.totalPrice.toFixed(2)}
               </span>
             </div>
-            <Separator />
-            <div className="flex justify-between items-center py-2">
-              <span className="text-sm text-gray-600">Discount</span>
-              <span className="font-semibold text-green-600">
-                -৳{order.discount.toFixed(2)}
-              </span>
-            </div>
-            <Separator />
-            <div className="flex justify-between items-center py-2">
-              <span className="text-sm text-gray-600">Delivery Charge</span>
-              <span className="font-semibold text-gray-900">
+
+            {order.discount > 0 && (
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Discount</span>
+                <span className="font-medium text-green-600">
+                  -৳{order.discount.toFixed(2)}
+                </span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Delivery</span>
+              <span className="font-medium text-gray-900">
                 ৳{order.deliveryCharge.toFixed(2)}
               </span>
             </div>
-            <Separator />
-            <div className="flex justify-between items-center py-2">
-              <span className="text-sm text-gray-600">Paid</span>
-              <span className="font-semibold text-gray-900">
+
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Paid</span>
+              <span className="font-medium text-gray-900">
                 ৳{order.paid.toFixed(2)}
               </span>
             </div>
-            <Separator className="bg-indigo-200" />
-            <div className="flex justify-between items-center py-2 bg-gradient-to-r from-indigo-50 to-transparent rounded-lg px-3 -mx-3">
+
+            <Separator className="my-2" />
+
+            <div className="flex justify-between items-center pt-1">
               <span className="text-base font-bold text-gray-900">
                 Amount Due
               </span>
-              <span className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-lg font-bold text-primary">
                 ৳{order.remaining.toFixed(2)}
               </span>
             </div>
