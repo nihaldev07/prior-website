@@ -40,6 +40,7 @@ interface CartContextType {
   updateToCart: (item: CartItem) => void;
   removeFromCart: (index: number) => void;
   clearCart: () => void;
+  bulkUpdateCart: (items: CartItem[]) => void;
 }
 
 // Create Cart Context
@@ -172,9 +173,13 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
     setCart([]);
   };
 
+  const bulkUpdateCart = (items: CartItem[]) => {
+    setCart(items);
+  };
+
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, updateToCart }}
+      value={{ cart, addToCart, removeFromCart, clearCart, updateToCart, bulkUpdateCart }}
     >
       {children}
     </CartContext.Provider>

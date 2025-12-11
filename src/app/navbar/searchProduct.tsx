@@ -13,7 +13,13 @@ import { Input } from "@/components/ui/input";
 import useSearchProduct from "@/hooks/useProductSearch";
 import { ProductType } from "@/data/types";
 import { Badge } from "@/components/ui/badge";
-import { BanknoteIcon, BoxIcon, RefreshCcw, Search } from "lucide-react";
+import {
+  BanknoteIcon,
+  BoxIcon,
+  RefreshCcw,
+  Search,
+  SearchIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function GlobalSearch() {
@@ -49,7 +55,7 @@ export function GlobalSearch() {
         className=" size-6 text-primary  mr-1 sm:hidden"
       /> */}
       <div
-        className='sm:pointer-events-none absolute inset-y-0 right-0 sm:left-0 flex items-center pl-3'
+        className='sm:pointer-events-none absolute inset-y-0 right-0 sm:left-0  items-center pl-3 hidden'
         onClick={() => setOpen(!open)}>
         <Search
           aria-hidden='true'
@@ -57,12 +63,10 @@ export function GlobalSearch() {
           onClick={() => setOpen(!open)}
         />
       </div>
-      <div
+      <SearchIcon
         onClick={() => setOpen(!open)}
-        id='search'
-        className='hidden sm:block w-full rounded-md border border-gray-300 md:border-transparent md:border-0  bg-white md:bg-gray-200 py-1.5 pl-10 pr-3 text-gray-800 placeholder:text-gray-800 focus:bg-white focus:text-gray-900 focus:ring-0 sm:text-sm sm:leading-6'>
-        Search
-      </div>
+        className=' size-6 text-primary hidden mr-1 sm:block'
+      />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild className='hidden'>
           <button className='px-4 py-2 bg-primary text-white rounded-md'>

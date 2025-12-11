@@ -4,34 +4,34 @@
 
 body {
   background-color: #ffffff;
-  font-family: var(--font-alegreya), serif;
+  font-family: var(--font-noto-sans-devanagari), sans-serif;
 }
 
-/* Oswald for headings and numbers */
+/* Noto Sans Devanagari for headings */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-oswald), sans-serif;
+  font-family: var(--font-noto-sans-devanagari), sans-serif;
   font-weight: 600;
 }
 
-/* Numbers and prices use Oswald */
+/* Numbers and prices use Noto Sans Devanagari */
 .font-number,
 .price,
 [class*="price"],
 input[type="number"] {
-  font-family: var(--font-lobster), sans-serif;
+  font-family: var(--font-noto-sans-devanagari), sans-serif;
 }
 
-/* Descriptions and paragraphs use Alegreya */
+/* Descriptions and paragraphs use Noto Sans Devanagari */
 p,
 span,
 .description,
 .text-content {
-  font-family: var(--font-alegreya), serif;
+  font-family: var(--font-noto-sans-devanagari), sans-serif;
 }
 
 @layer base {
