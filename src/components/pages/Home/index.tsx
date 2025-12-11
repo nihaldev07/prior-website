@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { IProduct } from "@/lib/interface";
 import HeroSection from "./HeroSection";
+import CampaignPopupWrapper from "./CampaignPopupWrapper";
 
 // Lazy load below-the-fold components with SSR enabled
 const CampaignPage = dynamic(() => import("./CampaignView"), {
@@ -29,6 +30,9 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ products }) => {
   return (
     <div className="w-full">
+      {/* Campaign Popup - Shows on page load if active campaign exists */}
+      <CampaignPopupWrapper />
+
       <HeroSection />
       <CampaignPage />
       <NewSectionView products={products} />
