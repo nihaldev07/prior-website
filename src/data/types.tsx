@@ -13,6 +13,7 @@ export type ProductType = {
   discount: number;
   discountType?: string;
   quantity: number;
+  categoryName?: string;
   unitPrice: number;
   totalPrice: number;
   active: boolean;

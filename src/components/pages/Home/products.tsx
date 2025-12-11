@@ -75,7 +75,7 @@ const SectionProducts = () => {
         handleFilterChange={(value: FilterData) => setFilterData(value)}
       />
 
-      <div className='grid gap-3 sm:gap-3 md:gap-4 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 md:container'>
+      <div className='grid gap-2 sm:gap-3 md:gap-4 lg:gap-8 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 sm:container'>
         {!!products &&
           products?.map((product: ProductType) => (
             <div
@@ -91,8 +91,7 @@ const SectionProducts = () => {
         <div className='flex justify-center items-center mt-12 mb-8'>
           <button
             onClick={handleLoadMore}
-            className='group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:from-primary/90 hover:to-blue-600/90 overflow-hidden'
-          >
+            className='group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:from-primary/90 hover:to-blue-600/90 overflow-hidden'>
             {/* Animated background effect */}
             <div className='absolute inset-0 bg-gradient-to-r from-blue-600 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
 
@@ -130,7 +129,9 @@ const SectionProducts = () => {
             <Bird className='relative w-16 h-16 text-primary animate-bounce' />
           </div>
           <div className='text-center space-y-2'>
-            <h3 className='text-xl font-bold text-gray-900'>No Products Found</h3>
+            <h3 className='text-xl font-bold text-gray-900'>
+              No Products Found
+            </h3>
             <p className='text-base text-gray-600'>
               Try adjusting your filters to see more products
             </p>

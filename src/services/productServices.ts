@@ -1,12 +1,15 @@
 import { Order } from "@/app/order/interface";
 import { SingleProductType } from "@/data/types";
 import { config } from "@/lib/config";
+import axios from "axios";
 
 export const fetchProductById = async (
   productId: string
 ): Promise<SingleProductType | null> => {
   try {
-    const response = await fetch(config.product.getProductById(productId),{   next: { revalidate: 3 } });
+    const response = await fetch(config.product.getProductById(productId), {
+      cache: 'no-store' // Disable all caching to always fetch fresh data
+    });
     if (!response.ok) {
       return null;
     }
@@ -22,7 +25,9 @@ export const fetchProductById = async (
 export const fetchAllProducts = async (
 ): Promise<SingleProductType[]> => {
   try {
-    const response = await fetch(`${config.product.getProducts()}?limit=${500}`,{   next: { revalidate: 3 } });
+    const response = await fetch(`${config.product.getProducts()}?limit=${500}`, {
+      cache: 'no-store' // Disable all caching to always fetch fresh data
+    });
     if (!response.ok) {
       return [];
     }
@@ -48,5 +53,25 @@ export const fetchOrderDetails = async (
   } catch (error) {
     console.error("Error fetching product:", error);
     return null;
+  }
+};
+
+export const fetchBulkProducts = async (
+  productIds: number[]
+): Promise<SingleProductType[]> => {
+  try {
+    const response = await axios.post(
+      config.product.getBulkProducts(),
+      { productIds },
+      { timeout: 10000 }
+    );
+
+    if (response.status < 300) {
+      return response.data as SingleProductType[];
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching bulk products:", error);
+    return [];
   }
 };

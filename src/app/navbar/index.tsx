@@ -198,7 +198,10 @@ const Navbar = () => {
     return (
       <Sheet open={openSheet} onOpenChange={setOpenSheet}>
         <SheetTrigger asChild>
-          <Button variant='ghost' size='icon' className='lg:hidden'>
+          <Button
+            variant='ghost'
+            size='icon'
+            className='lg:hidden text-white hover:bg-white/10 hover:text-white'>
             <Menu className='w-6 h-6' />
             <span className='sr-only'>Open menu</span>
           </Button>
@@ -445,9 +448,9 @@ const Navbar = () => {
   };
 
   return (
-    <header className='sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200'>
+    <header className='sticky top-0 z-50 w-full bg-gradient-to-b from-black/40 via-black/20 to-transparent backdrop-blur-md border-b border-white/10'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex h-16 lg:h-20 items-center justify-between flex-wrap gap-y-2'>
+        <div className='flex h-16 lg:h-24 items-center justify-between flex-wrap gap-y-2'>
           {/* Left: Mobile Menu + Logo */}
           <div className='flex items-center gap-2 min-w-[60%] md:min-w-[30%] justify-between flex-shrink-0'>
             {/* Mobile Menu (visible on sm and below) */}
@@ -472,7 +475,7 @@ const Navbar = () => {
                   categories.length > 0;
                 return isCollection ? (
                   <NavigationMenuItem key={item.id}>
-                    <NavigationMenuTrigger className='flex items-center gap-1 text-base font-extrabold bg-transparent hover:bg-gray-100'>
+                    <NavigationMenuTrigger className='flex items-center gap-1.5 text-base font-semibold bg-transparent hover:bg-white/10 text-white/95 hover:text-white transition-all duration-300'>
                       <Package className='w-4 h-4' />
                       {item.title}
                     </NavigationMenuTrigger>
@@ -484,8 +487,9 @@ const Navbar = () => {
                   <NavigationMenuItem key={item.id}>
                     <Link
                       href={item.link}
-                      className='text-base font-extrabold px-4 py-2 rounded-md hover:bg-gray-100 transition-colors inline-flex items-center justify-center'>
+                      className='text-base font-semibold px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 inline-flex items-center justify-center text-white/95 hover:text-white relative group'>
                       {item.title}
+                      <span className='absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 group-hover:w-3/4 transition-all duration-300' />
                     </Link>
                   </NavigationMenuItem>
                 );
@@ -497,9 +501,6 @@ const Navbar = () => {
           <div className='flex items-center justify-between gap-x-2'>
             <div className='flex flex-1 justify-center px-2 md:mr-4 '>
               <div className='w-full max-w-lg lg:max-w-xs'>
-                <label htmlFor='search' className='sr-only'>
-                  Search
-                </label>
                 <div className='relative'>
                   <GlobalSearch />
                 </div>
@@ -507,7 +508,10 @@ const Navbar = () => {
             </div>
 
             {/* Cart Icon */}
-            <Button variant='ghost' size='icon' className='relative'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='relative text-white hover:bg-white/10 hover:text-white'>
               <CartSideBar />
             </Button>
 
@@ -519,8 +523,8 @@ const Navbar = () => {
                     <Button
                       variant='ghost'
                       size='sm'
-                      className='flex items-center gap-2'>
-                      <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center'>
+                      className='flex items-center gap-2 text-white hover:bg-white/10 hover:text-white'>
+                      <div className='w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all'>
                         {authState.user?.profilePicture ? (
                           <Image
                             src={authState.user.profilePicture}
@@ -530,7 +534,7 @@ const Navbar = () => {
                             className='w-8 h-8 rounded-full object-cover'
                           />
                         ) : (
-                          <User className='w-4 h-4 text-blue-600' />
+                          <User className='w-4 h-4 text-white' />
                         )}
                       </div>
                     </Button>
@@ -559,8 +563,8 @@ const Navbar = () => {
                     <Button
                       variant='ghost'
                       size='sm'
-                      className='flex items-center gap-2'>
-                      <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center'>
+                      className='flex items-center gap-2 text-white hover:bg-white/10 hover:text-white'>
+                      <div className='w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center hover:bg-white/30 transition-all'>
                         {authState.user?.profilePicture ? (
                           <Image
                             src={authState.user.profilePicture}
@@ -570,17 +574,12 @@ const Navbar = () => {
                             className='w-8 h-8 rounded-full object-cover'
                           />
                         ) : (
-                          <User className='w-4 h-4 text-blue-600' />
+                          <User className='w-4 h-4 text-white' />
                         )}
                       </div>
-                      <span className='hidden lg:block text-sm font-medium'>
-                        {authState.user?.name}
-                      </span>
-                      <ChevronDown className='w-4 h-4' />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='end' className='w-56'>
-                    <DropdownMenuLabel>Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Button variant='ghost' size='sm' asChild>

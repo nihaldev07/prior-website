@@ -14,6 +14,7 @@ interface IProduct {
   discountType?: string;
   quantity?: number;
   unitPrice?: number;
+  categoryName?: string;
   hasDiscount?: boolean;
   updatedPrice?: number;
   thumbnail?: string;

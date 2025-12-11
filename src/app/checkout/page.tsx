@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -15,6 +16,9 @@ import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
 import { isValidBangladeshiPhoneNumber } from "@/utils/content";
+import { fetchBulkProducts } from "@/services/productServices";
+import { compareProducts } from "@/utils/productComparison";
+import ProductChangesDialog from "@/components/checkout/ProductChangesDialog";
 import {
   Loader2,
   Star,
@@ -57,11 +61,14 @@ export interface UserFormData {
 const CheckoutPage = () => {
   useAnalytics();
   const { checkPrepaymentProducts, calculatePrepaymentAmount } = useCampaign();
-  const { cart, clearCart, updateToCart, removeFromCart } = useCart();
+  const { cart, clearCart, updateToCart, removeFromCart, bulkUpdateCart } = useCart();
   const { authState } = useAuth();
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
+  const [verifyingProducts, setVerifyingProducts] = useState(false);
+  const [showChangesDialog, setShowChangesDialog] = useState(false);
+  const [productChanges, setProductChanges] = useState<any[]>([]);
 
   const [orderProducts, setOrderProduct] = useState<CartItem[]>([]);
   const [transectionData, setTransectionData] = useState({
@@ -104,6 +111,34 @@ const CheckoutPage = () => {
       }));
     }
   }, [authState.isAuthenticated, authState.user]);
+
+  // Verify products on checkout page load
+  useEffect(() => {
+    const verifyCartProducts = async () => {
+      if (cart.length === 0) return;
+
+      setVerifyingProducts(true);
+      try {
+        const productIds = cart.map((item) => Number(item.id));
+        const freshProducts = await fetchBulkProducts(productIds);
+
+        const comparison = compareProducts(cart, freshProducts);
+
+        if (comparison.hasChanges) {
+          setProductChanges(comparison.changes);
+          setShowChangesDialog(true);
+          bulkUpdateCart(comparison.updatedCart);
+        }
+      } catch (error) {
+        console.error("Error verifying products:", error);
+      } finally {
+        setVerifyingProducts(false);
+      }
+    };
+
+    verifyCartProducts();
+    //eslint-disable-next-line
+  }, []);
 
   const checkPrepaymentProductData = async () => {
     const response = await checkPrepaymentProducts(
@@ -583,22 +618,7 @@ const CheckoutPage = () => {
     }
 
     // Check for deliveries outside Dhaka and prompt for prepayment
-    if (hasPrepayment) {
-      return Swal.fire({
-        title: "Terms & Condition",
-        text: `A prepayment of ${
-          !!prePaymentAmount && prePaymentAmount > 0 ? prePaymentAmount : 200
-        } taka is required for dicounted products.`,
-        showDenyButton: false,
-        showCancelButton: true,
-        confirmButtonText: "Continue",
-        denyButtonText: "Don't save",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          confirmOrderAndCreateOne();
-        }
-      });
-    } else if (!district.toLowerCase().includes("dhaka")) {
+    if (!district.toLowerCase().includes("dhaka")) {
       return Swal.fire({
         title: "Terms & Condition",
         text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for deliveries outside Dhaka.`,
@@ -619,6 +639,14 @@ const CheckoutPage = () => {
 
   return (
     <div className='nc-CheckoutPage bg-gradient-to-b from-gray-50 to-white min-h-screen'>
+      {/* Product Changes Dialog */}
+      <ProductChangesDialog
+        open={showChangesDialog}
+        onOpenChange={setShowChangesDialog}
+        changes={productChanges}
+        onContinue={() => setShowChangesDialog(false)}
+      />
+
       <main className='container py-8 sm:py-12 lg:py-16 lg:pb-28'>
         {/* Enhanced Header */}
         <div className='mb-8 sm:mb-10 lg:mb-12'>
@@ -626,7 +654,9 @@ const CheckoutPage = () => {
             Checkout
           </h2>
           <p className='text-gray-600 text-sm sm:text-base ml-0 sm:ml-20 mt-2'>
-            Complete your order in just a few steps
+            {verifyingProducts
+              ? "Verifying product availability and prices..."
+              : "Complete your order in just a few steps"}
           </p>
         </div>
 
@@ -799,4 +829,7 @@ const CheckoutPage = () => {
   );
 };
 
-export default CheckoutPage;
+// Disable SSR to ensure real-time data from backend
+export default dynamic(() => Promise.resolve(CheckoutPage), {
+  ssr: false,
+});

@@ -11,6 +11,7 @@ export const config = {
     getNewProducts: () => `${baseUrl}/product/latest`,
     getFilterData: () => `${baseUrl}/product/filterData`,
     searchProducts: () => `${baseUrl}/product/search`,
+    getBulkProducts: () => `${baseUrl}/product/bulk`,
   },
   order: {
     createOrder: () => `${baseUrl}/order/create`,

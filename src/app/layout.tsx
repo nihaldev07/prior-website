@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Alegreya, DM_Serif_Text, Lobster_Two } from "next/font/google";
+import { Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
@@ -11,33 +11,14 @@ import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 
-// Alegreya for body text and descriptions
-const alegreya = Alegreya({
+// Noto Sans Devanagari for all text
+const notoSansDevanagari = Noto_Sans_Devanagari({
   weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-  variable: "--font-alegreya",
-});
-
-// Oswald for headings and numbers
-const oswald = DM_Serif_Text({
-  weight: "400",
-  style: "normal",
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-  variable: "--font-oswald",
-});
-
-const lobster = Lobster_Two({
-  weight: "400",
   style: ["normal"],
-  subsets: ["latin"],
+  subsets: ["devanagari", "latin"],
   display: "swap",
   preload: true,
-  variable: "--font-lobster",
+  variable: "--font-noto-sans-devanagari",
 });
 
 export const metadata: Metadata = {
@@ -129,7 +110,7 @@ export default function RootLayout({
         /> */}
       </head>
       <body
-        className={`${alegreya.variable} ${oswald.variable} ${lobster.variable}`}>
+        className={`${notoSansDevanagari.variable}`}>
         {/* Google Tag Manager - noscript fallback */}
         <noscript>
           <iframe

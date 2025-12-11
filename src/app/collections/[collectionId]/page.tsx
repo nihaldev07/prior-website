@@ -5,7 +5,8 @@ import SectionProductHeader from "./SectionProductHeader";
 import { getProductDataById } from "@/lib/fetchFunctions";
 import { Metadata } from "next";
 
-export const revalidate = 3; // ISR: Revalidate every 3 seconds
+export const revalidate = 0; // Disable ISR cache to always fetch fresh data
+export const dynamic = 'force-dynamic'; // Force dynamic rendering
 
 interface PageProps {
   params: {

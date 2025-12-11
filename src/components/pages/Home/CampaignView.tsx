@@ -6,19 +6,10 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import useCampaign from "@/hooks/useCampaign";
-import Image from "next/image";
-import { Clock } from "lucide-react";
-import { ICampaign, ICampaingProducts } from "@/lib/interface";
-import Carousel from "@/components/Carosol/Swiper";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ICampaign } from "@/lib/interface";
 import useCategory from "@/hooks/useCategory";
 import useThrottledEffect from "@/hooks/useThrottleEffect";
-import { Separator } from "@/components/ui/separator";
-import CarouselComponent from "@/components/Carosol/SwiperComponent";
-import { placeholderImage } from "@/utils/utils";
-import pinkiBg from "@/images/pinki_bg.jpg";
-import blueBg from "@/images/blue_bg.jpg";
+import CampaignBanner from "./NewCampaignView";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -132,51 +123,6 @@ const CampaignPage = () => {
     );
   };
 
-  const renderProductCarousel = () => {
-    return (
-      <CarouselComponent
-        slidersPerView={4}
-        items={
-          !campaign?.products
-            ? []
-            : campaign?.products.map(
-                (product: ICampaingProducts, index: number) => (
-                  <div key={index} className='mx-4 my-2 z-20'>
-                    <img
-                      src={product?.thumbnail || placeholderImage}
-                      alt={`Image ${index}`}
-                      className='aspect-square w-full rounded md:rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80 z-20'
-                    />
-                  </div>
-                )
-              )
-        }
-      />
-    );
-  };
-  const renderMobileCarousel = () => {
-    return (
-      <CarouselComponent
-        slidersPerView={2}
-        items={
-          !campaign?.products
-            ? []
-            : campaign?.products.map(
-                (product: ICampaingProducts, index: number) => (
-                  <div key={index} className='mx-3 rounded-md z-20'>
-                    <img
-                      src={product?.thumbnail || placeholderImage}
-                      alt={`Image ${index}`}
-                      className='aspect-square w-full rounded_md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80 z-20'
-                    />
-                  </div>
-                )
-              )
-        }
-      />
-    );
-  };
-
   return (
     <>
       <Head>
@@ -198,118 +144,14 @@ const CampaignPage = () => {
       </Head>
 
       {!!campaign && (
-        <div
-          className='relative bg-slate-300  h-[350px] md:h-[55vh] mt-4 shadow-[inset_0_-2px_4px_rgba(0,0,0,0.6)]'
-          style={{
-            background: `url(${campaign?.image || pinkiBg.src})`,
-            backgroundSize: "cover",
-          }}>
-          <div className='absolute inset-0 bg-black/20 z-10' />
-          <div className='md:container mx-auto px-4 py-2 md:px-6 md:py-6   rounded-lg mt-4 absolute top-0 left-0 right-0 z-20 bg-transparent'>
-            <div
-              className=' relative w-full flex flex-col md:flex-row justify-center md:justify-between items-center md:items-start rounded-md '
-              onClick={() => handleNavigate()}>
-              <div className='absolute inset-0 bg-black/10 z-10' />
-
-              <div className='top-4 left-4 p-2   font-medium text-base sm:text-lg md:text-lg uppercase text-white z-20'>
-                ✨ {campaign?.title}
-              </div>
-              <div className='top-4 right-4 p-2 items-center justify-between  text-xs sm:text-base md:text-lg font-medium hidden md:flex text-white z-20'>
-                <Clock className='mr-2 hidden md:inline text-white' />{" "}
-                <span className='text-white text-sm'>Time left:</span>{" "}
-                {timeLeft.includes("Expired") ? (
-                  "Expired"
-                ) : (
-                  <div className='grid grid-cols-4 gap-1 ml-2'>
-                    <Badge
-                      variant={"outline"}
-                      className=' text-xs md:text-base font-medium border-white text-white rounded'>
-                      {timeLeft.split(":")[0]} d
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className='ext-xs md:text-base font-medium border-white text-white rounded'>
-                      {timeLeft.split(":")[1]} h
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className='ext-xs md:text-base font-medium border-white text-white rounded'>
-                      {timeLeft.split(":")[2]} m
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className='ext-xs md:text-base font-medium text-blue-600 border-blue-100  rounded'>
-                      {timeLeft.split(":")[3]} s
-                    </Badge>
-                  </div>
-                )}
-              </div>
-              <div className='top-4 right-4 p-2 items-center justify-between text-zinc-700 text-xs sm:text-base md:text-lg font-medium flex md:hidden z-20'>
-                {timeLeft.includes("Expired") ? (
-                  "Expired"
-                ) : (
-                  <div className='grid grid-cols-4 gap-1 ml-2'>
-                    <Badge
-                      variant={"outline"}
-                      className=' text-xs md:text-base font-medium border-white text-white rounded'>
-                      {timeLeft.split(":")[0]} d
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className='text-xs md:text-base font-medium border-white text-white rounded'>
-                      {timeLeft.split(":")[1]} h
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className='text-xs md:text-base font-medium border-white text-white rounded'>
-                      {timeLeft.split(":")[2]} m
-                    </Badge>
-                    <Badge
-                      variant={"outline"}
-                      className='text-xs md:text-base font-medium text-blue-600 border-blue-100 rounded'>
-                      {timeLeft.split(":")[3]} s
-                    </Badge>
-                  </div>
-                )}
-              </div>
-              {/* <Button
-              variant={"ghost"}
-              className='text-xs md:text-sm  text-white font-semibold hover:bg-gray-100'
-              onClick={() => handleNavigate()}>
-              See More
-            </Button> */}
-            </div>
-            <Separator className='my-4 text-gray-950' />
-            <div
-              className='flex flex-col items-center'
-              onClick={() => handleNavigate()}>
-              {/* {!campaign?.products && !!campaign?.image && (
-              <div className='relative w-full h-[200px] sm:h-[250px] md:h-[300px] bg-gray-200'>
-                <Image
-                  src={campaign?.image}
-                  alt={campaign?.title}
-                  className='w-full h-full object-cover absolute'
-                  fill
-                />
-              </div>
-            )} */}
-              {!!campaign?.products && (
-                <>
-                  <div className='relative w-full h-[180px]  md:h-[40vh] rounded-md py-2 md:p-5 hidden md:block '>
-                    <div className='absolute inset-0 bg-black/10 z-10' />
-
-                    {renderProductCarousel()}
-                  </div>
-
-                  <div className='relative w-full  h-[200px]  md:h-[300px] rounded-md p-5  block md:hidden '>
-                    <div className='absolute inset-0 bg-black/10 z-10' />
-                    {renderMobileCarousel()}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+        <CampaignBanner
+          title={campaign?.title || "Special Campaign"}
+          description={
+            campaign?.description || "Shop now before it's too late!"
+          }
+          timeLeft={timeLeft}
+          onNavigate={handleNavigate}
+        />
       )}
 
       {!!flashSaleCategory &&
