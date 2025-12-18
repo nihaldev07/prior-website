@@ -49,11 +49,11 @@ export function GlobalSearch() {
         <kbd className="pointer-events-none hidden sm:inline-flex h-5 ml-1 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
           <span className="text-xs">⌘</span>K
         </kbd>
-      </p>
+      </p> */}
       <SearchIcon
         onClick={() => setOpen(!open)}
-        className=" size-6 text-primary  mr-1 sm:hidden"
-      /> */}
+        className=' size-6 text-primary  mr-1 sm:hidden'
+      />
       <div
         className='sm:pointer-events-none absolute inset-y-0 right-0 sm:left-0  items-center pl-3 hidden'
         onClick={() => setOpen(!open)}>
