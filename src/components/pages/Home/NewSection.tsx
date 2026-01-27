@@ -1,7 +1,8 @@
-import ProductCard from "@/shared/simpleProductCard";
-import "swiper/css";
+'use client';
+
 import { IProduct } from "@/lib/interface";
-import CarouselComponent from "@/components/Carosol/SwiperComponent";
+import { adaptProductsToNewFormat } from "@/lib/adapters/productAdapter";
+import ProductGrid from "@/components/new-ui/ProductGrid";
 import Link from "next/link";
 import { Sparkles, Star, Heart, ShoppingBag, TrendingUp } from "lucide-react";
 
@@ -10,48 +11,11 @@ interface IProps {
 }
 
 const NewSectionView: React.FC<IProps> = ({ products }) => {
-  const renderProductCarousel = () => {
-    return (
-      <CarouselComponent
-        slidersPerView={4}
-        items={
-          !products
-            ? []
-            : products.map((product: IProduct, index: number) => (
-                <div key={index} className='mx-4 my-2'>
-                  <ProductCard product={product} />
-                </div>
-              ))
-        }
-      />
-    );
-  };
-
-  const renderMobileCarousel = () => {
-    return (
-      <CarouselComponent
-        slidersPerView={2}
-        items={
-          !products
-            ? []
-            : products.map((product: IProduct, index: number) => (
-                <div key={index} className='mx-2 py-2'>
-                  <ProductCard product={product} />
-                </div>
-              ))
-        }
-      />
-    );
-  };
+  // Adapt products to new UI format
+  const adaptedProducts = adaptProductsToNewFormat(products || []);
 
   return (
-    <div className=' container my-8 md:my-16 relative'>
-      {/* Floating Background Decorations */}
-      {/* <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-        <div className='absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br from-pink-200/20 to-purple-200/20 rounded-full blur-3xl animate-pulse' />
-        <div className='absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-br from-blue-200/20 to-cyan-200/20 rounded-full blur-3xl animate-pulse' style={{ animationDelay: '1s' }} />
-      </div> */}
-
+    <div className='container my-8 md:my-16 relative'>
       {/* Cute Header Section with Glassmorphism */}
       <div className='relative mb-8 md:mb-12'>
         {/* Main Header Card */}
@@ -163,13 +127,14 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
         </div>
       </div>
 
-      {/* Product Carousel */}
+      {/* Product Grid - Using new enhanced component */}
       <div className='relative'>
-        {/* Desktop Carousel */}
-        <div className='w-full hidden sm:block'>{renderProductCarousel()}</div>
-
-        {/* Mobile Carousel */}
-        <div className='w-full block sm:hidden'>{renderMobileCarousel()}</div>
+        <ProductGrid
+          products={adaptedProducts.slice(0, 8)} // Show first 8 products
+          loading={false}
+          showViewAll={true}
+          viewAllLink='/collections'
+        />
 
         {/* Bottom Decorative Stars */}
         <div className='flex justify-center gap-2 mt-6 md:mt-8'>
@@ -182,15 +147,6 @@ const NewSectionView: React.FC<IProps> = ({ products }) => {
           ))}
         </div>
       </div>
-
-      {/* Bottom Cute Message */}
-      {/* <div className='text-center mt-8 md:mt-12'>
-        <p className='text-sm md:text-base text-gray-500 dark:text-gray-400 font-light italic flex items-center justify-center gap-2'>
-          <span className='text-lg'>💝</span>
-          Handpicked with love, just for you
-          <span className='text-lg'>💝</span>
-        </p>
-      </div> */}
     </div>
   );
 };

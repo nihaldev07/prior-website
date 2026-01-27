@@ -5,7 +5,7 @@ import IntercomProvider from "@/components/IntercomProvider";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { WishlistProvider } from "@/context/WishlistContext";
-import Navbar from "./navbar";
+import Header from "@/components/new-ui/Header";
 import Footer from "@/shared/Footer/Footer";
 // import Maintenance from "./Maintainance";
 import { PageStateProvider } from "@/context/PageStateContext";
@@ -124,7 +124,7 @@ export default function RootLayout({
             <WishlistProvider>
               <CartProvider>
                 <>
-                  <Navbar />
+                  <Header />
                   {children}
                   <Footer />
                 </>

@@ -380,9 +380,6 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
                   <span className='text-sm font-medium text-gray-800 uppercase tracking-wide'>
                     Quantity
                   </span>
-                  {/* <span className='text-xs text-gray-700'>
-                    {maxQuantity} available
-                  </span> */}
                 </div>
                 <div className='flex items-center space-x-4'>
                   <div className='flex items-center border rounded-lg'>
@@ -410,9 +407,54 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
               </div>
             )}
 
+            {/* Stock Status Warning */}
+            {!isOutOfStock && maxQuantity <= 5 && (
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                <p className="text-sm text-orange-600 font-medium text-center">
+                  Only {maxQuantity} left in stock!
+                </p>
+              </div>
+            )}
+
+            {/* Selected Variant Display */}
+            {product.hasVariation && selectedVariant && (
+              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div className="flex items-center justify-center gap-3 text-sm">
+                  {selectedVariant.color && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-600">Color:</span>
+                      <Badge variant="secondary" className="font-medium">
+                        {selectedVariant.color.toUpperCase()}
+                      </Badge>
+                    </div>
+                  )}
+                  {selectedVariant.size && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-gray-600">Size:</span>
+                      <Badge variant="secondary" className="font-medium">
+                        {selectedVariant.size.toUpperCase()}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Total Amount */}
+            {!isOutOfStock && pQuantity > 0 && (
+              <div className="bg-gray-100 rounded-lg p-4 border-2 border-gray-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-base font-semibold text-gray-700">Total Amount</span>
+                  <span className="text-2xl font-bold text-gray-900">
+                    ৳{(currentPrice * pQuantity).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Action Buttons */}
             {!isOutOfStock && (
-              <div className='space-y-3 pt-4'>
+              <div className='space-y-3 pt-2'>
                 <Button
                   onClick={() => handleCartSelection(true)}
                   disabled={pQuantity < 1}

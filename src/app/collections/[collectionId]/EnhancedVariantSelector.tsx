@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SingleProductType, Variation } from "@/data/types";
 import Swal from "sweetalert2";
-import { Separator } from "@/components/ui/separator";
 
 interface Props {
   type: "size" | "color";
@@ -146,8 +145,6 @@ const EnhancedVariantSelector: React.FC<Props> = ({
           )} */}
         </div>
 
-        <Separator />
-
         {/* Button Grid for Visual Selection */}
         <div className='flex flex-wrap gap-2'>
           {list
@@ -163,10 +160,7 @@ const EnhancedVariantSelector: React.FC<Props> = ({
                   variant={isSelected ? "default" : "outline"}
                   className={cn(
                     "relative h-9 px-4 transition-all duration-200",
-                    "border shadow-sm whitespace-nowrap",
-                    isOutOfStock
-                      ? "opacity-60 hover:opacity-80 cursor-pointer hover:scale-105"
-                      : "hover:scale-105",
+                    "border shadow-sm whitespace-nowrap rounded ",
                     !isOutOfStock && !isSelected && "hover:bg-gray-100"
                   )}
                   onClick={() => {
@@ -317,7 +311,7 @@ const EnhancedVariantSelector: React.FC<Props> = ({
       </div>
 
       {/* Selection Summary */}
-      {selected && (
+      {/* {selected && (
         <div className=' items-center justify-between text-sm text-muted-foreground bg-zinc-100 rounded-lg p-3 '>
           <div className='flex items-center space-x-2'>
             <span>Selected {type}:</span>
@@ -335,7 +329,7 @@ const EnhancedVariantSelector: React.FC<Props> = ({
             );
           })()}
         </div>
-      )}
+      )} */}
     </div>
   );
 };
