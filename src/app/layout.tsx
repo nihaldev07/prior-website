@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
+import IntercomProvider from "@/components/IntercomProvider";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -54,7 +55,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  //useAnalytics();
   return (
     <html lang='en'>
       <head>
@@ -109,8 +109,8 @@ export default function RootLayout({
           strategy='lazyOnload'
         /> */}
       </head>
-      <body
-        className={`${notoSansDevanagari.variable}`}>
+      <body className={`${notoSansDevanagari.variable}`}>
+        <IntercomProvider />
         {/* Google Tag Manager - noscript fallback */}
         <noscript>
           <iframe

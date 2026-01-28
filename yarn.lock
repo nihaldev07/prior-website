@@ -630,6 +630,11 @@
   resolved "https://registry.yarnpkg.com/@img/sharp-win32-x64/-/sharp-win32-x64-0.33.5.tgz#56f00962ff0c4e0eb93d34a047d29fa995e3e342"
   integrity sha512-MpY/o8/8kj+EcnxwvrP4aTJSWw/aZ7JIGR4aBeZkZw5B7/Jn+tY9/VNwtcoGmdT7GfggGIU4kygOMSbYnOrAbg==
 
+"@intercom/messenger-js-sdk@^0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@intercom/messenger-js-sdk/-/messenger-js-sdk-0.0.18.tgz#622fe46da7779bd496306c3e0b3ffae580cd48e2"
+  integrity sha512-OQbhnNh26cdI0ddIVh67JOGnSTFAHrbKF5atXuOeWpDF2Ups3O7Do1Oz42BrvQA/o0AZF+1Wqaxtc3kq70wc6w==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@isaacs/cliui/-/cliui-8.0.2.tgz#b37667b7bc181c168782259bab42474fbf52b550"
