@@ -5,8 +5,9 @@ import Heading from "@/shared/Heading/Heading";
 import { ProductType } from "@/data/types";
 import axios from "axios";
 import { config } from "@/lib/config";
-import ProductCard from "@/shared/simpleProductCard";
 import { Separator } from "@/components/ui/separator";
+import ProductCard from "@/components/new-ui/ProductCard";
+import { convertProductTypeToProduct } from "@/utils/functions";
 interface Props {
   categoryId: string;
 }
@@ -15,7 +16,7 @@ const SectionMoreProducts: React.FC<Props> = ({ categoryId }) => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        config.product.getProductsByCategory(categoryId)
+        config.product.getProductsByCategory(categoryId),
       );
       if (response?.status < 300) {
         const productList = response?.data?.data;
@@ -34,18 +35,22 @@ const SectionMoreProducts: React.FC<Props> = ({ categoryId }) => {
     window.location.href = `/collections/${productId}`; // Navigate to product page
   };
   return (
-    <div className="flex-col justify-center items-center">
-      <Heading className="mt-6 " isCenter={true} isMain={true}>
+    <div className='flex flex-col justify-center items-center'>
+      <Heading
+        className='mt-6 font-serif tracking-[0.2em] uppercase'
+        isCenter={true}
+        isMain={true}>
         Explore more products
       </Heading>
 
-      <Separator className="my-4" />
+      <Separator className='my-4 bg-neutral-300' />
 
-      <div className="grid gap-2 md:gap-7 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className='w-full grid gap-4 md:gap-7 grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
         {products.map((shoe) => (
-          <div key={shoe.id} onClick={() => handleProductClick(shoe?.id)}>
-            <ProductCard key={shoe.id} product={shoe} />
-          </div>
+          <ProductCard
+            key={shoe.id}
+            product={convertProductTypeToProduct(shoe)}
+          />
         ))}
       </div>
     </div>

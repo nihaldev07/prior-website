@@ -179,8 +179,14 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart, updateToCart, bulkUpdateCart }}
-    >
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        updateToCart,
+        bulkUpdateCart,
+      }}>
       {children}
     </CartContext.Provider>
   );

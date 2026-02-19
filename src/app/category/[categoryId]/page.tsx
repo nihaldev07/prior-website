@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import ProductCard from "@/shared/simpleProductCard";
 import SidebarFilters from "@/components/SidebarFilter";
 import useProductFetch from "@/hooks/useProductFetch";
 import { ProductType } from "@/data/types";
@@ -11,6 +10,8 @@ import { collectionTag } from "@/data/content";
 import { useParams } from "next/navigation";
 import useAnalytics from "@/hooks/useAnalytics";
 import { usePageState } from "@/context/PageStateContext";
+import ProductCard from "@/components/new-ui/ProductCard";
+import { convertProductTypeToProduct } from "@/utils/functions";
 
 const SingleCategoryPage = () => {
   const params = useParams(); // Fetch route parameters
@@ -57,7 +58,7 @@ const SingleCategoryPage = () => {
         root: null,
         rootMargin: "0px",
         threshold: 1.0,
-      }
+      },
     );
 
     const currentObserverRef = observerRef.current;
@@ -170,7 +171,7 @@ const SingleCategoryPage = () => {
                   <div
                     key={item?.id}
                     onClick={() => handleProductClick(item.id)}>
-                    <ProductCard product={item} />
+                    <ProductCard product={convertProductTypeToProduct(item)} />
                   </div>
                 ))}
             </div>

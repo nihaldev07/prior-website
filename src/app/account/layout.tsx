@@ -87,7 +87,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
     return (
       <Link
         href={href}
-        className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors`}
+        className={`flex items-center space-x-3 px-3 py-2 rounded-none text-sm font-medium transition-colors duration-300 font-serif tracking-wide hover:bg-neutral-50`}
         onClick={() => setIsMobileMenuOpen(false)}>
         <Icon className='h-5 w-5' />
         <span>{label}</span>
@@ -96,17 +96,17 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   };
 
   const Sidebar = () => (
-    <div className='w-64 bg-white shadow-sm border-r border-gray-200 h-full'>
+    <div className='w-64 bg-white shadow-sm border-r border-neutral-200 h-full'>
       <div className='p-6'>
         <div className='flex items-center space-x-3 mb-6'>
           <div className='h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center'>
             <User className='h-6 w-6 text-blue-600' />
           </div>
           <div>
-            <h3 className='font-medium text-gray-900'>
+            <h3 className='font-medium font-serif text-neutral-900 tracking-wide'>
               {authState.user?.name}
             </h3>
-            <p className='text-sm text-gray-500'>
+            <p className='text-sm font-serif text-neutral-500 tracking-wide'>
               {authState.user?.email || authState.user?.mobileNumber}
             </p>
           </div>
@@ -118,10 +118,10 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
           ))}
         </nav>
 
-        <div className='mt-8 pt-6 border-t border-gray-200'>
+        <div className='mt-8 pt-6 border-t border-neutral-200'>
           <Button
             variant='ghost'
-            className='w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50'
+            className='w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 font-serif tracking-wide rounded-none'
             onClick={handleLogout}>
             <LogOut className='h-5 w-5 mr-3' />
             Sign Out
@@ -134,21 +134,21 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
   // Show loading or redirect if not authenticated
   if (!authState.isAuthenticated) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
+      <div className='min-h-screen flex items-center justify-center bg-neutral-50'>
         <div className='text-center'>
-          <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto'></div>
-          <p className='mt-4 text-gray-600'>Redirecting to login...</p>
+          <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-neutral-900 mx-auto'></div>
+          <p className='mt-4 font-serif text-neutral-600 tracking-wide'>Redirecting to login...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen bg-neutral-50'>
       {/* Mobile header */}
-      <div className='lg:hidden bg-white shadow-sm border-b border-gray-200 p-4'>
+      <div className='lg:hidden bg-white shadow-sm border-b border-neutral-200 p-4'>
         <div className='flex items-center justify-between'>
-          <h1 className='text-lg font-semibold text-gray-900'>My Account</h1>
+          <h1 className='text-lg font-semibold font-serif text-neutral-900 tracking-wide'>My Account</h1>
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant='ghost' size='icon'>
@@ -158,24 +158,25 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
             <SheetContent side='left' className='w-72 p-0'>
               <div className='p-6'>
                 <div className='flex items-center justify-between mb-6'>
-                  <h2 className='text-lg font-semibold'>Account Menu</h2>
+                  <h2 className='text-lg font-semibold font-serif tracking-wide'>Account Menu</h2>
                   <Button
                     variant='ghost'
                     size='icon'
-                    onClick={() => setIsMobileMenuOpen(false)}>
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className='rounded-none'>
                     <X className='h-5 w-5' />
                   </Button>
                 </div>
 
-                <div className='flex items-center space-x-3 mb-6 p-3 bg-gray-50 rounded-lg'>
+                <div className='flex items-center space-x-3 mb-6 p-3 bg-neutral-50 rounded-none border border-neutral-200'>
                   <div className='h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center'>
                     <User className='h-6 w-6 text-blue-600' />
                   </div>
                   <div>
-                    <h3 className='font-medium text-gray-900'>
+                    <h3 className='font-medium font-serif text-neutral-900 tracking-wide'>
                       {authState.user?.name}
                     </h3>
-                    <p className='text-sm text-gray-500'>
+                    <p className='text-sm font-serif text-neutral-500 tracking-wide'>
                       {authState.user?.email || authState.user?.mobileNumber}
                     </p>
                   </div>
@@ -187,10 +188,10 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
                   ))}
                 </nav>
 
-                <div className='mt-8 pt-6 border-t border-gray-200'>
+                <div className='mt-8 pt-6 border-t border-neutral-200'>
                   <Button
                     variant='ghost'
-                    className='w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50'
+                    className='w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 font-serif tracking-wide rounded-none'
                     onClick={handleLogout}>
                     <LogOut className='h-5 w-5 mr-3' />
                     Sign Out

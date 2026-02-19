@@ -18,6 +18,11 @@ h6 {
   font-weight: 600;
 }
 
+h1,
+h2 {
+  color: var(--primary);
+}
+
 /* Numbers and prices use Noto Sans Devanagari */
 .font-number,
 .price,
@@ -187,6 +192,23 @@ span,
   }
 }
 
-.animate-gradient-icon stop {
+/* .animate-gradient-icon stop {
   animation: gradient-rotate 3s ease infinite;
 }
+
+@keyframes border-spin {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-border-spin {
+  background-size: 200% 200%;
+  animation: border-spin 3s ease-in-out infinite;
+} */

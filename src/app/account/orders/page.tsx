@@ -42,7 +42,7 @@ import { accountService } from "@/services/accountService";
 interface Order {
   id: string;
   orderNumber: string;
-  date: string;
+  createdAt: string;
   status:
     | "pending"
     | "processing"
@@ -50,8 +50,10 @@ interface Order {
     | "delivered"
     | "cancelled"
     | "returned";
-  total: number;
-  paymentStatus: "paid" | "pending" | "failed";
+  totalPrice: number;
+  paid: number;
+  remaining: number;
+  paymentStatus?: "paid" | "pending" | "failed";
   itemCount: number;
   products: Array<{
     id: string;
@@ -118,8 +120,8 @@ const OrdersPage = () => {
         (order) =>
           order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
           order.products.some((item) =>
-            item.name.toLowerCase().includes(searchTerm.toLowerCase())
-          )
+            item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+          ),
       );
     }
 
@@ -147,7 +149,7 @@ const OrdersPage = () => {
 
       if (dateFilter !== "all") {
         filtered = filtered.filter(
-          (order) => new Date(order.date) >= filterDate
+          (order) => new Date(order.createdAt) >= filterDate,
         );
       }
     }
@@ -187,7 +189,7 @@ const OrdersPage = () => {
       case "returned":
         return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-neutral-100 text-neutral-800";
     }
   };
 
@@ -200,7 +202,7 @@ const OrdersPage = () => {
       case "failed":
         return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-neutral-100 text-neutral-800";
     }
   };
 
@@ -211,7 +213,7 @@ const OrdersPage = () => {
     try {
       const blob = await accountService.downloadInvoice(
         orderId,
-        authState.token
+        authState.token,
       );
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -267,7 +269,7 @@ const OrdersPage = () => {
     try {
       const response = await accountService.trackOrder(
         orderId,
-        authState.token
+        authState.token,
       );
       if (response.success && response.trackingUrl) {
         window.open(response.trackingUrl, "_blank");
@@ -294,8 +296,10 @@ const OrdersPage = () => {
       <div className='space-y-6'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-2xl font-bold text-gray-900'>Order History</h1>
-            <p className='text-gray-600'>Track and manage your orders</p>
+            <h1 className='text-2xl font-bold text-neutral-900'>
+              Order History
+            </h1>
+            <p className='text-neutral-600'>Track and manage your orders</p>
           </div>
         </div>
 
@@ -306,12 +310,12 @@ const OrdersPage = () => {
                 <div className='animate-pulse space-y-4'>
                   <div className='flex justify-between'>
                     <div className='space-y-2'>
-                      <div className='h-4 bg-gray-200 rounded w-32'></div>
-                      <div className='h-3 bg-gray-200 rounded w-24'></div>
+                      <div className='h-4 bg-neutral-200 rounded w-32'></div>
+                      <div className='h-3 bg-neutral-200 rounded w-24'></div>
                     </div>
-                    <div className='h-6 bg-gray-200 rounded w-20'></div>
+                    <div className='h-6 bg-neutral-200 rounded w-20'></div>
                   </div>
-                  <div className='h-3 bg-gray-200 rounded w-full'></div>
+                  <div className='h-3 bg-neutral-200 rounded w-full'></div>
                 </div>
               </CardContent>
             </Card>
@@ -327,18 +331,20 @@ const OrdersPage = () => {
       <div className='space-y-6'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-2xl font-bold text-gray-900'>Order History</h1>
-            <p className='text-gray-600'>Track and manage your orders</p>
+            <h1 className='text-2xl font-bold text-neutral-900'>
+              Order History
+            </h1>
+            <p className='text-neutral-600'>Track and manage your orders</p>
           </div>
         </div>
 
         <Card>
           <CardContent className='p-12 text-center'>
             <XCircle className='h-16 w-16 text-red-400 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-gray-900 mb-2'>
+            <h3 className='text-lg font-medium text-neutral-900 mb-2'>
               Failed to Load Orders
             </h3>
-            <p className='text-gray-500 mb-6'>{error}</p>
+            <p className='text-neutral-500 mb-6'>{error}</p>
             <Button onClick={() => window.location.reload()}>Try Again</Button>
           </CardContent>
         </Card>
@@ -351,10 +357,10 @@ const OrdersPage = () => {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold text-gray-900'>Order History</h1>
-          <p className='text-gray-600'>Track and manage your orders</p>
+          <h1 className='text-2xl font-bold text-neutral-900'>Order History</h1>
+          <p className='text-neutral-600'>Track and manage your orders</p>
         </div>
-        <div className='text-sm text-gray-500'>
+        <div className='text-sm text-neutral-500'>
           {filteredOrders.length} order{filteredOrders.length !== 1 ? "s" : ""}{" "}
           found
         </div>
@@ -365,7 +371,7 @@ const OrdersPage = () => {
         <CardContent className='p-6'>
           <div className='flex flex-col md:flex-row gap-4'>
             <div className='flex-1 relative'>
-              <Search className='absolute left-3 top-3 h-4 w-4 text-gray-400' />
+              <Search className='absolute left-3 top-3 h-4 w-4 text-neutral-400' />
               <Input
                 placeholder='Search by order number or product name...'
                 value={searchTerm}
@@ -413,7 +419,7 @@ const OrdersPage = () => {
                 <div className='flex flex-col md:flex-row md:items-center justify-between mb-4'>
                   <div className='space-y-1'>
                     <div className='flex items-center space-x-3'>
-                      <h3 className='font-semibold text-gray-900'>
+                      <h3 className='font-semibold text-neutral-900'>
                         {order.orderNumber}
                       </h3>
                       <Badge className={getStatusColor(order.status)}>
@@ -421,24 +427,30 @@ const OrdersPage = () => {
                         <span className='ml-1 capitalize'>{order.status}</span>
                       </Badge>
                       <Badge
-                        className={getPaymentStatusColor(order.paymentStatus)}>
-                        {order.paymentStatus === "paid"
-                          ? "Paid"
-                          : order.paymentStatus === "pending"
-                          ? "Payment Pending"
-                          : "Payment Failed"}
+                        className={getPaymentStatusColor(
+                          order.paid > 0
+                            ? "paid"
+                            : order.remaining > 0
+                              ? "pending"
+                              : "failed",
+                        )}>
+                        {order.paid > 0
+                          ? order.remaining > 0
+                            ? "partial Payment"
+                            : "Payment Completed"
+                          : "Payment Pending"}
                       </Badge>
                     </div>
-                    <p className='text-sm text-gray-500'>
-                      {new Date(order.date).toLocaleDateString()} •{" "}
+                    <p className='text-sm text-neutral-500'>
+                      {new Date(order.createdAt).toLocaleDateString()} •{" "}
                       {order.itemCount} item{order.itemCount !== 1 ? "s" : ""}
                     </p>
                   </div>
                   <div className='text-right mt-2 md:mt-0'>
-                    <p className='text-lg font-semibold text-gray-900'>
-                      ৳{order.total}
+                    <p className='text-lg font-semibold text-neutral-900'>
+                      ৳{order.totalPrice}
                     </p>
-                    <p className='text-sm text-gray-500'>Total Amount</p>
+                    <p className='text-sm text-neutral-500'>Total Amount</p>
                   </div>
                 </div>
 
@@ -448,19 +460,19 @@ const OrdersPage = () => {
                     {order.products.slice(0, 3).map((item, index) => (
                       <div
                         key={item.id}
-                        className='h-10 w-10 rounded-lg bg-gray-100 border-2 border-white flex items-center justify-center text-xs font-medium'
+                        className='h-10 w-10 rounded-lg bg-neutral-100 border-2 border-white flex items-center justify-center text-xs font-medium'
                         style={{ zIndex: 10 - index }}>
                         {item.name.charAt(0)}
                       </div>
                     ))}
                     {order.products.length > 3 && (
-                      <div className='h-10 w-10 rounded-lg bg-gray-200 border-2 border-white flex items-center justify-center text-xs font-medium'>
+                      <div className='h-10 w-10 rounded-lg bg-neutral-200 border-2 border-white flex items-center justify-center text-xs font-medium'>
                         +{order.products.length - 3}
                       </div>
                     )}
                   </div>
                   <div>
-                    <p className='text-sm font-medium text-gray-900'>
+                    <p className='text-sm font-medium text-neutral-900'>
                       {order.products
                         .slice(0, 2)
                         .map((item) => item.name)
@@ -468,7 +480,7 @@ const OrdersPage = () => {
                       {order.products.length > 2 &&
                         ` and ${order.products.length - 2} more`}
                     </p>
-                    <p className='text-xs text-gray-500'>
+                    <p className='text-xs text-neutral-500'>
                       Delivering to: {order.shippingAddress.district},{" "}
                       {order.shippingAddress.division}
                     </p>
@@ -522,13 +534,13 @@ const OrdersPage = () => {
       ) : (
         <Card>
           <CardContent className='p-12 text-center'>
-            <ShoppingBag className='h-16 w-16 text-gray-400 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-gray-900 mb-2'>
+            <ShoppingBag className='h-16 w-16 text-neutral-400 mx-auto mb-4' />
+            <h3 className='text-lg font-medium text-neutral-900 mb-2'>
               {searchTerm || statusFilter !== "all" || dateFilter !== "all"
                 ? "No orders found"
                 : "No orders yet"}
             </h3>
-            <p className='text-gray-500 mb-6'>
+            <p className='text-neutral-500 mb-6'>
               {searchTerm || statusFilter !== "all" || dateFilter !== "all"
                 ? "Try adjusting your search or filters"
                 : "Start shopping to see your orders here"}

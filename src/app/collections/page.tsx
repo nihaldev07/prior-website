@@ -3,7 +3,16 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Filter, X, Loader2, Grid3x3, List, TrendingUp } from "lucide-react";
+import {
+  Filter,
+  X,
+  Loader2,
+  Grid3x3,
+  List,
+  TrendingUp,
+  SlidersHorizontal,
+  MoreHorizontal,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +28,7 @@ import { adaptProductsToNewFormat } from "@/lib/adapters/productAdapter";
 import useProductFetch from "@/hooks/useProductFetch";
 import { usePageState } from "@/context/PageStateContext";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * Collections Page - Modern Product Listing with Filters
@@ -44,15 +54,15 @@ export default function CollectionsPage() {
   /**
    * Intersection Observer for infinite scroll
    */
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const target = entries[0];
-      if (target.isIntersecting && !loading && currentPage < totalPages) {
-        handleLoadMore();
-      }
-    },
-    [loading, currentPage, totalPages, handleLoadMore],
-  );
+  // const handleObserver = useCallback(
+  //   (entries: IntersectionObserverEntry[]) => {
+  //     const target = entries[0];
+  //     if (target.isIntersecting && !loading && currentPage < totalPages) {
+  //       handleLoadMore();
+  //     }
+  //   },
+  //   [loading, currentPage, totalPages, handleLoadMore],
+  // );
 
   /**
    * Restore state on mount (scroll position, filters, page)
@@ -75,21 +85,21 @@ export default function CollectionsPage() {
   /**
    * Setup intersection observer for infinite scroll
    */
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, {
-      root: null,
-      rootMargin: "200px",
-      threshold: 0.1,
-    });
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(handleObserver, {
+  //     root: null,
+  //     rootMargin: "200px",
+  //     threshold: 0.1,
+  //   });
 
-    const currentLoadMoreRef = loadMoreRef.current;
+  //   const currentLoadMoreRef = loadMoreRef.current;
 
-    if (currentLoadMoreRef) observer.observe(currentLoadMoreRef);
+  //   if (currentLoadMoreRef) observer.observe(currentLoadMoreRef);
 
-    return () => {
-      if (currentLoadMoreRef) observer.unobserve(currentLoadMoreRef);
-    };
-  }, [handleObserver]);
+  //   return () => {
+  //     if (currentLoadMoreRef) observer.unobserve(currentLoadMoreRef);
+  //   };
+  // }, [handleObserver]);
 
   /**
    * Save state before navigation
@@ -189,17 +199,44 @@ export default function CollectionsPage() {
                 {hasFiltersAvailable && (
                   <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                     <SheetTrigger asChild>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        className='lg:hidden fixed bottom-5 right-3 z-50'>
-                        <Filter className='w-4 h-4 mr-2' />
-                        Filters
-                        {activeFilterCount > 0 && (
-                          <span className='ml-2 px-1.5 py-0.5 text-xs bg-gray-900 text-white rounded-full'>
-                            {activeFilterCount}
-                          </span>
-                        )}
+                      <Button className='lg:hidden fixed bottom-5 right-3 z-50 inline-flex items-center justify-center gap-1.5 h-9 md:h-10 px-4 md:px-5 text-xs md:text-sm font-serif tracking-[0.15em] uppercase text-neutral-900 hover:text-white bg-white hover:bg-neutral-900 rounded-none transition-all duration-300 group whitespace-nowrap flex-shrink-0 overflow-hidden'>
+                        {/* Continuous Animated Border */}
+                        <span className='absolute inset-0 z-0'>
+                          {/* Top Border */}
+                          <span className='absolute top-0 h-[2px] bg-gradient-to-r from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-top' />
+
+                          {/* Right Border */}
+                          <span className='absolute right-0 w-[2px] bg-gradient-to-b from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-right' />
+
+                          {/* Bottom Border */}
+                          <span className='absolute bottom-0 h-[2px] bg-gradient-to-l from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-bottom' />
+
+                          {/* Left Border */}
+                          <span className='absolute left-0 w-[2px] bg-gradient-to-t from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-left' />
+                        </span>
+
+                        {/* Static Border (fallback) */}
+                        <span className='absolute inset-0 border border-neutral-300 group-hover:border-transparent transition-colors duration-300 z-0' />
+
+                        {/* Hover Overlay - appears on hover */}
+                        <span className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-[1]'>
+                          <span className='absolute inset-0 border-2 border-neutral-900' />
+                        </span>
+
+                        {/* Content */}
+                        <div className='flex items-center gap-3 justify-center'>
+                          <SlidersHorizontal className='w-5 h-5 text-neutral-900' />
+                          <h2 className='text-base font-serif tracking-wide text-neutral-900'>
+                            Filters
+                          </h2>
+                          {activeFilterCount > 0 && (
+                            <Badge
+                              variant='default'
+                              className='ml-2 bg-neutral-900 text-white rounded-none'>
+                              {activeFilterCount}
+                            </Badge>
+                          )}
+                        </div>
                       </Button>
                     </SheetTrigger>
                     <SheetContent side='left' className='w-full sm:w-96 p-0'>
@@ -314,12 +351,9 @@ export default function CollectionsPage() {
                 {viewMode === "grid" && (
                   <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3  gap-2 md:gap-6'>
                     {adaptedProducts.map((product) => (
-                      <Link
-                        key={product.id}
-                        href={`/collections/${product.id}`}
-                        onClick={saveNavigationState}>
+                      <div key={product.id} onClick={saveNavigationState}>
                         <ProductCard product={product} />
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -347,19 +381,57 @@ export default function CollectionsPage() {
                   </div>
                 )}
 
-                {/* Load More Trigger */}
-                <div ref={loadMoreRef} className='h-20' />
-
                 {/* End of Results */}
                 {!loading &&
-                  currentPage >= totalPages &&
-                  products.length > 0 && (
-                    <div className='text-center py-12'>
-                      <p className='text-gray-500'>
-                        You&apos;ve reached the end of the list
-                      </p>
+                currentPage >= totalPages &&
+                products.length > 0 ? (
+                  <div className='flex justify-center mt-8 relative w-full px-2'>
+                    <p className='text-gray-500'>
+                      You&apos;ve reached the end of the list
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Load More Trigger */}
+                    {/* <div ref={loadMoreRef} className='h-20' /> */}
+                    <div className='flex justify-center mt-8 relative w-full px-2'>
+                      <div className='absolute inset-0 h-[1px] bg-neutral-300 w-full top-[50%] z-10' />
+                      <Button
+                        onClick={() => handleLoadMore()}
+                        className='relative inline-flex z-20 w-[30%] items-center justify-center gap-1.5 h-9 md:h-10 px-4 md:px-5 text-xs md:text-sm font-serif tracking-[0.15em] uppercase text-neutral-900 hover:text-white bg-white hover:bg-neutral-900 rounded-none transition-all duration-300 group whitespace-nowrap flex-shrink-0 overflow-hidden'>
+                        {/* Continuous Animated Border */}
+                        <span className='absolute inset-0 z-0'>
+                          {/* Top Border */}
+                          <span className='absolute top-0 h-[2px] bg-gradient-to-r from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-top' />
+
+                          {/* Right Border */}
+                          <span className='absolute right-0 w-[2px] bg-gradient-to-b from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-right' />
+
+                          {/* Bottom Border */}
+                          <span className='absolute bottom-0 h-[2px] bg-gradient-to-l from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-bottom' />
+
+                          {/* Left Border */}
+                          <span className='absolute left-0 w-[2px] bg-gradient-to-t from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-left' />
+                        </span>
+
+                        {/* Static Border (fallback) */}
+                        <span className='absolute inset-0 border border-neutral-300 group-hover:border-transparent transition-colors duration-300 z-0' />
+
+                        {/* Hover Overlay - appears on hover */}
+                        <span className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-[1]'>
+                          <span className='absolute inset-0 border-2 border-neutral-900' />
+                        </span>
+
+                        {/* Content */}
+                        <span className='relative z-10'>View More</span>
+                        <MoreHorizontal
+                          className='relative z-10 w-3.5 h-3.5 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform duration-300'
+                          strokeWidth={2}
+                        />
+                      </Button>
                     </div>
-                  )}
+                  </>
+                )}
               </>
             )}
           </main>

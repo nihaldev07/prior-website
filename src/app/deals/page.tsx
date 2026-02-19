@@ -1,11 +1,12 @@
 import React from "react";
-import ProductCard from "@/shared/simpleProductCard";
-import { ProductType } from "@/data/types";
 import Heading from "@/shared/Heading/Heading";
 import { newProductPageContent } from "@/data/content";
 import axios from "axios";
 import { config } from "@/lib/config";
 import { Metadata } from "next";
+import ProductCard from "@/components/new-ui/ProductCard";
+import { ProductType } from "@/data/types";
+import { convertProductTypeToProduct } from "@/utils/functions";
 
 export const metadata: Metadata = {
   title: `${newProductPageContent?.title} | Prior`,
@@ -13,14 +14,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: newProductPageContent?.title,
     description: newProductPageContent?.description,
-    images: ['https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg'],
-    type: 'website',
+    images: [
+      "https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg",
+    ],
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: newProductPageContent?.title,
     description: newProductPageContent?.description,
-    images: ['https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg'],
+    images: [
+      "https://res.cloudinary.com/emerging-it/image/upload/v1726577358/nniy2n3ki3w1fqtxxy08.jpg",
+    ],
   },
 };
 
@@ -52,7 +57,10 @@ const DealPage = async () => {
           <div className='grid flex-1 gap-3 md:gap-x-8 md:gap-y-10 grid-cols-2 xl:grid-cols-4'>
             {products.length > 0 ? (
               products.map((item: ProductType) => (
-                <ProductCard product={item} key={item.id} />
+                <ProductCard
+                  product={convertProductTypeToProduct(item)}
+                  key={item.id}
+                />
               ))
             ) : (
               <div className='text-center text-gray-500 w-full col-span-full'>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
-import IntercomProvider from "@/components/IntercomProvider";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -110,7 +109,6 @@ export default function RootLayout({
         /> */}
       </head>
       <body className={`${notoSansDevanagari.variable}`}>
-        <IntercomProvider />
         {/* Google Tag Manager - noscript fallback */}
         <noscript>
           <iframe
@@ -134,6 +132,38 @@ export default function RootLayout({
           </AuthProvider>
         </PageStateProvider>
         <Toaster position='top-center' />
+        <Script
+          id='myalice-chat'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                var e = document.createElement("div");
+                e.id = "myAliceWebChat";
+
+                var t = document.createElement("script");
+                t.type = "text/javascript";
+                t.async = true;
+                t.src = "https://livechat.myalice.ai/index.js";
+
+                var a = document.body.getElementsByTagName("script");
+                a = a[a.length - 1];
+
+                a.parentNode.insertBefore(t, a);
+                a.parentNode.insertBefore(e, a);
+
+                t.addEventListener("load", function () {
+                  MyAliceWebChat.init({
+                    selector: "#myAliceWebChat",
+                    platformId: "${process.env.NEXT_PUBLIC_MYALICE_PLATFORM_ID}",
+                    primaryId: "${process.env.NEXT_PUBLIC_MYALICE_PRIMARY_ID}",
+                    token: "${process.env.NEXT_PUBLIC_MYALICE_TOKEN}"
+                  });
+                });
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   );

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Plus, Minus, ShoppingCart, Loader2 } from "lucide-react";
+import { Plus, Minus, ShoppingCart, Loader2, X, Zap } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -26,6 +26,8 @@ import { fetchProductById } from "@/services/productServices";
 import { SingleProductType, Variation } from "@/data/types";
 import EnhancedVariantSelector from "@/app/collections/[collectionId]/EnhancedVariantSelector";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface QuickAddSheetProps {
   productId: string;
@@ -34,9 +36,9 @@ interface QuickAddSheetProps {
 }
 
 /**
- * QuickAddSheet Component
- * Shows product variants in a Sheet (desktop) or Drawer (mobile)
- * Allows quick add to cart without navigating to product page
+ * QuickAddSheet Component - Editorial Design
+ * Magazine-quality layout with sophisticated typography and refined interactions
+ * Features serif fonts, generous whitespace, and elegant composition
  */
 export default function QuickAddSheet({
   productId,
@@ -44,22 +46,27 @@ export default function QuickAddSheet({
   onOpenChange,
 }: QuickAddSheetProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const router = useRouter();
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState<SingleProductType | null>(null);
+  const [shots, setShots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<Variation | null>(
-    null
+    null,
   );
   const [uniqueColors, setUniqueColors] = useState<string[]>([]);
   const [uniqueSizes, setUniqueSizes] = useState<string[]>([]);
+  const [isImageLoading, setIsImageLoading] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Fetch product details when opened
   useEffect(() => {
     if (open && productId) {
       fetchProductDetails();
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, productId]);
 
   const fetchProductDetails = async () => {
@@ -67,12 +74,14 @@ export default function QuickAddSheet({
       setLoading(true);
       const data = await fetchProductById(productId);
       setProduct(data);
+      if (data?.thumbnail && data?.images.length > 0)
+        setShots([data?.thumbnail, ...data?.images]);
 
       // Extract unique colors and sizes
       if (data && data.variation && data.variation.length > 0) {
         setUniqueColors([
           ...new Set(
-            data.variation.filter((v) => !!v.color).map((v) => v.color)
+            data.variation.filter((v) => !!v.color).map((v) => v.color),
           ),
         ]);
         setUniqueSizes([
@@ -93,14 +102,24 @@ export default function QuickAddSheet({
     setQuantity(newQty);
   };
 
-  const handleAddToCart = () => {
+  const handleImageSelect = (index: number) => {
+    if (index === selectedImageIndex) return;
+
+    setIsImageLoading(true);
+
+    setSelectedImageIndex(index);
+
+    // Simulate loading time for smoother transition
+  };
+
+  const handleAddToCart = (isBuyNow = false) => {
     if (!product) return;
 
     if (product.hasVariation && !selectedVariant) {
       return Swal.fire(
         "Select Variant",
         "Please select size & color",
-        "warning"
+        "warning",
       );
     }
 
@@ -126,7 +145,7 @@ export default function QuickAddSheet({
       totalPrice: Number(
         (product.discount > 0 && !!product.updatedPrice
           ? product.updatedPrice
-          : product.unitPrice) * Number(quantity)
+          : product.unitPrice) * Number(quantity),
       ).toFixed(2),
       categoryName: product.categoryName,
       hasVariation: product.hasVariation,
@@ -139,13 +158,15 @@ export default function QuickAddSheet({
     // @ts-ignore
     addToCart(productData);
 
-    Swal.fire({
-      title: "Added to Cart",
-      text: `${product.name} added to cart successfully!`,
-      icon: "success",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    if (isBuyNow) router.push("/checkout");
+    else
+      Swal.fire({
+        title: "Added to Cart",
+        text: `${product.name.toUpperCase()} added to cart successfully!`,
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
 
     // Reset and close
     onOpenChange(false);
@@ -156,7 +177,7 @@ export default function QuickAddSheet({
   const currentPrice =
     (product?.discount ?? 0) > 0 && product?.updatedPrice
       ? product.updatedPrice
-      : product?.unitPrice ?? 0;
+      : (product?.unitPrice ?? 0);
   const prevPrice =
     (product?.discount ?? 0) > 0 && product?.updatedPrice
       ? product.unitPrice
@@ -172,174 +193,248 @@ export default function QuickAddSheet({
   const maxQuantity = selectedVariant?.quantity ?? product?.quantity ?? 1;
 
   const Content = () => (
-    <div className='space-y-6 px-1'>
+    <div className='space-y-8 px-1'>
       {loading ? (
-        <div className='flex flex-col items-center justify-center py-12'>
-          <Loader2 className='w-12 h-12 text-gray-400 animate-spin mb-4' />
-          <p className='text-gray-600'>Loading product details...</p>
+        <div className='flex flex-col items-center justify-center py-16'>
+          <Loader2 className='w-10 h-10 text-neutral-400 animate-spin mb-4' />
+          <p className='text-sm font-serif text-neutral-600 tracking-wide'>
+            Loading product details...
+          </p>
         </div>
       ) : product ? (
         <>
-          {/* Product Image and Info */}
-          <div className='flex gap-4'>
-            <div className='relative w-24 h-24 bg-neutral-100 rounded-lg overflow-hidden flex-shrink-0'>
+          {/* Product Hero Section - Editorial Style */}
+          <div className='space-y-6'>
+            {/* Large Product Image */}
+            <div className='relative w-full aspect-square bg-neutral-50 rounded-sm overflow-hidden'>
               <Image
-                src={product.thumbnail}
+                src={
+                  shots.length > 0
+                    ? shots[selectedImageIndex]
+                    : product.thumbnail
+                }
                 alt={product.name}
                 fill
-                className='object-contain'
+                onLoad={() => setIsImageLoading(false)}
+                className={cn("object-contain")}
               />
               {discountPercentage > 0 && (
-                <div className='absolute top-1 right-1'>
-                  <Badge className='bg-red-500 text-white text-xs px-1.5 py-0.5'>
-                    -{discountPercentage}%
-                  </Badge>
+                <div className='absolute top-4 right-4'>
+                  <div className='bg-white/95 backdrop-blur-sm px-4 py-2 shadow-sm'>
+                    <p className='text-xs font-serif italic text-neutral-900'>
+                      {discountPercentage}% Off
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className='flex-1 min-w-0'>
-              <h3 className='font-semibold text-gray-900 text-base line-clamp-2 mb-2'>
+            {/* Thumbnail Images */}
+            {shots.length > 1 && (
+              <div className='flex gap-3 overflow-x-auto pb-2'>
+                {shots.map((image, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleImageSelect(index)}
+                    className={cn(
+                      "flex-shrink-0 w-20 h-20 p-0 rounded-sm overflow-hidden border transition-all duration-300 relative",
+                      selectedImageIndex === index
+                        ? "border-neutral-900 "
+                        : "border-neutral-200 hover:border-neutral-400",
+                    )}>
+                    {isImageLoading && selectedImageIndex === index && (
+                      <div className='absolute inset-0 flex items-center justify-center bg-neutral-100 z-10'>
+                        <div className='w-6 h-6 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin'></div>
+                      </div>
+                    )}
+                    <Image
+                      src={image}
+                      alt={`${product.name} ${index + 1}`}
+                      width={80}
+                      height={80}
+                      className='w-full h-full object-cover'
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Product Title & Category - Editorial Typography */}
+            <div className='space-y-3'>
+              <p className='text-xs font-serif tracking-[0.2em] uppercase text-neutral-500'>
+                {product.categoryName || "Collection"}
+              </p>
+              <h3 className='text-2xl uppercase font-serif tracking-wide text-neutral-900 leading-tight'>
                 {product.name}
               </h3>
-              <div className='flex items-baseline gap-2'>
-                <span className='text-xl font-bold text-gray-900'>
-                  ৳{currentPrice.toLocaleString()}
+            </div>
+
+            {/* Price Section - Magazine Style */}
+            <div className='flex items-baseline gap-3 pb-2 border-b border-neutral-200'>
+              <span className='text-3xl font-serif text-neutral-900'>
+                ৳{currentPrice.toLocaleString()}
+              </span>
+              {prevPrice > 0 && (
+                <span className='text-lg font-serif text-neutral-400 line-through'>
+                  ৳{prevPrice.toLocaleString()}
                 </span>
-                {prevPrice > 0 && (
-                  <span className='text-sm text-gray-400 line-through'>
-                    ৳{prevPrice.toLocaleString()}
-                  </span>
-                )}
-              </div>
+              )}
             </div>
           </div>
 
-          <Separator />
+          {/* Product Description - Editorial */}
+          {product.description && (
+            <div className='space-y-2'>
+              <h4 className='text-xs font-serif tracking-[0.2em] uppercase text-neutral-700'>
+                Details
+              </h4>
+              <p className='text-sm font-serif leading-relaxed text-neutral-600'>
+                {product.description}
+              </p>
+            </div>
+          )}
 
-          {/* Variant Selectors */}
+          {/* Variant Selectors - Refined */}
           {product.hasVariation && (
-            <div className='space-y-4'>
+            <div className='space-y-6'>
+              <div className='h-px bg-neutral-200' />
+
               {uniqueColors.length > 0 && (
-                <EnhancedVariantSelector
-                  type='color'
-                  selectedProduct={product}
-                  list={uniqueColors}
-                  selected={selectedVariant?.color ?? ""}
-                  selectedVariant={selectedVariant}
-                  onVariantChange={setSelectedVariant}
-                />
+                <div className='space-y-3'>
+                  <label className='text-xs font-serif tracking-[0.2em] uppercase text-neutral-700'>
+                    Select Color
+                  </label>
+                  <EnhancedVariantSelector
+                    type='color'
+                    selectedProduct={product}
+                    list={uniqueColors}
+                    selected={selectedVariant?.color ?? ""}
+                    selectedVariant={selectedVariant}
+                    onVariantChange={setSelectedVariant}
+                  />
+                </div>
               )}
 
               {uniqueSizes.length > 0 && (
-                <EnhancedVariantSelector
-                  type='size'
-                  selectedProduct={product}
-                  list={uniqueSizes}
-                  selected={selectedVariant?.size ?? ""}
-                  selectedVariant={selectedVariant}
-                  onVariantChange={setSelectedVariant}
-                />
+                <div className='space-y-3'>
+                  <label className='text-xs font-serif tracking-[0.2em] uppercase text-neutral-700'>
+                    Select Size
+                  </label>
+                  <EnhancedVariantSelector
+                    type='size'
+                    selectedProduct={product}
+                    list={uniqueSizes}
+                    selected={selectedVariant?.size ?? ""}
+                    selectedVariant={selectedVariant}
+                    onVariantChange={setSelectedVariant}
+                  />
+                </div>
               )}
             </div>
           )}
 
-          <Separator />
+          {/* Quantity Selector - Editorial */}
+          <div className='space-y-4'>
+            <div className='h-px bg-neutral-200' />
 
-          {/* Quantity Selector */}
-          <div className='space-y-3'>
-            <div className='flex items-center justify-between'>
-              <span className='font-medium text-sm text-gray-900'>
+            <div className='space-y-3'>
+              <label className='text-xs font-serif tracking-[0.2em] uppercase text-neutral-700'>
                 Quantity
-              </span>
-            </div>
+              </label>
 
-            <div className='flex items-center gap-3'>
-              <Button
-                variant='outline'
-                size='icon'
-                className='h-10 w-10'
-                onClick={() => handleQuantityChange(-1)}
-                disabled={quantity <= 1}>
-                <Minus className='h-4 w-4' />
-              </Button>
+              <div className='flex items-center justify-center gap-6'>
+                <button
+                  onClick={() => handleQuantityChange(-1)}
+                  disabled={quantity <= 1}
+                  className='w-10 h-10 flex items-center justify-center border border-neutral-300 hover:border-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors'>
+                  <Minus className='h-4 w-4 text-neutral-900' />
+                </button>
 
-              <div className='flex-1 text-center'>
-                <span className='text-lg font-semibold text-gray-900'>
-                  {quantity}
-                </span>
+                <div className='min-w-[60px] text-center'>
+                  <span className='text-2xl font-serif text-neutral-900'>
+                    {quantity}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => handleQuantityChange(1)}
+                  disabled={quantity >= maxQuantity}
+                  className='w-10 h-10 flex items-center justify-center border border-neutral-300 hover:border-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors'>
+                  <Plus className='h-4 w-4 text-neutral-900' />
+                </button>
               </div>
-
-              <Button
-                variant='outline'
-                size='icon'
-                className='h-10 w-10'
-                onClick={() => handleQuantityChange(1)}
-                disabled={quantity >= maxQuantity}>
-                <Plus className='h-4 w-4' />
-              </Button>
             </div>
           </div>
 
-          <Separator />
-
-          {/* Stock Status */}
+          {/* Stock Status - Editorial Alert */}
           {isOutOfStock && (
-            <div className='bg-red-50 border border-red-200 rounded-lg p-3'>
-              <p className='text-sm text-red-600 font-medium text-center'>
-                Out of Stock
+            <div className='border border-neutral-300 bg-neutral-50 rounded-sm p-4'>
+              <p className='text-sm font-serif text-center text-neutral-700 tracking-wide'>
+                Currently Unavailable
               </p>
             </div>
           )}
 
           {/* {!isOutOfStock && maxQuantity <= 5 && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-              <p className="text-sm text-orange-600 font-medium text-center">
-                Only {maxQuantity} left in stock!
+            <div className='border border-amber-300 bg-amber-50 rounded-sm p-4'>
+              <p className='text-sm font-serif text-center text-amber-900 tracking-wide'>
+                Only {maxQuantity} remaining in stock
               </p>
             </div>
           )} */}
 
-          {/* Selected Variant Display */}
+          {/* Selected Variant Display - Editorial */}
           {product.hasVariation && selectedVariant && (
-            <div className='items-center justify-between text-sm text-muted-foreground bg-zinc-100 rounded-lg p-3 '>
-              <div className='flex items-center justify-center gap-3 text-sm'>
+            <div className='bg-neutral-50 border border-neutral-200 rounded-sm p-4'>
+              <div className='flex items-center justify-center gap-4 text-sm font-serif'>
                 {selectedVariant.color && (
-                  <div className='flex items-center space-x-2'>
-                    <span className='text-gray-800'>Color:</span>
-                    <Badge
-                      variant='default'
-                      className='font-medium bg-orange-800'>
-                      {selectedVariant.color.toUpperCase()}
-                    </Badge>
+                  <div className='flex items-center gap-2'>
+                    <span className='text-neutral-600 tracking-wide'>
+                      Color:
+                    </span>
+                    <span className='text-neutral-900 font-medium tracking-wide'>
+                      {selectedVariant.color}
+                    </span>
                   </div>
                 )}
                 {selectedVariant.size && (
-                  <div className='flex items-center space-x-2'>
-                    <span className='text-gray-800'>Size:</span>
-                    <Badge
-                      variant='default'
-                      className='font-medium bg-orange-800'>
-                      {selectedVariant.size.toUpperCase()}
-                    </Badge>
+                  <div className='flex items-center gap-2'>
+                    <span className='text-neutral-600 tracking-wide'>
+                      Size:
+                    </span>
+                    <span className='text-neutral-900 font-medium tracking-wide'>
+                      {selectedVariant.size}
+                    </span>
                   </div>
                 )}
               </div>
             </div>
           )}
 
-          {/* Add to Cart Button */}
-          <Button
-            className='w-full h-12 text-base font-semibold'
-            onClick={handleAddToCart}
-            disabled={isOutOfStock}>
-            <ShoppingCart className='w-5 h-5 mr-2' />
-            Add to Cart
-          </Button>
+          {/* Add to Cart Button - Editorial */}
+          <div className='pt-2 space-y-3'>
+            <Button
+              onClick={() => handleAddToCart(true)}
+              disabled={isOutOfStock}
+              className='w-full h-14 text-sm font-serif tracking-[0.15em] uppercase bg-neutral-900 hover:bg-neutral-800 text-white rounded-none transition-colors duration-300'
+              size='lg'>
+              <Zap className='mr-2 h-5 w-5' />
+              Buy Now
+            </Button>
+            <Button
+              className='w-full h-14 text-sm font-serif tracking-[0.15em] uppercase bg-white border-neutral-300 text-neutral-900 hover:bg-neutral-900 hover:text-white border-0 rounded-none transition-colors duration-300'
+              onClick={() => handleAddToCart()}
+              disabled={isOutOfStock}>
+              <ShoppingCart className='w-4 h-4 mr-3' />
+              Add to Cart
+            </Button>
+          </div>
         </>
       ) : (
-        <div className='text-center py-12'>
-          <p className='text-gray-600'>Product not found</p>
+        <div className='text-center py-16'>
+          <p className='text-sm font-serif text-neutral-600 tracking-wide'>
+            Product not found
+          </p>
         </div>
       )}
     </div>
@@ -350,11 +445,13 @@ export default function QuickAddSheet({
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent
           side='right'
-          className='w-full sm:max-w-md overflow-y-auto'>
-          <SheetHeader className='mb-6'>
-            <SheetTitle>Quick Add to Cart</SheetTitle>
-            <SheetDescription>
-              Select your preferred options and add to cart
+          className='w-full sm:max-w-lg overflow-y-auto bg-white border-l border-neutral-200'>
+          <SheetHeader className='mb-8 pb-6 border-b border-neutral-200'>
+            <SheetTitle className='text-xl font-serif tracking-wide text-neutral-900'>
+              Quick Add
+            </SheetTitle>
+            <SheetDescription className='text-sm font-serif text-neutral-600 tracking-wide'>
+              Select your preferred options
             </SheetDescription>
           </SheetHeader>
           <Content />
@@ -365,11 +462,13 @@ export default function QuickAddSheet({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className='max-h-[90vh]'>
-        <DrawerHeader className='text-left'>
-          <DrawerTitle>Quick Add to Cart</DrawerTitle>
-          <DrawerDescription>
-            Select your preferred options and add to cart
+      <DrawerContent className='max-h-[90vh] bg-white'>
+        <DrawerHeader className='text-left pb-6 border-b border-neutral-200'>
+          <DrawerTitle className='text-xl font-serif tracking-wide text-neutral-900'>
+            Quick Add
+          </DrawerTitle>
+          <DrawerDescription className='text-sm font-serif text-neutral-600 tracking-wide'>
+            Select your preferred options
           </DrawerDescription>
         </DrawerHeader>
         <div className='px-4 pb-6 overflow-y-auto'>

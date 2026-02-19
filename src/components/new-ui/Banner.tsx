@@ -108,7 +108,7 @@ const BannerComponent: React.FC<BannerComponentProps> = ({
   }
 
   return (
-    <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden bg-gray-100">
+    <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden bg-neutral-50">
       {/* Banner Images */}
       <div
         className="flex transition-transform duration-500 ease-in-out h-full"
@@ -125,20 +125,20 @@ const BannerComponent: React.FC<BannerComponentProps> = ({
               sizes="100vw"
             />
             {/* Overlay and Text */}
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-              <div className="text-center text-white px-4 max-w-4xl">
-                <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <div className="text-center text-white px-4 max-w-4xl space-y-4 md:space-y-6">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif tracking-wide text-white leading-tight">
                   {banner.title}
                 </h2>
                 {banner.subtitle && (
-                  <p className="text-sm md:text-lg lg:text-xl mb-4 md:mb-6">
+                  <p className="text-base md:text-lg lg:text-xl font-serif tracking-wide text-white/90 leading-relaxed">
                     {banner.subtitle}
                   </p>
                 )}
                 {banner.buttonText && banner.buttonLink && (
                   <Link
                     href={banner.buttonLink}
-                    className="inline-block bg-white text-gray-900 px-6 py-2 md:px-8 md:py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300"
+                    className="inline-block bg-white text-neutral-900 px-8 py-4 rounded-none text-sm font-serif tracking-[0.15em] uppercase hover:bg-neutral-100 transition-colors duration-300 border-0"
                   >
                     {banner.buttonText}
                   </Link>
@@ -154,7 +154,7 @@ const BannerComponent: React.FC<BannerComponentProps> = ({
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 p-2 rounded-full transition-all duration-300 shadow-lg z-10"
+            className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-neutral-900 p-3 rounded-none border border-neutral-200 hover:border-neutral-900 transition-all duration-300 z-10"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
@@ -162,7 +162,7 @@ const BannerComponent: React.FC<BannerComponentProps> = ({
 
           <button
             onClick={goToNext}
-            className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-800 p-2 rounded-full transition-all duration-300 shadow-lg z-10"
+            className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-neutral-900 p-3 rounded-none border border-neutral-200 hover:border-neutral-900 transition-all duration-300 z-10"
             aria-label="Next slide"
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -174,10 +174,10 @@ const BannerComponent: React.FC<BannerComponentProps> = ({
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                className={`h-px transition-all duration-300 ${
                   currentIndex === index
-                    ? 'bg-white w-6 md:w-8'
-                    : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+                    ? 'bg-white w-8'
+                    : 'bg-white/50 w-4'
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />

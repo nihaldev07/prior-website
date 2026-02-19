@@ -65,7 +65,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
   const [pQuantity, setPQuantity] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<Variation | null>(
-    null
+    null,
   );
   const [isFavorite, setIsFavorite] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
@@ -87,12 +87,12 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       });
       setUniqueColors([
         ...new Set(
-          product?.variation.filter((c) => !!c.color).map((v) => v.color) ?? []
+          product?.variation.filter((c) => !!c.color).map((v) => v.color) ?? [],
         ),
       ]);
       setUniqueSizes([
         ...new Set(
-          product?.variation.filter((s) => !!s.size).map((v) => v.size) ?? []
+          product?.variation.filter((s) => !!s.size).map((v) => v.size) ?? [],
         ),
       ]);
     }
@@ -104,7 +104,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       return Swal.fire(
         "Select size & color",
         "Please select size & color",
-        "warning"
+        "warning",
       );
     } else if (pQuantity < 1) {
       return Swal.fire("Select quantity", "Please select quantity", "warning");
@@ -128,7 +128,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       totalPrice: Number(
         (product?.discount > 0 && !!product?.updatedPrice
           ? product?.updatedPrice
-          : product?.unitPrice) * Number(pQuantity)
+          : product?.unitPrice) * Number(pQuantity),
       ).toFixed(2),
       categoryName: product?.categoryName,
       hasVariation: product?.hasVariation,
@@ -408,30 +408,30 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
             )}
 
             {/* Stock Status Warning */}
-            {!isOutOfStock && maxQuantity <= 5 && (
+            {/* {!isOutOfStock && maxQuantity <= 5 && (
               <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
                 <p className="text-sm text-orange-600 font-medium text-center">
                   Only {maxQuantity} left in stock!
                 </p>
               </div>
-            )}
+            )} */}
 
             {/* Selected Variant Display */}
             {product.hasVariation && selectedVariant && (
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center justify-center gap-3 text-sm">
+              <div className='bg-gray-50 rounded-lg p-3 border border-gray-200'>
+                <div className='flex items-center justify-center gap-3 text-sm'>
                   {selectedVariant.color && (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-600">Color:</span>
-                      <Badge variant="secondary" className="font-medium">
+                    <div className='flex items-center gap-1.5'>
+                      <span className='text-gray-600'>Color:</span>
+                      <Badge variant='secondary' className='font-medium'>
                         {selectedVariant.color.toUpperCase()}
                       </Badge>
                     </div>
                   )}
                   {selectedVariant.size && (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-gray-600">Size:</span>
-                      <Badge variant="secondary" className="font-medium">
+                    <div className='flex items-center gap-1.5'>
+                      <span className='text-gray-600'>Size:</span>
+                      <Badge variant='secondary' className='font-medium'>
                         {selectedVariant.size.toUpperCase()}
                       </Badge>
                     </div>
@@ -442,10 +442,12 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
             {/* Total Amount */}
             {!isOutOfStock && pQuantity > 0 && (
-              <div className="bg-gray-100 rounded-lg p-4 border-2 border-gray-200">
-                <div className="flex items-center justify-between">
-                  <span className="text-base font-semibold text-gray-700">Total Amount</span>
-                  <span className="text-2xl font-bold text-gray-900">
+              <div className='bg-gray-100 rounded-lg p-4 border-2 border-gray-200'>
+                <div className='flex items-center justify-between'>
+                  <span className='text-base font-semibold text-gray-700'>
+                    Total Amount
+                  </span>
+                  <span className='text-2xl font-bold text-gray-900'>
                     ৳{(currentPrice * pQuantity).toLocaleString()}
                   </span>
                 </div>

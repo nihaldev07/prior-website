@@ -19,25 +19,30 @@ const PaymentMethod: FC<Props> = ({
   handlePaymentMethodChange,
 }) => {
   return (
-    <div className='rounded-xl border border-neutral-300 bg-white'>
+    <div className='rounded-none border border-neutral-200 bg-white'>
       <div className='flex flex-col items-start p-6 sm:flex-row'>
         <span className='hidden sm:block'>
           <Coins className='text-3xl text-primary' />
         </span>
         <div className='flex w-full items-center justify-between'>
           <div className='sm:ml-8'>
-            <h3 className='uppercase '>PAYMENT METHOD</h3>
+            <h3 className='uppercase font-serif tracking-[0.2em] text-neutral-900'>PAYMENT METHOD</h3>
             <div className='mt-1 text-sm font-semibold'></div>
           </div>
         </div>
       </div>
 
       <div
-        className={`space-y-6 border-t border-neutral-300 px-6 py-7 ${"block"}`}>
+        className={`space-y-6 border-t border-neutral-200 px-6 py-7 ${"block"}`}>
         {/* ==================== */}
         <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4'>
           <Button
             variant={paymentMethod === "cashondelivery" ? "default" : "outline"}
+            className={`font-serif tracking-wide transition-all duration-300 ${
+              paymentMethod === "cashondelivery"
+                ? "rounded-none bg-neutral-900 text-white hover:bg-neutral-800"
+                : "rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50"
+            }`}
             onClick={() => handlePaymentMethodChange("cashondelivery")}>
             <Banknote className='mr-2 size-5' />{" "}
             {!!prePaymentAmount && prePaymentAmount > 0
@@ -51,7 +56,11 @@ const PaymentMethod: FC<Props> = ({
               : "Cash On Delivery (Advance 150TK)"}
           </Button>
           <Button
-            className='flex justify-center items-center'
+            className={`flex justify-center items-center font-serif tracking-wide transition-all duration-300 ${
+              paymentMethod === "bkash"
+                ? "rounded-none bg-neutral-900 text-white hover:bg-neutral-800"
+                : "rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50"
+            }`}
             variant={paymentMethod === "bkash" ? "default" : "outline"}
             onClick={() => handlePaymentMethodChange("bkash")}>
             <Image

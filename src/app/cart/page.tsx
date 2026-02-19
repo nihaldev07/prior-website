@@ -66,13 +66,13 @@ const CartPage = () => {
           {/* Product Image */}
           <Link
             href={`/collections/${id}`}
-            className="relative h-32 w-32 shrink-0 overflow-hidden rounded-lg bg-gray-50 border border-gray-200"
+            className="relative h-32 w-32 shrink-0 overflow-hidden rounded-sm bg-neutral-50 border border-neutral-200"
           >
             <Image
               fill
               src={thumbnail}
               alt={name}
-              className="object-contain p-2 transition-transform group-hover:scale-105"
+              className="object-contain p-2 transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
@@ -83,15 +83,15 @@ const CartPage = () => {
                 <div className="flex-1">
                   <Link
                     href={`/collections/${id}`}
-                    className="font-semibold text-gray-900 hover:text-gray-700 transition-colors line-clamp-2"
+                    className="font-serif tracking-wide text-neutral-900 hover:text-neutral-700 transition-colors duration-300 line-clamp-2"
                   >
                     {name}
                   </Link>
-                  <p className="text-sm text-gray-500 mt-1">{categoryName}</p>
+                  <p className="text-sm font-serif tracking-wide text-neutral-500 mt-1">{categoryName}</p>
                 </div>
                 <button
                   onClick={() => removeFromCart(index)}
-                  className="text-gray-400 hover:text-red-600 transition-colors p-1 rounded-full hover:bg-red-50"
+                  className="text-neutral-400 hover:text-red-600 transition-colors duration-300 p-1 rounded-none hover:bg-red-50"
                   aria-label="Remove item"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -109,11 +109,11 @@ const CartPage = () => {
 
               {/* Price */}
               <div className="flex items-baseline gap-2">
-                <span className="text-lg font-bold text-gray-900">
+                <span className="text-lg font-serif tracking-wide text-neutral-900">
                   ৳{currentPrice.toLocaleString()}
                 </span>
                 {hasDiscount && unitPrice > currentPrice && (
-                  <span className="text-sm text-gray-400 line-through">
+                  <span className="text-sm font-serif tracking-wide text-neutral-400 line-through">
                     ৳{unitPrice.toLocaleString()}
                   </span>
                 )}
@@ -122,29 +122,29 @@ const CartPage = () => {
 
             {/* Quantity Controls & Item Total */}
             <div className="flex items-center justify-between mt-4">
-              <div className="flex items-center border border-gray-300 rounded-lg">
+              <div className="flex items-center border border-neutral-300 rounded-none">
                 <button
                   onClick={() => handleQuantityChange(item, -1)}
                   disabled={quantity <= 1}
-                  className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-l-lg"
+                  className="p-2 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-none"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
-                <span className="px-4 py-2 min-w-[3rem] text-center font-medium">
+                <span className="px-4 py-2 min-w-[3rem] text-center font-serif tracking-wide">
                   {quantity}
                 </span>
                 <button
                   onClick={() => handleQuantityChange(item, 1)}
                   disabled={quantity >= (maxQuantity || 999)}
-                  className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-r-lg"
+                  className="p-2 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 rounded-none"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="text-right">
-                <p className="text-sm text-gray-500">Item Total</p>
-                <p className="text-lg font-bold text-gray-900">
+                <p className="text-sm font-serif tracking-wide text-neutral-500">Item Total</p>
+                <p className="text-lg font-serif tracking-wide text-neutral-900">
                   ৳{itemTotal.toLocaleString()}
                 </p>
               </div>
@@ -223,12 +223,12 @@ const CartPage = () => {
   }, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral-50">
       <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Shopping Cart</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-serif tracking-wide text-neutral-900 mb-2">Shopping Cart</h1>
+          <p className="text-neutral-600 font-serif tracking-wide">
             {cart.length} {cart.length === 1 ? "item" : "items"} in your cart
           </p>
         </div>
@@ -237,36 +237,36 @@ const CartPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-none border border-neutral-200 p-6">
                 {cart.map((item, index) => renderProduct(item, index))}
               </div>
             </div>
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-24">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
+              <div className="bg-white rounded-none border border-neutral-200 p-6 sticky top-24">
+                <h2 className="text-xl font-serif tracking-wide text-neutral-900 mb-6">
                   Order Summary
                 </h2>
 
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-gray-600">
-                    <span>Subtotal</span>
-                    <span className="font-medium">৳{subtotal.toLocaleString()}</span>
+                  <div className="flex justify-between text-neutral-600">
+                    <span className="font-serif tracking-wide">Subtotal</span>
+                    <span className="font-serif tracking-wide">৳{subtotal.toLocaleString()}</span>
                   </div>
 
                   {discount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Discount</span>
-                      <span className="font-medium">
+                    <div className="flex justify-between text-emerald-700">
+                      <span className="font-serif tracking-wide">Discount</span>
+                      <span className="font-serif tracking-wide">
                         -৳{discount.toLocaleString()}
                       </span>
                     </div>
                   )}
 
-                  <div className="flex justify-between text-gray-600">
-                    <span>Shipping</span>
-                    <span className="font-medium text-sm">
+                  <div className="flex justify-between text-neutral-600">
+                    <span className="font-serif tracking-wide">Shipping</span>
+                    <span className="font-serif tracking-wide text-sm">
                       Calculated at checkout
                     </span>
                   </div>
@@ -275,14 +275,14 @@ const CartPage = () => {
                 <Separator className="my-4" />
 
                 <div className="flex justify-between items-center mb-6">
-                  <span className="text-lg font-semibold text-gray-900">Total</span>
-                  <span className="text-2xl font-bold text-gray-900">
+                  <span className="text-lg font-serif tracking-wide text-neutral-900">Total</span>
+                  <span className="text-2xl font-serif tracking-wide text-neutral-900">
                     ৳{total.toLocaleString()}
                   </span>
                 </div>
 
                 <Link href="/checkout" onClick={handleCheckoutClick}>
-                  <Button className="w-full h-12 text-base font-semibold" size="lg">
+                  <Button className="w-full h-12 text-sm font-serif tracking-[0.15em] uppercase rounded-none bg-neutral-900 hover:bg-neutral-800 text-white transition-colors duration-300" size="lg">
                     Proceed to Checkout
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
@@ -290,16 +290,16 @@ const CartPage = () => {
 
                 <Link
                   href="/collections"
-                  className="block text-center text-sm text-gray-600 hover:text-gray-900 mt-4 transition-colors"
+                  className="block text-center text-sm font-serif tracking-wide text-neutral-600 hover:text-neutral-900 mt-4 transition-colors duration-300"
                 >
                   Continue Shopping
                 </Link>
 
                 {/* Trust Badges */}
-                <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
-                  <div className="flex items-center text-sm text-gray-600">
+                <div className="mt-6 pt-6 border-t border-neutral-200 space-y-3">
+                  <div className="flex items-center text-sm font-serif tracking-wide text-neutral-600">
                     <svg
-                      className="w-5 h-5 text-green-600 mr-2 flex-shrink-0"
+                      className="w-5 h-5 text-emerald-700 mr-2 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -313,9 +313,9 @@ const CartPage = () => {
                     </svg>
                     Secure checkout
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-sm font-serif tracking-wide text-neutral-600">
                     <svg
-                      className="w-5 h-5 text-green-600 mr-2 flex-shrink-0"
+                      className="w-5 h-5 text-emerald-700 mr-2 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -329,9 +329,9 @@ const CartPage = () => {
                     </svg>
                     Free delivery over ৳1000
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-sm font-serif tracking-wide text-neutral-600">
                     <svg
-                      className="w-5 h-5 text-green-600 mr-2 flex-shrink-0"
+                      className="w-5 h-5 text-emerald-700 mr-2 flex-shrink-0"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -351,19 +351,19 @@ const CartPage = () => {
           </div>
         ) : (
           // Empty Cart State
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+          <div className="bg-white rounded-none border border-neutral-200 p-12 text-center">
             <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <ShoppingBag className="w-12 h-12 text-gray-400" />
+              <div className="w-24 h-24 bg-neutral-100 rounded-none flex items-center justify-center mx-auto mb-6">
+                <ShoppingBag className="w-12 h-12 text-neutral-400" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-serif tracking-wide text-neutral-900 mb-2">
                 Your cart is empty
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-neutral-600 font-serif tracking-wide mb-6">
                 Looks like you haven&apos;t added anything to your cart yet.
               </p>
               <Link href="/collections">
-                <Button size="lg" className="font-semibold">
+                <Button size="lg" className="font-serif tracking-[0.15em] uppercase rounded-none bg-neutral-900 hover:bg-neutral-800 text-white transition-colors duration-300">
                   Start Shopping
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>

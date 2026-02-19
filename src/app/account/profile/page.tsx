@@ -246,8 +246,8 @@ const ProfilePage = () => {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold text-gray-900'>Profile Settings</h1>
-          <p className='text-gray-600'>
+          <h1 className='text-2xl font-serif font-bold text-neutral-900 tracking-wide'>Profile Settings</h1>
+          <p className='font-serif text-neutral-600 tracking-wide'>
             Manage your personal information and preferences
           </p>
         </div>
@@ -255,13 +255,13 @@ const ProfilePage = () => {
 
       <form onSubmit={handleSubmit} className='space-y-6'>
         {/* Profile Picture Section */}
-        <Card className='hidden'>
+        <Card className='hidden rounded-none border-neutral-200'>
           <CardHeader>
-            <CardTitle className='flex items-center'>
+            <CardTitle className='flex items-center font-serif tracking-wide'>
               <Camera className='h-5 w-5 mr-2' />
               Profile Picture
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-serif tracking-wide text-neutral-600">
               Upload a profile picture to personalize your account
             </CardDescription>
           </CardHeader>
@@ -271,11 +271,11 @@ const ProfilePage = () => {
                 <UserIcon className='h-12 w-12 text-blue-600' />
               </div>
               <div className='space-y-2'>
-                <Button type='button' variant='outline' disabled>
+                <Button type='button' variant='outline' disabled className="font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50">
                   <Camera className='h-4 w-4 mr-2' />
                   Upload Picture
                 </Button>
-                <p className='text-sm text-gray-500'>
+                <p className='text-sm font-serif text-neutral-500 tracking-wide'>
                   Recommended: Square image, at least 200x200px
                 </p>
               </div>
@@ -284,35 +284,35 @@ const ProfilePage = () => {
         </Card>
 
         {/* Personal Information */}
-        <Card>
+        <Card className="rounded-none border-neutral-200">
           <CardHeader>
-            <CardTitle className='flex items-center'>
+            <CardTitle className='flex items-center font-serif tracking-wide'>
               <UserIcon className='h-5 w-5 mr-2' />
               Personal Information
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-serif tracking-wide text-neutral-600">
               Update your basic personal details
             </CardDescription>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div className='space-y-2'>
-                <Label htmlFor='name'>Full Name *</Label>
+                <Label htmlFor='name' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Full Name *</Label>
                 <Input
                   id='name'
                   type='text'
                   placeholder='Enter your full name'
                   value={formData.name || ""}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  className={errors.name ? "border-red-500" : ""}
+                  className={`rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300 ${errors.name ? "border-red-500" : ""}`}
                 />
                 {errors.name && (
-                  <p className='text-sm text-red-500'>{errors.name}</p>
+                  <p className='text-sm font-serif text-red-600'>{errors.name}</p>
                 )}
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='mobileNumber'>Mobile Number *</Label>
+                <Label htmlFor='mobileNumber' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Mobile Number *</Label>
                 <Input
                   id='mobileNumber'
                   type='tel'
@@ -321,30 +321,30 @@ const ProfilePage = () => {
                   onChange={(e) =>
                     handleInputChange("mobileNumber", e.target.value)
                   }
-                  className={errors.mobileNumber ? "border-red-500" : ""}
+                  className={`rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300 ${errors.mobileNumber ? "border-red-500" : ""}`}
                 />
                 {errors.mobileNumber && (
-                  <p className='text-sm text-red-500'>{errors.mobileNumber}</p>
+                  <p className='text-sm font-serif text-red-600'>{errors.mobileNumber}</p>
                 )}
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='email'>Email Address</Label>
+                <Label htmlFor='email' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Email Address</Label>
                 <Input
                   id='email'
                   type='email'
                   placeholder='Enter your email'
                   value={formData.email || ""}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className={errors.email ? "border-red-500" : ""}
+                  className={`rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300 ${errors.email ? "border-red-500" : ""}`}
                 />
                 {errors.email && (
-                  <p className='text-sm text-red-500'>{errors.email}</p>
+                  <p className='text-sm font-serif text-red-600'>{errors.email}</p>
                 )}
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='dateOfBirth'>Date of Birth</Label>
+                <Label htmlFor='dateOfBirth' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Date of Birth</Label>
                 <Input
                   id='dateOfBirth'
                   type='date'
@@ -352,19 +352,19 @@ const ProfilePage = () => {
                   onChange={(e) =>
                     handleInputChange("dateOfBirth", e.target.value)
                   }
-                  className={errors.dateOfBirth ? "border-red-500" : ""}
+                  className={`rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300 ${errors.dateOfBirth ? "border-red-500" : ""}`}
                 />
                 {errors.dateOfBirth && (
-                  <p className='text-sm text-red-500'>{errors.dateOfBirth}</p>
+                  <p className='text-sm font-serif text-red-600'>{errors.dateOfBirth}</p>
                 )}
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='gender'>Gender</Label>
+                <Label htmlFor='gender' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Gender</Label>
                 <Select
                   value={formData.gender || ""}
                   onValueChange={(value) => handleInputChange("gender", value)}>
-                  <SelectTrigger>
+                  <SelectTrigger className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900">
                     <SelectValue placeholder='Select gender' />
                   </SelectTrigger>
                   <SelectContent>
@@ -382,24 +382,24 @@ const ProfilePage = () => {
         </Card>
 
         {/* Address Information */}
-        <Card>
+        <Card className="rounded-none border-neutral-200">
           <CardHeader>
-            <CardTitle className='flex items-center'>
+            <CardTitle className='flex items-center font-serif tracking-wide'>
               <MapPin className='h-5 w-5 mr-2' />
               Address Information
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-serif tracking-wide text-neutral-600">
               Update your address for accurate delivery
             </CardDescription>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div className='space-y-2'>
-                <Label htmlFor='division'>Division</Label>
+                <Label htmlFor='division' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Division</Label>
                 <Select
                   value={formData.division || ""}
                   onValueChange={handleDivisionChange}>
-                  <SelectTrigger>
+                  <SelectTrigger className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900">
                     <SelectValue placeholder='Select division' />
                   </SelectTrigger>
                   <SelectContent>
@@ -413,14 +413,14 @@ const ProfilePage = () => {
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='district'>District</Label>
+                <Label htmlFor='district' className="font-serif tracking-[0.2em] uppercase text-neutral-700">District</Label>
                 <Select
                   value={formData.district || ""}
                   onValueChange={(value) =>
                     handleInputChange("district", value)
                   }
                   disabled={!formData.division}>
-                  <SelectTrigger>
+                  <SelectTrigger className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900">
                     <SelectValue placeholder='Select district' />
                   </SelectTrigger>
                   <SelectContent>
@@ -435,18 +435,19 @@ const ProfilePage = () => {
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='address'>Detailed Address</Label>
+                <Label htmlFor='address' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Detailed Address</Label>
                 <Input
                   id='address'
                   type='text'
                   placeholder='House/Flat no, Road, Area'
                   value={formData.address || ""}
                   onChange={(e) => handleInputChange("address", e.target.value)}
+                  className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300"
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='postalCode'>Postal Code</Label>
+                <Label htmlFor='postalCode' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Postal Code</Label>
                 <Input
                   id='postalCode'
                   type='text'
@@ -455,6 +456,7 @@ const ProfilePage = () => {
                   onChange={(e) =>
                     handleInputChange("postalCode", e.target.value)
                   }
+                  className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300"
                 />
               </div>
             </div>
@@ -463,7 +465,7 @@ const ProfilePage = () => {
 
         {/* Save Button */}
         <div className='flex justify-end'>
-          <Button type='submit' className='min-w-32' disabled={isLoading}>
+          <Button type='submit' className='min-w-32 font-serif tracking-wide rounded-none hover:bg-neutral-800 transition-colors duration-300' disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className='mr-2 h-4 w-4 animate-spin' />

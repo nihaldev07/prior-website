@@ -133,30 +133,30 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
                   }
                 }}
                 className={cn(
-                  "w-full pl-9 pr-9 py-1.5 border border-gray-300 rounded-lg",
-                  "focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent",
-                  "text-sm placeholder:text-gray-400 transition-all duration-200",
+                  "w-full pl-10 pr-10 h-12 border border-neutral-300 rounded-none text-sm font-serif",
+                  "focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900",
+                  "placeholder:text-neutral-400 transition-all duration-300 tracking-wide",
                   isMobile ? "text-base" : ""
                 )}
                 aria-label="Search products"
                 autoComplete="off"
               />
               <Search
-                className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4 pointer-events-none"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors duration-200"
                   aria-label="Clear search"
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
               {isLoading && (
-                <div className="absolute right-2.5 top-1/2 transform -translate-y-1/2">
-                  <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin" />
                 </div>
               )}
             </div>
@@ -173,7 +173,7 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
       >
         <Command className="border-0 shadow-none">
           <CommandList>
-            <CommandEmpty className="py-6 text-center text-sm text-gray-500">
+            <CommandEmpty className="py-8 text-center text-sm font-serif text-neutral-600 tracking-wide">
               {searchQuery ? "No products found" : "Start typing to search..."}
             </CommandEmpty>
 
@@ -188,7 +188,7 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
                   >
                     <div className="flex items-center gap-3 w-full py-1">
                       {/* Product Image */}
-                      <div className="relative w-12 h-12 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+                      <div className="relative w-12 h-12 flex-shrink-0 bg-neutral-50 rounded-none overflow-hidden border border-neutral-200">
                         {product.images && product.images.length > 0 ? (
                           <Image
                             src={product.images[0]}
@@ -198,7 +198,7 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
                             sizes="48px"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <div className="w-full h-full flex items-center justify-center text-neutral-400">
                             <Search className="w-5 h-5" />
                           </div>
                         )}
@@ -206,19 +206,19 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-serif tracking-wide text-neutral-900 truncate">
                           {product.name}
                         </p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-sm font-semibold text-gray-900">
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-sm font-serif text-neutral-900">
                             {formatPrice(product.unitPrice)}
                           </span>
                           {product.hasDiscount && product.updatedPrice && (
                             <>
-                              <span className="text-xs text-gray-400 line-through">
+                              <span className="text-xs text-neutral-400 line-through font-serif">
                                 {formatPrice(product.unitPrice)}
                               </span>
-                              <span className="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                              <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-none border border-emerald-200 font-serif tracking-wide">
                                 {Math.round(((product.unitPrice - product.updatedPrice) / product.unitPrice) * 100)}% OFF
                               </span>
                             </>
@@ -228,7 +228,7 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
 
                       {/* High rating indicator */}
                       {product.rating >= 4 && (
-                        <TrendingUp className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                        <TrendingUp className="w-4 h-4 text-amber-500 flex-shrink-0" />
                       )}
                     </div>
                   </CommandItem>
@@ -237,10 +237,10 @@ export default function SearchBox({ className, isMobile = false }: SearchBoxProp
             )}
 
             {searchResults.length > 0 && (
-              <div className="border-t border-gray-100">
+              <div className="border-t border-neutral-200">
                 <button
                   onClick={handleSearchSubmit}
-                  className="w-full px-4 py-3 text-sm text-center text-gray-600 hover:bg-gray-50 transition-colors font-medium"
+                  className="w-full px-6 py-4 text-sm text-center font-serif tracking-wide text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 transition-colors duration-300"
                 >
                   View all results for &ldquo;{searchQuery}&rdquo;
                 </button>

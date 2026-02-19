@@ -113,7 +113,7 @@ const extractSizes = (variations?: Variation[]): Size[] => {
 
 // Adapt Prior ProductType to new UI Product format
 export const adaptProductToNewFormat = (
-  currentProduct: ProductType | SingleProductType
+  currentProduct: ProductType | SingleProductType,
 ): Product => {
   const hasDiscount =
     currentProduct.hasDiscount &&
@@ -177,7 +177,7 @@ export const adaptIProductToNewFormat = (product: IProduct): Product => {
 
 // Adapt array of products
 export const adaptProductsToNewFormat = (
-  products: ProductType[] | SingleProductType[] | IProduct[]
+  products: ProductType[] | SingleProductType[] | IProduct[],
 ): Product[] => {
   return products.map((product) => {
     // Check if it's IProduct type (has optional id property as number)

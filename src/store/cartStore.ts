@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Variation } from '@/data/types';
-import { trackEvent } from '@/lib/firebase-event';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Variation } from "@/data/types";
+import { trackEvent } from "@/lib/firebase-event";
 
 // Cart item interface (from CartContext)
 export interface CartItem {
@@ -46,11 +46,11 @@ export const useCartStore = create<CartStore>()(
       // Add item to cart
       addToCart: (item: CartItem) => {
         // Track Firebase Analytics event
-        trackEvent('add_to_cart', {
+        trackEvent("add_to_cart", {
           item_id: item?.id,
           item_name: item?.name,
           price: item?.unitPrice,
-          currency: 'BDT',
+          currency: "BDT",
         });
 
         set((state) => {
@@ -72,7 +72,8 @@ export const useCartStore = create<CartStore>()(
                 const newQuantity = cartItem.quantity + 1;
                 const totalPrice = cartItem.unitPrice * newQuantity;
                 const discount =
-                  (cartItem.unitPrice - (cartItem.updatedPrice ?? 0)) * newQuantity;
+                  (cartItem.unitPrice - (cartItem.updatedPrice ?? 0)) *
+                  newQuantity;
 
                 return {
                   ...cartItem,
@@ -119,12 +120,12 @@ export const useCartStore = create<CartStore>()(
         const item = state.cart[index];
 
         if (item) {
-          trackEvent('remove_from_cart', {
+          trackEvent("remove_from_cart", {
             item_id: item?.id,
             item_name: item?.name,
             price: item?.unitPrice,
-            variation: item?.variation ?? 'no variation',
-            currency: 'BDT',
+            variation: item?.variation ?? "no variation",
+            currency: "BDT",
           });
         }
 
@@ -159,7 +160,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'cart-storage', // localStorage key
-    }
-  )
+      name: "cart-storage", // localStorage key
+    },
+  ),
 );
