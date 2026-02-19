@@ -246,7 +246,7 @@ const WishlistPage = () => {
             </div>
 
             <div className='relative flex-shrink-0'>
-              <div className='h-24 w-24 rounded-lg overflow-hidden bg-gray-100'>
+              <div className='h-24 w-24 rounded-lg overflow-hidden bg-neutral-100'>
                 <Image
                   src={item.thumbnail}
                   alt={item.name}
@@ -265,7 +265,7 @@ const WishlistPage = () => {
             <div className='flex-1 min-w-0'>
               <div className='flex items-start justify-between'>
                 <div className='flex-1'>
-                  <h3 className='font-medium text-gray-900 truncate'>
+                  <h3 className='font-medium text-neutral-900 truncate'>
                     <Link
                       href={`/products/${item?.slug}`}
                       className='hover:text-blue-600'>
@@ -274,12 +274,12 @@ const WishlistPage = () => {
                   </h3>
 
                   <div className='flex items-center space-x-2 mt-2'>
-                    <span className='text-lg font-semibold text-gray-900'>
+                    <span className='text-lg font-semibold text-neutral-900'>
                       ৳{item.price}
                     </span>
                     {item.originalPrice && item.originalPrice > item.price && (
                       <>
-                        <span className='text-sm text-gray-400 line-through'>
+                        <span className='text-sm text-neutral-400 line-through'>
                           ৳{item.originalPrice}
                         </span>
                         <Badge variant='secondary' className='text-xs'>
@@ -303,7 +303,7 @@ const WishlistPage = () => {
                     )}
                   </div>
 
-                  <p className='text-xs text-gray-400 mt-2'>
+                  <p className='text-xs text-neutral-400 mt-2'>
                     Added {new Date(item.dateAdded).toLocaleDateString()}
                   </p>
                 </div>
@@ -340,8 +340,8 @@ const WishlistPage = () => {
       <div className='space-y-6'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-2xl font-bold text-gray-900'>My Wishlist</h1>
-            <p className='text-gray-600'>Items you&apos;ve saved for later</p>
+            <h1 className='text-2xl font-bold text-neutral-900'>My Wishlist</h1>
+            <p className='text-neutral-600'>Items you&apos;ve saved for later</p>
           </div>
         </div>
 
@@ -350,11 +350,11 @@ const WishlistPage = () => {
             <Card key={i}>
               <CardContent className='p-4'>
                 <div className='animate-pulse flex space-x-4'>
-                  <div className='h-24 w-24 bg-gray-200 rounded-lg'></div>
+                  <div className='h-24 w-24 bg-neutral-200 rounded-lg'></div>
                   <div className='flex-1 space-y-2'>
-                    <div className='h-4 bg-gray-200 rounded w-3/4'></div>
-                    <div className='h-3 bg-gray-200 rounded w-1/2'></div>
-                    <div className='h-4 bg-gray-200 rounded w-1/4'></div>
+                    <div className='h-4 bg-neutral-200 rounded w-3/4'></div>
+                    <div className='h-3 bg-neutral-200 rounded w-1/2'></div>
+                    <div className='h-4 bg-neutral-200 rounded w-1/4'></div>
                   </div>
                 </div>
               </CardContent>
@@ -370,10 +370,10 @@ const WishlistPage = () => {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold text-gray-900'>My Wishlist</h1>
-          <p className='text-gray-600'>Items you&apos;ve saved for later</p>
+          <h1 className='text-2xl font-bold text-neutral-900'>My Wishlist</h1>
+          <p className='text-neutral-600'>Items you&apos;ve saved for later</p>
         </div>
-        <div className='text-sm text-gray-500'>
+        <div className='text-sm text-neutral-500'>
           {filteredAndSortedWishlist.length} item
           {filteredAndSortedWishlist.length !== 1 ? "s" : ""}
         </div>
@@ -478,11 +478,11 @@ const WishlistPage = () => {
           ) : (
             <Card>
               <CardContent className='p-12 text-center'>
-                <Filter className='h-16 w-16 text-gray-400 mx-auto mb-4' />
-                <h3 className='text-lg font-medium text-gray-900 mb-2'>
+                <Filter className='h-16 w-16 text-neutral-400 mx-auto mb-4' />
+                <h3 className='text-lg font-medium text-neutral-900 mb-2'>
                   No items match your filters
                 </h3>
-                <p className='text-gray-500 mb-4'>
+                <p className='text-neutral-500 mb-4'>
                   Try adjusting your filter settings
                 </p>
                 <Button
@@ -502,11 +502,11 @@ const WishlistPage = () => {
       {wishlist.length === 0 && (
         <Card>
           <CardContent className='p-12 text-center'>
-            <Heart className='h-16 w-16 text-gray-400 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-gray-900 mb-2'>
+            <Heart className='h-16 w-16 text-neutral-400 mx-auto mb-4' />
+            <h3 className='text-lg font-medium text-neutral-900 mb-2'>
               Your wishlist is empty
             </h3>
-            <p className='text-gray-500 mb-6'>
+            <p className='text-neutral-500 mb-6'>
               Save items you love to your wishlist and shop them later
             </p>
             <Link href='/'>

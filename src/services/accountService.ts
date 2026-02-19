@@ -6,7 +6,7 @@ interface OrderResponse {
     orders: Array<{
       id: string;
       orderNumber: string;
-      date: string;
+      createdAt: string;
       status:
         | "pending"
         | "processing"
@@ -14,8 +14,9 @@ interface OrderResponse {
         | "delivered"
         | "cancelled"
         | "returned";
-      total: number;
-      paymentStatus: "paid" | "pending" | "failed";
+      totalPrice: number;
+      paid: number;
+      remaining: number;
       itemCount: number;
       products: Array<{
         id: string;
@@ -23,6 +24,12 @@ interface OrderResponse {
         quantity: number;
         price: number;
         thumbnail: string;
+        unitPrice: number;
+        totalPrice: number;
+        variation?: {
+          color?: string;
+          size?: string;
+        };
       }>;
       shippingAddress: {
         name: string;
@@ -127,7 +134,7 @@ export const accountService = {
   // Get single order details
   getOrderDetails: async (
     orderId: string,
-    token: string
+    token: string,
   ): Promise<OrderDetailsResponse> => {
     try {
       const response = await fetch(
@@ -138,7 +145,7 @@ export const accountService = {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -188,7 +195,7 @@ export const accountService = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
@@ -205,7 +212,7 @@ export const accountService = {
   // Track order
   trackOrder: async (
     orderId: string,
-    token: string
+    token: string,
   ): Promise<{ success: boolean; trackingUrl?: string; message: string }> => {
     try {
       const response = await fetch(
@@ -216,7 +223,7 @@ export const accountService = {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -235,7 +242,7 @@ export const accountService = {
   // Reorder
   reorder: async (
     orderId: string,
-    token: string
+    token: string,
   ): Promise<{ success: boolean; newOrderId?: string; message: string }> => {
     try {
       const response = await fetch(
@@ -246,7 +253,7 @@ export const accountService = {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -266,7 +273,7 @@ export const accountService = {
   cancelOrder: async (
     orderId: string,
     reason: string,
-    token: string
+    token: string,
   ): Promise<{ success: boolean; message: string }> => {
     try {
       const response = await fetch(
@@ -278,7 +285,7 @@ export const accountService = {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ reason }),
-        }
+        },
       );
 
       const data = await response.json();

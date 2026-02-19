@@ -68,9 +68,9 @@ const AccountDashboard = () => {
                 .sort((a, b) => Number(b.orderNumber) - Number(a.orderNumber))
                 .map((order) => ({
                   id: order.orderNumber,
-                  date: order.date,
+                  date: order.createdAt,
                   status: order.status,
-                  total: order.total,
+                  total: order.totalPrice,
                   items: order.itemCount,
                 }));
           setRecentOrders(recent);
@@ -97,7 +97,7 @@ const AccountDashboard = () => {
       case "cancelled":
         return "bg-red-100 text-red-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-neutral-100 text-neutral-800";
     }
   };
 
@@ -105,16 +105,16 @@ const AccountDashboard = () => {
     return (
       <div className='space-y-6'>
         {/* Welcome Section Skeleton */}
-        <div className='bg-gray-200 animate-pulse rounded-lg h-32'></div>
+        <div className='bg-neutral-200 animate-pulse rounded-none h-32'></div>
 
         {/* Stats Skeleton */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
           {[1, 2, 3, 4].map((i) => (
-            <Card key={i}>
+            <Card key={i} className='rounded-none border-neutral-200'>
               <CardContent className='p-6'>
                 <div className='animate-pulse space-y-2'>
-                  <div className='h-4 bg-gray-200 rounded w-20'></div>
-                  <div className='h-8 bg-gray-200 rounded w-12'></div>
+                  <div className='h-4 bg-neutral-200 rounded-none w-20'></div>
+                  <div className='h-8 bg-neutral-200 rounded-none w-12'></div>
                 </div>
               </CardContent>
             </Card>
@@ -123,23 +123,25 @@ const AccountDashboard = () => {
 
         {/* Content Skeleton */}
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-          <Card className='lg:col-span-1'>
+          <Card className='lg:col-span-1 rounded-none border-neutral-200'>
             <CardContent className='p-6'>
               <div className='animate-pulse space-y-4'>
-                <div className='h-16 w-16 bg-gray-200 rounded-full'></div>
+                <div className='h-16 w-16 bg-neutral-200 rounded-full'></div>
                 <div className='space-y-2'>
-                  <div className='h-4 bg-gray-200 rounded w-32'></div>
-                  <div className='h-3 bg-gray-200 rounded w-24'></div>
+                  <div className='h-4 bg-neutral-200 rounded-none w-32'></div>
+                  <div className='h-3 bg-neutral-200 rounded-none w-24'></div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className='lg:col-span-2'>
+          <Card className='lg:col-span-2 rounded-none border-neutral-200'>
             <CardContent className='p-6'>
               <div className='animate-pulse space-y-4'>
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className='h-16 bg-gray-200 rounded'></div>
+                  <div
+                    key={i}
+                    className='h-16 bg-neutral-200 rounded-none'></div>
                 ))}
               </div>
             </CardContent>
@@ -154,21 +156,29 @@ const AccountDashboard = () => {
       <div className='space-y-6'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-2xl font-bold text-gray-900'>
+            <h1 className='text-2xl font-serif font-bold text-neutral-900 tracking-wide'>
               Account Dashboard
             </h1>
-            <p className='text-gray-600'>Welcome to your account overview</p>
+            <p className='font-serif text-neutral-600 tracking-wide'>
+              Welcome to your account overview
+            </p>
           </div>
         </div>
 
-        <Card>
+        <Card className='rounded-none border-neutral-200'>
           <CardContent className='p-12 text-center'>
             <AlertCircle className='h-16 w-16 text-red-400 mx-auto mb-4' />
-            <h3 className='text-lg font-medium text-gray-900 mb-2'>
+            <h3 className='text-lg font-serif font-medium text-neutral-900 mb-2 tracking-wide'>
               Failed to Load Dashboard
             </h3>
-            <p className='text-gray-500 mb-6'>{error}</p>
-            <Button onClick={() => window.location.reload()}>Try Again</Button>
+            <p className='font-serif text-neutral-500 mb-6 tracking-wide'>
+              {error}
+            </p>
+            <Button
+              onClick={() => window.location.reload()}
+              className='font-serif tracking-wide rounded-none'>
+              Try Again
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -178,18 +188,18 @@ const AccountDashboard = () => {
   return (
     <div className='space-y-6'>
       {/* Welcome Section */}
-      <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6'>
+      <div className='bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-none p-6 border border-neutral-200'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-2xl font-bold mb-2'>
+            <h1 className='text-2xl font-serif font-bold mb-2 tracking-wide'>
               Welcome back, {user?.name?.split(" ")[0]}! 👋
             </h1>
-            <p className='text-blue-100'>
+            <p className='text-blue-100 font-serif tracking-wide'>
               Manage your account, track orders, and explore your wishlist
             </p>
           </div>
           <div className='hidden md:block'>
-            <div className='bg-white/20 backdrop-blur rounded-lg p-4'>
+            <div className='bg-white/20 backdrop-blur rounded-none p-4'>
               <Calendar className='h-8 w-8 text-white' />
             </div>
           </div>
@@ -198,72 +208,72 @@ const AccountDashboard = () => {
 
       {/* Quick Stats */}
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-        <Card>
+        <Card className='rounded-none border-neutral-200'>
           <CardContent className='p-6'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm font-medium text-gray-600'>
+                <p className='text-sm font-serif font-medium text-neutral-600 tracking-wide'>
                   Total Orders
                 </p>
-                <p className='text-2xl font-bold text-gray-900'>
+                <p className='text-2xl font-serif font-bold text-neutral-900 tracking-wide'>
                   {stats.totalOrders}
                 </p>
               </div>
-              <div className='h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center'>
+              <div className='h-12 w-12 bg-blue-100 rounded-none flex items-center justify-center'>
                 <ShoppingBag className='h-6 w-6 text-blue-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className='rounded-none border-neutral-200'>
           <CardContent className='p-6'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm font-medium text-gray-600'>
+                <p className='text-sm font-serif font-medium text-neutral-600 tracking-wide'>
                   Completed Orders
                 </p>
-                <p className='text-2xl font-bold text-gray-900'>
+                <p className='text-2xl font-serif font-bold text-neutral-900 tracking-wide'>
                   {stats.completedOrders}
                 </p>
               </div>
-              <div className='h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center'>
+              <div className='h-12 w-12 bg-green-100 rounded-none flex items-center justify-center'>
                 <Package className='h-6 w-6 text-green-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className='rounded-none border-neutral-200'>
           <CardContent className='p-6'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm font-medium text-gray-600'>
+                <p className='text-sm font-serif font-medium text-neutral-600 tracking-wide'>
                   Wishlist Items
                 </p>
-                <p className='text-2xl font-bold text-gray-900'>
+                <p className='text-2xl font-serif font-bold text-neutral-900 tracking-wide'>
                   {stats.wishlistItems}
                 </p>
               </div>
-              <div className='h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center'>
+              <div className='h-12 w-12 bg-red-100 rounded-none flex items-center justify-center'>
                 <Heart className='h-6 w-6 text-red-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className='rounded-none border-neutral-200'>
           <CardContent className='p-6'>
             <div className='flex items-center justify-between'>
               <div>
-                <p className='text-sm font-medium text-gray-600'>
+                <p className='text-sm font-serif font-medium text-neutral-600 tracking-wide'>
                   Account Status
                 </p>
-                <Badge className='bg-green-100 text-green-800 mt-1'>
+                <Badge className='bg-green-100 text-green-800 mt-1 font-serif tracking-wide'>
                   {stats.accountStatus}
                 </Badge>
               </div>
-              <div className='h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center'>
+              <div className='h-12 w-12 bg-purple-100 rounded-none flex items-center justify-center'>
                 <Star className='h-6 w-6 text-purple-600' />
               </div>
             </div>
@@ -273,9 +283,9 @@ const AccountDashboard = () => {
 
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
         {/* Profile Overview */}
-        <Card className='lg:col-span-1'>
+        <Card className='lg:col-span-1 rounded-none border-neutral-200'>
           <CardHeader>
-            <CardTitle className='flex items-center'>
+            <CardTitle className='flex items-center font-serif tracking-wide'>
               <User className='h-5 w-5 mr-2' />
               Profile Overview
             </CardTitle>
@@ -286,14 +296,16 @@ const AccountDashboard = () => {
                 <User className='h-8 w-8 text-blue-600' />
               </div>
               <div className='flex-1'>
-                <h3 className='font-medium text-gray-900'>{user?.name}</h3>
-                <p className='text-sm text-gray-500'>
+                <h3 className='font-serif font-medium text-neutral-900 tracking-wide'>
+                  {user?.name}
+                </h3>
+                <p className='text-sm font-serif text-neutral-500 tracking-wide'>
                   {user?.email || user?.mobileNumber}
                 </p>
-                <p className='text-xs text-gray-400'>
+                <p className='text-xs font-serif text-neutral-400 tracking-wide'>
                   Member since{" "}
                   {new Date(
-                    user?.memberSince || Date.now()
+                    user?.memberSince || Date.now(),
                   ).toLocaleDateString()}
                 </p>
               </div>
@@ -301,23 +313,25 @@ const AccountDashboard = () => {
 
             <div className='space-y-2'>
               <div className='flex items-center text-sm'>
-                <MapPin className='h-4 w-4 text-gray-400 mr-2' />
-                <span className='text-gray-600'>
+                <MapPin className='h-4 w-4 text-neutral-400 mr-2' />
+                <span className='font-serif text-neutral-600 tracking-wide'>
                   {user?.address?.district && user?.address?.division
                     ? `${user?.address?.district}, ${user?.address?.division}`
                     : "Address not set"}
                 </span>
               </div>
               <div className='flex items-center text-sm'>
-                <Calendar className='h-4 w-4 text-gray-400 mr-2' />
-                <span className='text-gray-600'>
+                <Calendar className='h-4 w-4 text-neutral-400 mr-2' />
+                <span className='font-serif text-neutral-600 tracking-wide'>
                   {user?.dateOfBirth || "Birthdate not set"}
                 </span>
               </div>
             </div>
 
             <Link href='/account/profile'>
-              <Button variant='outline' className='w-full'>
+              <Button
+                variant='outline'
+                className='w-full font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'>
                 <Edit className='h-4 w-4 mr-2' />
                 Edit Profile
               </Button>
@@ -326,15 +340,18 @@ const AccountDashboard = () => {
         </Card>
 
         {/* Recent Orders */}
-        <Card className='lg:col-span-2'>
+        <Card className='lg:col-span-2 rounded-none border-neutral-200'>
           <CardHeader>
             <div className='flex items-center justify-between'>
-              <CardTitle className='flex items-center'>
+              <CardTitle className='flex items-center font-serif tracking-wide'>
                 <Package className='h-5 w-5 mr-2' />
                 Recent Orders
               </CardTitle>
               <Link href='/account/orders'>
-                <Button variant='ghost' size='sm'>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  className='font-serif tracking-wide rounded-none'>
                   View All
                 </Button>
               </Link>
@@ -346,14 +363,14 @@ const AccountDashboard = () => {
                 {recentOrders.map((order) => (
                   <div
                     key={order.id}
-                    className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+                    className='flex items-center justify-between p-4 bg-neutral-50 rounded-none border border-neutral-200'>
                     <div className='flex-1'>
                       <div className='flex items-center space-x-4'>
                         <div>
-                          <p className='font-medium text-gray-900'>
+                          <p className='font-serif font-medium text-neutral-900 tracking-wide'>
                             {order.id}
                           </p>
-                          <p className='text-sm text-gray-500'>
+                          <p className='text-sm font-serif text-neutral-500 tracking-wide'>
                             {new Date(order.date).toLocaleDateString()} •{" "}
                             {order.items} items
                           </p>
@@ -364,11 +381,14 @@ const AccountDashboard = () => {
                       </div>
                     </div>
                     <div className='text-right'>
-                      <p className='font-medium text-gray-900'>
+                      <p className='font-serif font-medium text-neutral-900 tracking-wide'>
                         ৳{order.total}
                       </p>
                       <Link href={`/order/${order.id}`}>
-                        <Button variant='ghost' size='sm'>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='font-serif tracking-wide rounded-none'>
                           View Details
                         </Button>
                       </Link>
@@ -378,15 +398,17 @@ const AccountDashboard = () => {
               </div>
             ) : (
               <div className='text-center py-8'>
-                <Package className='h-12 w-12 text-gray-400 mx-auto mb-4' />
-                <h3 className='text-lg font-medium text-gray-900 mb-2'>
+                <Package className='h-12 w-12 text-neutral-400 mx-auto mb-4' />
+                <h3 className='text-lg font-serif font-medium text-neutral-900 mb-2 tracking-wide'>
                   No orders yet
                 </h3>
-                <p className='text-gray-500 mb-4'>
+                <p className='font-serif text-neutral-500 mb-4 tracking-wide'>
                   Start shopping to see your orders here
                 </p>
                 <Link href='/'>
-                  <Button>Start Shopping</Button>
+                  <Button className='font-serif tracking-wide rounded-none'>
+                    Start Shopping
+                  </Button>
                 </Link>
               </div>
             )}
@@ -395,9 +417,9 @@ const AccountDashboard = () => {
       </div>
 
       {/* Quick Actions */}
-      <Card>
+      <Card className='rounded-none border-neutral-200'>
         <CardHeader>
-          <CardTitle className='flex items-center'>
+          <CardTitle className='flex items-center font-serif tracking-wide'>
             <TrendingUp className='h-5 w-5 mr-2' />
             Quick Actions
           </CardTitle>
@@ -407,7 +429,7 @@ const AccountDashboard = () => {
             <Link href='/account/orders'>
               <Button
                 variant='outline'
-                className='w-full h-16 flex flex-col items-center justify-center space-y-2'>
+                className='w-full h-16 flex flex-col items-center justify-center space-y-2 font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'>
                 <ShoppingBag className='h-6 w-6' />
                 <span>View Orders</span>
               </Button>
@@ -416,7 +438,7 @@ const AccountDashboard = () => {
             <Link href='/account/wishlist'>
               <Button
                 variant='outline'
-                className='w-full h-16 flex flex-col items-center justify-center space-y-2'>
+                className='w-full h-16 flex flex-col items-center justify-center space-y-2 font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'>
                 <Heart className='h-6 w-6' />
                 <span>My Wishlist</span>
               </Button>
@@ -425,7 +447,7 @@ const AccountDashboard = () => {
             <Link href='/account/profile'>
               <Button
                 variant='outline'
-                className='w-full h-16 flex flex-col items-center justify-center space-y-2'>
+                className='w-full h-16 flex flex-col items-center justify-center space-y-2 font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'>
                 <User className='h-6 w-6' />
                 <span>Edit Profile</span>
               </Button>

@@ -75,7 +75,7 @@ const DesktopViewCard: React.FC<IProp> = ({ product }) => {
               ? Math.round(
                   ((product.unitPrice - product.updatedPrice) /
                     product.unitPrice) *
-                    100
+                    100,
                 )
               : undefined,
         };
@@ -103,7 +103,7 @@ const DesktopViewCard: React.FC<IProp> = ({ product }) => {
               ? `-${Math.round(
                   ((product.unitPrice - product.updatedPrice) /
                     product.unitPrice) *
-                    100
+                    100,
                 )}%`
               : `-${product.discount}৳`}
           </Badge>
@@ -121,13 +121,13 @@ const DesktopViewCard: React.FC<IProp> = ({ product }) => {
             "p-2 rounded-full bg-white/80 hover:bg-white transition-all duration-200 shadow-sm hover:shadow-md",
             isInUserWishlist
               ? "text-red-500 hover:text-red-600"
-              : "text-gray-500 hover:text-red-500"
+              : "text-gray-500 hover:text-red-500",
           )}>
           <Heart
             className={cn(
               "w-4 h-4 transition-all duration-200",
               isInUserWishlist ? "fill-current" : "",
-              isAddingToWishlist && "animate-pulse"
+              isAddingToWishlist && "animate-pulse",
             )}
           />
         </Button>
@@ -156,7 +156,7 @@ const DesktopViewCard: React.FC<IProp> = ({ product }) => {
                   "w-1.5 h-1.5 rounded-full transition-all duration-200",
                   index === currentImageIndex
                     ? "bg-gray-800 w-3"
-                    : "bg-gray-400 hover:bg-gray-600"
+                    : "bg-gray-400 hover:bg-gray-600",
                 )}
                 aria-label={`View image ${index + 1}`}
               />
@@ -211,7 +211,7 @@ const DesktopViewCard: React.FC<IProp> = ({ product }) => {
           size='default'
           className={cn(
             "w-full font-semibold text-lg rounded h-12",
-            isOutOfStock && "text-gray-500"
+            isOutOfStock && "text-gray-500",
           )}
           disabled={isOutOfStock}>
           {isOutOfStock ? (
@@ -219,7 +219,7 @@ const DesktopViewCard: React.FC<IProp> = ({ product }) => {
           ) : (
             <>
               <ShoppingCart className='mr-2 w-5 h-5' />
-              Add to Cart
+              Add to Carto
             </>
           )}
         </Button>

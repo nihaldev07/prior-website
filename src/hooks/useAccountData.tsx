@@ -61,9 +61,9 @@ export const useAccountData = () => {
               .sort((a, b) => Number(b.orderNumber) - Number(a.orderNumber))
               .map((order) => ({
                 id: order.orderNumber,
-                date: order.date,
+                date: order.createdAt,
                 status: order.status,
-                total: order.total,
+                total: order.totalPrice,
                 items: order.itemCount,
               }));
         setRecentOrders(recent);

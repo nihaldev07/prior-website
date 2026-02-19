@@ -18,6 +18,7 @@ const CampaignPopupWrapper: React.FC = () => {
     };
 
     loadCampaign();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!campaign || !campaign.image) {

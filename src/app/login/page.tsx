@@ -123,26 +123,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
+    <div className='min-h-screen flex items-center justify-center bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8'>
       <div className='max-w-md w-full space-y-8'>
         <div className='text-center'>
-          <h2 className='mt-6 text-3xl font-extrabold text-gray-900'>
+          <h2 className='mt-6 text-3xl font-serif font-bold text-neutral-900 tracking-[0.2em] uppercase'>
             Sign in to your account
           </h2>
-          <p className='mt-2 text-sm text-gray-600'>
+          <p className='mt-2 text-sm font-serif text-neutral-600 tracking-wide'>
             Or{" "}
             <Link
               href='/register'
-              className='font-medium text-blue-600 hover:text-blue-500'>
+              className='font-medium text-primary hover:text-primary/80 transition-colors duration-300 underline underline-offset-4'>
               create a new account
             </Link>
           </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>
+        <Card className="rounded-none border-neutral-200">
+          <CardHeader className="border-b border-neutral-200">
+            <CardTitle className='font-serif tracking-wide text-neutral-900'>Welcome Back</CardTitle>
+            <CardDescription className="font-serif tracking-wide text-neutral-600">
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
@@ -150,7 +150,7 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit}>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <Label htmlFor='identifier'>Email or Mobile Number</Label>
+                <Label htmlFor='identifier' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Email or Mobile Number</Label>
                 <Input
                   id='identifier'
                   type='text'
@@ -159,15 +159,15 @@ const LoginPage = () => {
                   onChange={(e) =>
                     handleInputChange("identifier", e.target.value)
                   }
-                  className={errors.identifier ? "border-red-500" : ""}
+                  className={`rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300 ${errors.identifier ? "border-red-500" : ""}`}
                 />
                 {errors.identifier && (
-                  <p className='text-sm text-red-500'>{errors.identifier}</p>
+                  <p className='text-sm font-serif text-red-600'>{errors.identifier}</p>
                 )}
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='password'>Password</Label>
+                <Label htmlFor='password' className="font-serif tracking-[0.2em] uppercase text-neutral-700">Password</Label>
                 <div className='relative'>
                   <Input
                     id='password'
@@ -177,23 +177,23 @@ const LoginPage = () => {
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
-                    className={
+                    className={`rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition-all duration-300 ${
                       errors.password ? "border-red-500 pr-10" : "pr-10"
-                    }
+                    }`}
                   />
                   <button
                     type='button'
-                    className='absolute inset-y-0 right-0 pr-3 flex items-center'
+                    className='absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-neutral-600 transition-colors duration-300'
                     onClick={() => setShowPassword(!showPassword)}>
                     {showPassword ? (
-                      <EyeOff className='h-4 w-4 text-gray-400' />
+                      <EyeOff className='h-4 w-4' />
                     ) : (
-                      <Eye className='h-4 w-4 text-gray-400' />
+                      <Eye className='h-4 w-4' />
                     )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className='text-sm text-red-500'>{errors.password}</p>
+                  <p className='text-sm font-serif text-red-600'>{errors.password}</p>
                 )}
               </div>
 
@@ -208,14 +208,14 @@ const LoginPage = () => {
                   />
                   <Label
                     htmlFor='rememberMe'
-                    className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
+                    className='text-sm font-serif font-medium tracking-wide text-neutral-700 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
                     Remember me
                   </Label>
                 </div>
 
                 <Link
                   href='/forgot-password'
-                  className='text-sm font-medium text-blue-600 hover:text-blue-500'>
+                  className='text-sm font-serif font-medium text-primary hover:text-primary/80 transition-colors duration-300 underline underline-offset-4'>
                   Forgot password?
                 </Link>
               </div>
@@ -224,7 +224,7 @@ const LoginPage = () => {
             <CardFooter>
               <Button
                 type='submit'
-                className='w-full'
+                className='w-full font-serif tracking-wide rounded-none hover:bg-neutral-800 transition-colors duration-300'
                 disabled={authState.isLoading}>
                 {authState.isLoading ? (
                   <>
@@ -240,11 +240,11 @@ const LoginPage = () => {
         </Card>
 
         <div className='text-center'>
-          <p className='text-sm text-gray-600'>
+          <p className='text-sm font-serif text-neutral-600 tracking-wide'>
             {" Don't have an account?"}{" "}
             <Link
               href='/register'
-              className='font-medium text-blue-600 hover:text-blue-500'>
+              className='font-medium text-primary hover:text-primary/80 transition-colors duration-300 underline underline-offset-4'>
               Sign up now
             </Link>
           </p>

@@ -81,7 +81,7 @@ const UserInformation: React.FC<IProps> = ({
   ) => {
     return (
       <div className="grid w-full  items-center gap-1.5">
-        <Label htmlFor={id}>{label}</Label>
+        <Label htmlFor={id} className="font-serif tracking-[0.2em] uppercase text-neutral-700">{label}</Label>
         <Input
           name={id}
           type={type}
@@ -89,14 +89,15 @@ const UserInformation: React.FC<IProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={handleInputChange}
+          className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
         />
       </div>
     );
   };
   return (
-    <Card>
+    <Card className="rounded-none border-neutral-200">
       <CardHeader>
-        <CardTitle className="text-xl">Personal Information</CardTitle>
+        <CardTitle className="text-xl font-serif tracking-wide text-neutral-900">Personal Information</CardTitle>
       </CardHeader>
       <CardContent>
         {renderFormView(
@@ -125,19 +126,19 @@ const UserInformation: React.FC<IProps> = ({
         <br />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3">
           <div>
-            <Label htmlFor={"division"}>Division</Label>
+            <Label htmlFor={"division"} className="font-serif tracking-[0.2em] uppercase text-neutral-700">Division</Label>
             <Select
               onValueChange={(value: string) => {
                 handleShippingDivChange(value, "division");
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full rounded-none border-neutral-300 font-serif tracking-wide">
                 <SelectValue placeholder="Division" />
               </SelectTrigger>
               <SelectContent>
                 <Input
                   type="text"
-                  className="mb-2"
+                  className="mb-2 rounded-none border-neutral-300 font-serif tracking-wide"
                   placeholder="search"
                   value={divisionQuery}
                   onChange={(e) => setDivisionQuery(e.target.value)}
@@ -158,20 +159,20 @@ const UserInformation: React.FC<IProps> = ({
             </Select>
           </div>
           <div>
-            <Label htmlFor={"district"}>District</Label>
+            <Label htmlFor={"district"} className="font-serif tracking-[0.2em] uppercase text-neutral-700">District</Label>
             {!!shippingAddress?.division && (
               <Select
                 onValueChange={(value: string) => {
                   handleShippingDivChange(value, "district");
                 }}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full rounded-none border-neutral-300 font-serif tracking-wide">
                   <SelectValue placeholder="District" />
                 </SelectTrigger>
                 <SelectContent>
                   <Input
                     type="text"
-                    className="mb-2"
+                    className="mb-2 rounded-none border-neutral-300 font-serif tracking-wide"
                     placeholder="search"
                     value={districtQuery}
                     onChange={(e) => setDistrictQuery(e.target.value)}
