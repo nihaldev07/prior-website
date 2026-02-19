@@ -43,18 +43,6 @@ export default function EditorialHeroCarousel({
   const [isAnimating, setIsAnimating] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Auto-play functionality
-  useEffect(() => {
-    if (!isPaused && slides.length > 1) {
-      const interval = setInterval(() => {
-        handleNext();
-      }, autoPlayInterval);
-
-      return () => clearInterval(interval);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSlide, isPaused, autoPlayInterval, slides.length]);
-
   const handleNext = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -78,6 +66,17 @@ export default function EditorialHeroCarousel({
     },
     [isAnimating, currentSlide],
   );
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isPaused && slides.length > 1) {
+      const interval = setInterval(() => {
+        handleNext();
+      }, autoPlayInterval);
+
+      return () => clearInterval(interval);
+    }
+  }, [handleNext, isPaused, autoPlayInterval, slides.length]);
 
   if (!slides || slides.length === 0) {
     return null;
