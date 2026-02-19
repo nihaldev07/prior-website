@@ -14,19 +14,6 @@ export const heroSlides: HeroSlide[] = [
     },
   },
   {
-    id: "slide-shoes-2026",
-    image: "/images/cover/COVER3.jpg",
-    category: "Shoes",
-    title: "Step Into Style & Comfort",
-    description:
-      "Discover footwear that speaks your language. Trendy designs meets everyday comfort, because you deserve to look amazing and feel even better.",
-    primaryCTA: {
-      text: "Shop Shoes",
-      href: "/category/4506b4bb-e6a4-44c5-bb0c-ad77c1c3c967",
-    },
-  },
-
-  {
     id: "slide-hijab-2026",
     image: "/images/cover/COVER1.jpg",
     category: "Fahion Items",
@@ -36,6 +23,18 @@ export const heroSlides: HeroSlide[] = [
     primaryCTA: {
       text: "Discover Collection",
       href: "/collections",
+    },
+  },
+  {
+    id: "slide-shoes-2026",
+    image: "/images/cover/COVER3.jpg",
+    category: "Shoes",
+    title: "Step Into Style & Comfort",
+    description:
+      "Discover footwear that speaks your language. Trendy designs meets everyday comfort, because you deserve to look amazing and feel even better.",
+    primaryCTA: {
+      text: "Shop Shoes",
+      href: "/category/4506b4bb-e6a4-44c5-bb0c-ad77c1c3c967",
     },
   },
 ];
