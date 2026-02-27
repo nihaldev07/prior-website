@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { config } from "@/lib/config";
 import useDebounce from "./useDebounce";
+import { SingleProductType } from "@/data/types";
 
 const useSearchProduct = () => {
   const [inputValue, setInputValue] = useState<string>("");
-  const [products, setProducsts] = useState([]);
+  const [products, setProducsts] = useState<SingleProductType[]>([]);
   const [loading, setLoading] = useState(false);
   const debounceHandler = useDebounce(inputValue, 500);
 
   useEffect(() => {
-    searchProduct(inputValue);
-    //eslint-disable-next-line
+    searchProduct(debounceHandler);
   }, [debounceHandler]);
 
   const searchProduct = async (query: string) => {

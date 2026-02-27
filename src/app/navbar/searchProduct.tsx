@@ -100,7 +100,7 @@ export function GlobalSearch() {
                 ) : (
                   <div className='space-y-2 sm:space-y-4 w-full h-full overflow-y-auto -mx-4 px-4 sm:mx-0 sm:px-0'>
                     {/* Product List */}
-                    {products.map((product: ProductType) => (
+                    {products.map((product: any) => (
                       <div
                         key={
                           product.id ||

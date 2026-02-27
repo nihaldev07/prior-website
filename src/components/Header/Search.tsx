@@ -13,7 +13,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import useSearchProduct from "@/hooks/useProductSearch";
-import { ProductType } from "@/data/types";
+import { ProductType, SingleProductType } from "@/data/types";
 import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { BanknoteIcon, BoxIcon, SearchIcon } from "lucide-react";
@@ -61,7 +61,7 @@ export function GlobalSearch() {
           <CommandSeparator />
           <CommandGroup heading='Products'>
             {!!products &&
-              products?.map((product: ProductType) => (
+              products?.map((product: SingleProductType) => (
                 <CommandItem
                   key={product?.id}
                   onSelect={(val) => {
