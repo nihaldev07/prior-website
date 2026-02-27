@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Search, TrendingUp, X, ArrowUpDown } from "lucide-react";
+import { Search, X, Bird, Archive, ArchiveX } from "lucide-react";
 import Image from "next/image";
 import {
   Command,
@@ -18,8 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { fetchAllProducts } from "@/services/productServices";
-import { SingleProductType } from "@/data/types";
+import useSearchProduct from "@/hooks/useProductSearch";
 
 interface MobileSearchBoxProps {
   className?: string;
@@ -32,21 +31,9 @@ interface MobileSearchBoxProps {
  */
 export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
   const [open, setOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<SingleProductType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [allProducts, setAllProducts] = useState<SingleProductType[]>([]);
   const router = useRouter();
+  const { loading, products, inputValue, setInputValue } = useSearchProduct();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Fetch all products on mount for instant search
-  useEffect(() => {
-    const loadProducts = async () => {
-      const products = await fetchAllProducts();
-      setAllProducts(products);
-    };
-    loadProducts();
-  }, []);
 
   // Auto-focus input when dialog opens
   useEffect(() => {
@@ -57,44 +44,6 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
       }, 100);
     }
   }, [open]);
-
-  // Debounced search function
-  const performSearch = useCallback(
-    (query: string) => {
-      if (!query.trim()) {
-        setSearchResults([]);
-        return;
-      }
-
-      setIsLoading(true);
-
-      // Filter products locally for instant results
-      const filtered = allProducts
-        .filter((product) => {
-          const searchLower = query.toLowerCase();
-          return (
-            product.name?.toLowerCase().includes(searchLower) ||
-            product.description?.toLowerCase().includes(searchLower) ||
-            product.categoryName?.toLowerCase().includes(searchLower) ||
-            product.productCode?.toLowerCase().includes(searchLower)
-          );
-        })
-        .slice(0, 8); // Limit to 8 results
-
-      setSearchResults(filtered);
-      setIsLoading(false);
-    },
-    [allProducts],
-  );
-
-  // Debounce search input
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      performSearch(searchQuery);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, performSearch]);
 
   /**
    * Handle product selection
@@ -109,8 +58,8 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
    */
   const handleSearchSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/collections?search=${encodeURIComponent(searchQuery)}`);
+    if (inputValue.trim()) {
+      router.push(`/collections?search=${encodeURIComponent(inputValue)}`);
       handleClose();
     }
   };
@@ -119,8 +68,7 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
    * Clear search input
    */
   const handleClear = () => {
-    setSearchQuery("");
-    setSearchResults([]);
+    setInputValue("");
     inputRef.current?.focus();
   };
 
@@ -128,8 +76,7 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
    * Close dialog and reset state
    */
   const handleClose = () => {
-    setSearchQuery("");
-    setSearchResults([]);
+    setInputValue("");
     setOpen(false);
   };
 
@@ -179,8 +126,8 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
                       ref={inputRef}
                       type='text'
                       placeholder='Search products...'
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
                       className={cn(
                         "w-full pl-10 pr-10 h-12 border border-neutral-300 rounded-none text-base font-serif",
                         "focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900",
@@ -190,7 +137,7 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
                       autoComplete='off'
                     />
                     <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4 pointer-events-none' />
-                    {searchQuery && (
+                    {inputValue && (
                       <button
                         type='button'
                         onClick={handleClear}
@@ -199,7 +146,7 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
                         <X className='w-4 h-4' />
                       </button>
                     )}
-                    {isLoading && (
+                    {loading && (
                       <div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
                         <div className='w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin' />
                       </div>
@@ -223,17 +170,22 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
             <Command className='border-0 shadow-none'>
               <CommandList>
                 <CommandEmpty className='py-8 text-center text-sm font-serif text-neutral-600 tracking-wide'>
-                  {searchQuery
-                    ? "No products found"
-                    : "Start typing to search..."}
+                  {!loading && (
+                    <>
+                      <Bird className='mx-auto mb-2' />
+                      {inputValue
+                        ? "No products found"
+                        : "Start typing to search..."}
+                    </>
+                  )}
                 </CommandEmpty>
 
-                {searchResults.length > 0 && (
+                {!loading && products.length > 0 && (
                   <CommandGroup heading='Products'>
-                    {searchResults.map((product) => (
+                    {products.map((product) => (
                       <CommandItem
-                        key={product.id}
-                        value={product.id}
+                        key={product?.id}
+                        value={product?.id}
                         onSelect={() => handleSelectProduct(product.id)}
                         className='cursor-pointer px-4 py-3'>
                         <div className='flex items-center gap-3 w-full'>
@@ -256,12 +208,14 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
 
                           {/* Product Info */}
                           <div className='flex-1 min-w-0'>
-                            <p className='text-sm font-serif tracking-wide text-neutral-900 truncate'>
-                              {product.name}
+                            <p className='text-sm uppercase font-serif tracking-wide text-neutral-900 truncate  font-medium mr-2 px-1.5  py-1'>
+                              {product.name} * {product?.categoryName}
                             </p>
-                            <div className='flex items-center gap-2 mt-1'>
+                            <div className='flex items-center gap-2 mt-1 '>
                               <span className='text-sm font-serif text-neutral-900'>
-                                {formatPrice(product.unitPrice)}
+                                {formatPrice(
+                                  product.updatedPrice || product.unitPrice,
+                                )}
                               </span>
                               {product.hasDiscount && product.updatedPrice && (
                                 <>
@@ -282,9 +236,17 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
                             </div>
                           </div>
 
-                          {/* High rating indicator */}
-                          {product.rating >= 4 && (
-                            <TrendingUp className='w-4 h-4 text-amber-500 flex-shrink-0' />
+                          {/* Stock indicator */}
+                          {product.quantity > 0 ? (
+                            <span className='inline-flex items-center bg-emerald-50 text-emerald-600 text-xs font-medium mr-2 pl-1.5 pr-2 rounded py-1'>
+                              <Archive className='w-3 h-3 mr-1 text-green-400' />{" "}
+                              In Stock
+                            </span>
+                          ) : (
+                            <span className='inline-flex items-center bg-red-50 text-red-600 text-xs font-medium mr-2 pl-1.5 pr-2 rounded py-1'>
+                              <ArchiveX className='w-3 h-3 mr-1 text-red-400' />{" "}
+                              Out of Stock
+                            </span>
                           )}
                         </div>
                       </CommandItem>
@@ -292,12 +254,19 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
                   </CommandGroup>
                 )}
 
-                {searchResults.length > 0 && (
+                {loading && (
+                  <div className='p-6 flex justify-center items-center'>
+                    Searching...{" "}
+                    <div className='w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin ml-2' />
+                  </div>
+                )}
+
+                {products.length > 0 && (
                   <div className='border-t border-neutral-200 sticky bottom-0 bg-white'>
                     <button
                       onClick={handleSearchSubmit}
                       className='w-full px-6 py-4 text-sm text-center font-serif tracking-wide text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 transition-colors duration-300'>
-                      View all results for &ldquo;{searchQuery}&rdquo;
+                      View all results for &ldquo;{inputValue}&rdquo;
                     </button>
                   </div>
                 )}
