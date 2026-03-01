@@ -155,7 +155,7 @@ export default function SearchBox({
                       <div className='relative w-12 h-12 flex-shrink-0 bg-neutral-50 rounded-none overflow-hidden border border-neutral-200'>
                         {product.images && product.images.length > 0 ? (
                           <Image
-                            src={product.images[0]}
+                            src={product.thumbnail ?? product.images[0]}
                             alt={product.name}
                             fill
                             className='object-cover'

@@ -44,6 +44,8 @@ export type Category = {
   discount: number;
   active: boolean;
   img: string;
+  level: number;
+  ancestors: string[];
 };
 
 export type RatingDetailsType = {

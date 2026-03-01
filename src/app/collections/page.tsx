@@ -4,31 +4,21 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Filter,
   X,
   Loader2,
   Grid3x3,
   List,
   TrendingUp,
-  SlidersHorizontal,
   MoreHorizontal,
 } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import ProductCard from "@/components/new-ui/ProductCard";
 import ProductFilters from "@/components/new-ui/ProductFilters";
 import { adaptProductsToNewFormat } from "@/lib/adapters/productAdapter";
 import useProductFetch from "@/hooks/useProductFetch";
 import { usePageState } from "@/context/PageStateContext";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import ProductFiltersSheet from "@/components/new-ui/ProductFilterSheet";
 
 /**
  * Collections Page - Modern Product Listing with Filters
@@ -190,86 +180,21 @@ export default function CollectionsPage() {
           {/* Products Section */}
           <main className='flex-1 min-w-0'>
             {/* Toolbar: Filter Button, Results Count, View Toggle */}
-            <div className='flex items-center justify-between mb-2 md:mb-6 bg-white p-4 shadow-md md:shadow rounded-lg border border-gray-200'>
+            <div className='flex items-center justify-between mb-2 md:mb-6 bg-white p-4  md:shadow border border-gray-200'>
               <div className='flex md:hidden justify-center items-center w-full'>
                 All Collections
               </div>
               <div className='flex items-center gap-4'>
                 {/* Mobile Filter Button */}
                 {hasFiltersAvailable && (
-                  <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                    <SheetTrigger asChild>
-                      <Button className='lg:hidden fixed bottom-5 right-3 z-50 inline-flex items-center justify-center gap-1.5 h-9 md:h-10 px-4 md:px-5 text-xs md:text-sm font-serif tracking-[0.15em] uppercase text-neutral-900 hover:text-white bg-white hover:bg-neutral-900 rounded-none transition-all duration-300 group whitespace-nowrap flex-shrink-0 overflow-hidden'>
-                        {/* Continuous Animated Border */}
-                        <span className='absolute inset-0 z-0'>
-                          {/* Top Border */}
-                          <span className='absolute top-0 h-[2px] bg-gradient-to-r from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-top' />
-
-                          {/* Right Border */}
-                          <span className='absolute right-0 w-[2px] bg-gradient-to-b from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-right' />
-
-                          {/* Bottom Border */}
-                          <span className='absolute bottom-0 h-[2px] bg-gradient-to-l from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-bottom' />
-
-                          {/* Left Border */}
-                          <span className='absolute left-0 w-[2px] bg-gradient-to-t from-neutral-400 via-neutral-600 to-neutral-900 animate-border-draw-left' />
-                        </span>
-
-                        {/* Static Border (fallback) */}
-                        <span className='absolute inset-0 border border-neutral-300 group-hover:border-transparent transition-colors duration-300 z-0' />
-
-                        {/* Hover Overlay - appears on hover */}
-                        <span className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-[1]'>
-                          <span className='absolute inset-0 border-2 border-neutral-900' />
-                        </span>
-
-                        {/* Content */}
-                        <div className='flex items-center gap-3 justify-center'>
-                          <SlidersHorizontal className='w-5 h-5 text-neutral-900' />
-                          <h2 className='text-base font-serif tracking-wide text-neutral-900'>
-                            Filters
-                          </h2>
-                          {activeFilterCount > 0 && (
-                            <Badge
-                              variant='default'
-                              className='ml-2 bg-neutral-900 text-white rounded-none'>
-                              {activeFilterCount}
-                            </Badge>
-                          )}
-                        </div>
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side='left' className='w-full sm:w-96 p-0'>
-                      <SheetHeader className='px-6 py-4 border-b border-gray-200'>
-                        <div className='flex items-center justify-between'>
-                          <SheetTitle>Filters</SheetTitle>
-                          {activeFilterCount > 0 && (
-                            <Button
-                              variant='ghost'
-                              size='sm'
-                              onClick={handleClearFilters}
-                              className='text-sm'>
-                              Clear All
-                            </Button>
-                          )}
-                        </div>
-                      </SheetHeader>
-                      <div className='px-6 py-4 overflow-y-auto h-[calc(100vh-80px)]'>
-                        <ProductFilters
-                          sizes={distictFilterValues.sizes.filter(
-                            (i) => i !== "",
-                          )}
-                          colors={distictFilterValues.colors.filter(
-                            (i) => i !== "",
-                          )}
-                          categories={distictFilterValues.categories}
-                          filterData={filterData}
-                          onFilterChange={handleFilterChange}
-                          onClearFilters={handleClearFilters}
-                        />
-                      </div>
-                    </SheetContent>
-                  </Sheet>
+                  <ProductFiltersSheet
+                    sizes={distictFilterValues.sizes.filter((i) => i !== "")}
+                    colors={distictFilterValues.colors.filter((i) => i !== "")}
+                    categories={distictFilterValues.categories}
+                    filterData={filterData}
+                    onFilterChange={handleFilterChange}
+                    onClearFilters={handleClearFilters}
+                  />
                 )}
 
                 {/* Results Count */}
