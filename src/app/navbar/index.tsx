@@ -84,6 +84,33 @@ const Navbar = () => {
     2000
   );
 
+  // Helper function to add "All Collection" option to parent categories
+  const addAllCollectionOption = (category: Category) => {
+    if (category.children && category.children.length > 0) {
+      // Create "All Collection" as first child
+      const allCollection: Category = {
+        id: `all-${category.id}`,
+        name: "All Collection",
+        slug: category.slug,
+        description: `All products in ${category.name}`,
+        parentId: category.id,
+        level: category.level + 1,
+        totalProducts: category.totalProducts,
+        totalChildren: 0,
+        children: [],
+      };
+
+      category.children.unshift(allCollection);
+
+      // Recursively add to nested children
+      category.children.forEach((child) => {
+        if (child.id !== `all-${category.id}` && child.children && child.children.length > 0) {
+          addAllCollectionOption(child);
+        }
+      });
+    }
+  };
+
   // Build nested category tree structure
   const buildCategoryTree = (flatCategories: Category[]): Category[] => {
     const categoryMap = new Map<string, Category>();
@@ -103,6 +130,11 @@ const Navbar = () => {
       } else {
         rootCategories.push(categoryNode);
       }
+    });
+
+    // Add "All Collection" to parent categories with children
+    rootCategories.forEach((category) => {
+      addAllCollectionOption(category);
     });
 
     return rootCategories;
@@ -131,65 +163,72 @@ const Navbar = () => {
           "space-y-1",
           level > 0 && "ml-4 pl-3 border-l border-gray-200"
         )}>
-        {categories.map((category) => (
-          <div key={category.id} className='space-y-1'>
-            <div className='flex items-center justify-between group'>
-              <Link
-                href={`/category/${category.id}`}
-                onClick={() => setOpenSheet(false)}
-                className={cn(
-                  "flex-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700",
-                  level === 0 ? "font-medium text-gray-900" : "text-gray-600"
-                )}>
-                {category.img && (
-                  <div className='w-6 h-6 rounded overflow-hidden bg-gray-100 flex-shrink-0'>
-                    <Image
-                      src={category.img}
-                      alt={category.name}
-                      width={24}
-                      height={24}
-                      className='w-full h-full object-cover'
-                    />
-                  </div>
-                )}
-                <span className='flex-1 truncate'>{category.name}</span>
-                {category.totalProducts > 0 && (
-                  <Badge
-                    variant='outline'
-                    className='text-xs px-1.5 py-0.5 text-gray-500'>
-                    {category.totalProducts}
-                  </Badge>
-                )}
-              </Link>
-              {category.children && category.children.length > 0 && (
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  className='p-1 h-auto hover:bg-blue-100'
-                  onClick={() => toggleCategoryExpanded(category.id)}>
-                  {expandedCategories.has(category.id) ? (
-                    <ChevronDown className='w-4 h-4 text-gray-500' />
-                  ) : (
-                    <ChevronRight className='w-4 h-4 text-gray-500' />
+        {categories.map((category) => {
+          // Check if this is an "All Collection" item
+          const isAllCollection = category.id.startsWith('all-');
+          const parentCategoryId = isAllCollection ? category.parentId : category.id;
+
+          return (
+            <div key={category.id} className='space-y-1'>
+              <div className='flex items-center justify-between group'>
+                <Link
+                  href={`/category/${parentCategoryId}`}
+                  onClick={() => setOpenSheet(false)}
+                  className={cn(
+                    "flex-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700",
+                    level === 0 ? "font-medium text-gray-900" : "text-gray-600",
+                    isAllCollection && "font-semibold text-blue-600"
+                  )}>
+                  {category.img && (
+                    <div className='w-6 h-6 rounded overflow-hidden bg-gray-100 flex-shrink-0'>
+                      <Image
+                        src={category.img}
+                        alt={category.name}
+                        width={24}
+                        height={24}
+                        className='w-full h-full object-cover'
+                      />
+                    </div>
                   )}
-                </Button>
+                  <span className='flex-1 truncate'>{category.name}</span>
+                  {category.totalProducts > 0 && (
+                    <Badge
+                      variant='outline'
+                      className='text-xs px-1.5 py-0.5 text-gray-500'>
+                      {category.totalProducts}
+                    </Badge>
+                  )}
+                </Link>
+                {!isAllCollection && category.children && category.children.length > 0 && (
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    className='p-1 h-auto hover:bg-blue-100'
+                    onClick={() => toggleCategoryExpanded(category.id)}>
+                    {expandedCategories.has(category.id) ? (
+                      <ChevronDown className='w-4 h-4 text-gray-500' />
+                    ) : (
+                      <ChevronRight className='w-4 h-4 text-gray-500' />
+                    )}
+                  </Button>
+                )}
+              </div>
+
+              {!isAllCollection && category.children && category.children.length > 0 && (
+                <Collapsible
+                  open={expandedCategories.has(category.id)}
+                  onOpenChange={() => toggleCategoryExpanded(category.id)}>
+                  <CollapsibleContent className='space-y-1'>
+                    <MobileCategoryTree
+                      categories={category.children}
+                      level={level + 1}
+                    />
+                  </CollapsibleContent>
+                </Collapsible>
               )}
             </div>
-
-            {category.children && category.children.length > 0 && (
-              <Collapsible
-                open={expandedCategories.has(category.id)}
-                onOpenChange={() => toggleCategoryExpanded(category.id)}>
-                <CollapsibleContent className='space-y-1'>
-                  <MobileCategoryTree
-                    categories={category.children}
-                    level={level + 1}
-                  />
-                </CollapsibleContent>
-              </Collapsible>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };

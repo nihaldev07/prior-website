@@ -14,6 +14,10 @@ import {
   Heart,
   ChevronRight,
   ChevronDown,
+  Grid3x3,
+  Minus,
+  LineDotRightHorizontal,
+  SquareArrowOutUpRight,
 } from "lucide-react";
 import LogoImg from "@/images/logo.png";
 import { useCart } from "@/context/CartContext";
@@ -39,6 +43,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import useCategory from "@/hooks/useCategory";
+import { Button } from "../ui/button";
 
 interface Category {
   id: string;
@@ -84,6 +89,37 @@ export default function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Helper function to add "All" option to parent categories with children
+  const addAllCollectionOption = (category: Category) => {
+    if (category.children && category.children.length > 0) {
+      // Create "All" as first child
+      const allCollection: Category = {
+        id: `all-${category.id}`,
+        name: `All ${category.name}`,
+        slug: category.slug,
+        description: `View all products in ${category.name}`,
+        parentId: category.id,
+        level: category.level + 1,
+        totalProducts: category.totalProducts,
+        totalChildren: 0,
+        children: [],
+      };
+
+      category.children.unshift(allCollection);
+
+      // Recursively add to nested children (except for "All" items)
+      category.children.forEach((child) => {
+        if (
+          !child.id.startsWith("all-") &&
+          child.children &&
+          child.children.length > 0
+        ) {
+          addAllCollectionOption(child);
+        }
+      });
+    }
+  };
+
   // Build nested category tree structure
   const buildCategoryTree = (flatCategories: Category[]): Category[] => {
     const categoryMap = new Map<string, Category>();
@@ -103,6 +139,11 @@ export default function Header() {
       } else {
         rootCategories.push(categoryNode);
       }
+    });
+
+    // Add "All" to parent categories with children
+    rootCategories.forEach((category) => {
+      addAllCollectionOption(category);
     });
 
     return rootCategories;
@@ -127,61 +168,83 @@ export default function Header() {
   }> = ({ categories, level = 0 }) => {
     return (
       <div className='space-y-1'>
-        {categories.map((category) => (
-          <div key={category.id} className='space-y-1'>
-            <Collapsible
-              open={
-                category.children && category.children.length > 0
-                  ? expandedCategories.has(category.id)
-                  : false
-              }
-              onOpenChange={() => toggleCategoryExpanded(category.id)}>
-              <div className='flex items-center justify-between group'>
+        {categories.map((category) => {
+          const isAllCollection = category.id.startsWith("all-");
+          const hasChildren =
+            !isAllCollection &&
+            category.children &&
+            category.children.length > 0;
+          const isExpanded = expandedCategories.has(category.id);
+
+          return (
+            <div key={category.id} className='space-y-1'>
+              {hasChildren ? (
+                <Collapsible
+                  open={isExpanded}
+                  onOpenChange={() => toggleCategoryExpanded(category.id)}>
+                  <div className='flex items-center group'>
+                    <CollapsibleTrigger asChild>
+                      <button
+                        className={cn(
+                          "flex-1 flex items-center justify-between border border-neutral-600 px-3 py-2.5 text-sm transition-all duration-200 hover:bg-neutral-50 text-left",
+                          level === 0
+                            ? "font-medium text-neutral-800"
+                            : "text-neutral-700",
+                        )}>
+                        <span className='flex-1 font-serif tracking-wide'>
+                          {category.name}
+                        </span>
+                        <div className='ml-2 p-0.5 border border-neutral-600  transition-transform duration-200'>
+                          {isExpanded ? (
+                            <ChevronDown className='w-4 h-4 text-neutral-800' />
+                          ) : (
+                            <ChevronRight className='w-4 h-4 text-neutral-800' />
+                          )}
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <CollapsibleContent className='space-y-2 py-2 '>
+                    <div
+                      className={cn(
+                        " border-l-2 pt-4 ml-3",
+                        level === 0
+                          ? "border-neutral-500"
+                          : "border-neutral-300",
+                      )}>
+                      <MobileCategoryTree
+                        //@ts-ignore
+                        categories={category?.children}
+                        level={level + 1}
+                      />
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
                 <Link
-                  href={`/category/${category.id}`}
+                  href={`/category/${category.slug}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
-                    "flex-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 hover:bg-neutral-50",
+                    "flex items-center border border-neutral-600  py-2.5 text-sm transition-all duration-200 hover:bg-neutral-50",
                     level === 0
-                      ? "font-medium text-neutral-700"
-                      : "text-neutral-700",
+                      ? "font-medium text-neutral-800 px-3 "
+                      : "text-neutral-800 pr-3 ml-[30px] mb-2",
+                    isAllCollection && "font-semibold ",
                   )}>
-                  <span className='flex-1 font-serif tracking-wide'>
-                    {category.name}
+                  <span className='flex-1 font-serif tracking-wide uppercase'>
+                    {level > 0 && (
+                      <LineDotRightHorizontal className='w-6 text-neutral-500 inline-block ml-[-30px] mr-2' />
+                    )}{" "}
+                    {isAllCollection ? "All" : category.name}
                   </span>
                 </Link>
-                {category.children && category.children.length > 0 && (
-                  <CollapsibleTrigger className='p-1 hover:bg-neutral-100 rounded-md transition-colors'>
-                    {expandedCategories.has(category.id) ? (
-                      <ChevronDown className='w-4 h-4 text-neutral-600' />
-                    ) : (
-                      <ChevronRight className='w-4 h-4 text-neutral-600' />
-                    )}
-                  </CollapsibleTrigger>
-                )}
-              </div>
-              {category.children && category.children.length > 0 && (
-                <CollapsibleContent className='space-y-1'>
-                  <div
-                    className={cn(
-                      level > 0 && "ml-4 pl-3 border-l border-neutral-200",
-                    )}>
-                    <MobileCategoryTree
-                      categories={category.children}
-                      level={level + 1}
-                    />
-                  </div>
-                </CollapsibleContent>
               )}
-            </Collapsible>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     );
   };
-
-  // All Products category state
-  const [isAllProductsOpen, setIsAllProductsOpen] = useState(true);
 
   // Desktop Category Tree Component
   const DesktopCategoryTree: React.FC<{
@@ -190,57 +253,79 @@ export default function Header() {
   }> = ({ categories, level = 0 }) => {
     return (
       <div className='space-y-0.5'>
-        {categories.map((category) => (
-          <div key={category.id} className='space-y-0.5'>
-            <Collapsible
-              open={
-                category.children && category.children.length > 0
-                  ? expandedCategories.has(category.id)
-                  : false
-              }
-              onOpenChange={() => toggleCategoryExpanded(category.id)}>
-              <div className='flex items-center justify-between group rounded-lg hover:bg-neutral-50 transition-colors duration-200'>
+        {categories.map((category) => {
+          const isAllCollection = category.id.startsWith("all-");
+          const hasChildren =
+            !isAllCollection &&
+            category.children &&
+            category.children.length > 0;
+          const isExpanded = expandedCategories.has(category.id);
+
+          return (
+            <div key={category.id} className='space-y-0.5'>
+              {hasChildren ? (
+                <Collapsible
+                  open={isExpanded}
+                  onOpenChange={() => toggleCategoryExpanded(category.id)}>
+                  <div className='flex items-center group'>
+                    <CollapsibleTrigger asChild>
+                      <button
+                        className={cn(
+                          "flex-1 flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-all duration-200 hover:bg-neutral-50 text-left",
+                          level === 0
+                            ? "font-semibold text-neutral-900"
+                            : "font-medium text-neutral-700",
+                        )}>
+                        <span className='flex-1 font-serif tracking-wide'>
+                          {category.name}
+                        </span>
+                        <div className='ml-2 p-0.5 hover:bg-neutral-100 rounded-md transition-all duration-200'>
+                          {isExpanded ? (
+                            <ChevronDown className='w-4 h-4 text-neutral-700' />
+                          ) : (
+                            <ChevronRight className='w-4 h-4 text-neutral-700' />
+                          )}
+                        </div>
+                      </button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <CollapsibleContent className='space-y-0.5 bg-gray-100'>
+                    <div
+                      className={cn(
+                        "ml-4  mt-1 space-y-0.5 ",
+                        level === 0
+                          ? "border-l-2 border-neutral-400"
+                          : "border-l border-neutral-150",
+                      )}>
+                      <DesktopCategoryTree
+                        //@ts-ignore
+                        categories={category?.children}
+                        level={level + 1}
+                      />
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : (
                 <Link
-                  href={`/category/${category.id}`}
+                  href={`/category/${category.slug}`}
                   onClick={() => setIsDesktopMenuOpen(false)}
                   className={cn(
-                    "flex-1 flex items-center gap-3 px-3 py-2.5 text-sm transition-all duration-200",
+                    "flex items-center pr-3 py-2.5 text-sm transition-all duration-200 hover:bg-neutral-50",
                     level === 0
-                      ? "font-medium text-neutral-900"
-                      : "text-neutral-700",
+                      ? "font-semibold text-neutral-900 pl-3"
+                      : "font-medium text-neutral-700",
                   )}>
-                  <span className='flex-1 font-serif tracking-wide'>
-                    {category.name}
+                  <span className='flex-1 font-serif tracking-wide uppercase'>
+                    {level > 0 && (
+                      <LineDotRightHorizontal className='w-5 text-neutral-400 inline-block' />
+                    )}{" "}
+                    {isAllCollection ? "All" : category.name}
                   </span>
                 </Link>
-                {category.children && category.children.length > 0 && (
-                  <CollapsibleTrigger className='mr-2 p-1.5 hover:bg-neutral-200 rounded-md transition-all duration-200'>
-                    {expandedCategories.has(category.id) ? (
-                      <ChevronDown className='w-4 h-4 text-neutral-700' />
-                    ) : (
-                      <ChevronRight className='w-4 h-4 text-neutral-700' />
-                    )}
-                  </CollapsibleTrigger>
-                )}
-              </div>
-              {category.children && category.children.length > 0 && (
-                <CollapsibleContent className='space-y-0.5'>
-                  <div
-                    className={cn(
-                      level === 0 &&
-                        "ml-4 pl-4 border-l-2 border-neutral-200 mt-1 space-y-0.5",
-                      level > 0 && "ml-4 pl-4 border-l border-neutral-200",
-                    )}>
-                    <DesktopCategoryTree
-                      categories={category.children}
-                      level={level + 1}
-                    />
-                  </div>
-                </CollapsibleContent>
               )}
-            </Collapsible>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -315,17 +400,23 @@ export default function Header() {
               <PopoverTrigger asChild>
                 <button
                   className={cn(
-                    "text-sm font-serif tracking-wide transition-colors duration-300 text-left",
+                    "text-sm font-serif tracking-wide transition-colors duration-300 text-left flex items-center gap-1.5",
                     isActive("/collections")
                       ? "text-neutral-900"
                       : "text-neutral-700 hover:text-neutral-900",
                   )}>
                   All Products
+                  <ChevronDown
+                    className={cn(
+                      "w-3.5 h-3.5 transition-transform duration-200",
+                      isDesktopMenuOpen && "rotate-180",
+                    )}
+                  />
                 </button>
               </PopoverTrigger>
               <PopoverContent
                 align='start'
-                className='w-96 p-0 max-h-[65vh] overflow-hidden border-neutral-200 shadow-xl'>
+                className='w-96 p-0 max-h-[70vh] overflow-hidden border-neutral-200 shadow-xl'>
                 <div className='bg-gradient-to-b from-neutral-50 to-white p-4 border-b border-neutral-200'>
                   <div className='flex items-center gap-2'>
                     <Package className='w-4 h-4 text-neutral-600' />
@@ -334,8 +425,20 @@ export default function Header() {
                     </h3>
                   </div>
                 </div>
-                <ScrollArea className='h-[calc(65vh-60px)]'>
+                <ScrollArea className='h-[calc(70vh-60px)]'>
                   <div className='p-4 bg-white'>
+                    {/* All Collections Link at Top */}
+                    <Link
+                      href='/collections'
+                      onClick={() => setIsDesktopMenuOpen(false)}
+                      className='flex items-center gap-2 rounded px-3 py-3 mb-3 text-sm font-bold font-serif tracking-wide text-white bg-neutral-900 hover:bg-neutral-800 transition-all duration-200 shadow-sm'>
+                      <Grid3x3 className='w-4 h-4' />
+                      <span className='flex-1'>All Collections</span>
+                      <SquareArrowOutUpRight className='w-4 h-4' />
+                    </Link>
+
+                    <div className='h-px bg-neutral-200 mb-3' />
+
                     {categories.length > 0 ? (
                       <DesktopCategoryTree categories={categories} />
                     ) : (
@@ -505,41 +608,7 @@ export default function Header() {
                     className='block font-serif text-base tracking-wide text-neutral-700 hover:text-neutral-900 transition-colors duration-200 py-2.5 px-3 rounded-lg hover:bg-neutral-50'>
                     Home
                   </Link>
-                  {/* All Products - Collapsible with Categories */}
-                  <Collapsible
-                    open={isAllProductsOpen}
-                    onOpenChange={setIsAllProductsOpen}>
-                    <div className='flex items-center justify-between group'>
-                      <Link
-                        href='/collections'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsAllProductsOpen(!isAllProductsOpen);
-                        }}
-                        className='flex-1 flex items-center justify-between font-serif text-base tracking-wide text-neutral-700 hover:text-neutral-900 transition-colors duration-200 py-2.5 px-3 rounded-lg hover:bg-neutral-50'>
-                        <span>All Products</span>
-                      </Link>
-                      <CollapsibleTrigger
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsAllProductsOpen(!isAllProductsOpen);
-                        }}
-                        className='p-1 mr-2 hover:bg-neutral-100 rounded-md transition-colors'>
-                        {isAllProductsOpen ? (
-                          <ChevronDown className='w-4 h-4 text-neutral-600' />
-                        ) : (
-                          <ChevronRight className='w-4 h-4 text-neutral-600' />
-                        )}
-                      </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent className='space-y-1'>
-                      <div className='ml-4 pl-3 border-l border-neutral-200'>
-                        {categories.length > 0 && (
-                          <MobileCategoryTree categories={categories} />
-                        )}
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+
                   <Link
                     href='/deals'
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -564,6 +633,33 @@ export default function Header() {
                     className='block font-serif text-base tracking-wide text-neutral-700 hover:text-neutral-900 transition-colors duration-200 py-2.5 px-3 rounded-lg hover:bg-neutral-50'>
                     Contact
                   </Link>
+
+                  <div className='border-t border-neutral-200 pt-2 mt-2'>
+                    {/* All Collections Link at Top */}
+                    <Button
+                      variant={"ghost"}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className='flex items-center gap-2 font-serif text-base tracking-wide bg-white text-neutral-900  transition-colors duration-200 py-3 px-3  font-semibold mb-2'>
+                      <Grid3x3 className='w-4 h-4' />
+                      <span className='flex-1'>Categories</span>
+                    </Button>
+
+                    {/* Categories */}
+                    {categories.length > 0 && (
+                      <div className='border-t border-neutral-200 pt-2 mt-2'>
+                        <Link
+                          href='/collections'
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className='flex text-[15px] border border-neutral-600 mb-2 px-3 font-medium items-center text-neutral-800  py-2.5 transition-all duration-200 hover:bg-neutral-50'>
+                          <span className='flex-1 font-serif tracking-wide'>
+                            ALL
+                          </span>
+                          <SquareArrowOutUpRight className='w-4 h-4' />
+                        </Link>
+                        <MobileCategoryTree categories={categories} />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* User Actions */}

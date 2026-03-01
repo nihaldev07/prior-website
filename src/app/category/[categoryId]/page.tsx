@@ -3,8 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import SidebarFilters from "@/components/SidebarFilter";
 import useProductFetch from "@/hooks/useProductFetch";
 import { ProductType } from "@/data/types";
-import { Filter, LoaderCircle } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LoaderCircle } from "lucide-react";
 import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
 import { useParams } from "next/navigation";
@@ -12,6 +11,7 @@ import useAnalytics from "@/hooks/useAnalytics";
 import { usePageState } from "@/context/PageStateContext";
 import ProductCard from "@/components/new-ui/ProductCard";
 import { convertProductTypeToProduct } from "@/utils/functions";
+import ProductFiltersSheet from "@/components/new-ui/ProductFilterSheet";
 
 const SingleCategoryPage = () => {
   const params = useParams(); // Fetch route parameters
@@ -117,31 +117,26 @@ const SingleCategoryPage = () => {
           id='body'>
           <div className='flex justify-between items-center p-2 md:hidden'>
             <h2 className='text-primary font-semibold'>Products</h2>
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetTrigger>
-                <Filter className='w-6 h-6 ml-auto' />
-              </SheetTrigger>
-              <SheetContent
-                className='overflow-y-auto px-3'
-                onClick={() => {
-                  setSheetOpen(false);
-                }}>
-                <SidebarFilters
-                  filterData={filterData}
-                  showCategory={false}
-                  //@ts-ignore
-                  selectedCategory={categoryId}
-                  selectedColor={filterData?.color}
-                  selectedSize={filterData?.size}
-                  categories={distictFilterValues.categories}
-                  colors={distictFilterValues.colors.filter((i) => i !== "")}
-                  sizes={distictFilterValues.sizes.filter((i) => i !== "")}
-                  handleFilterChange={(value) => {
-                    setFilterData(value);
-                  }}
-                />
-              </SheetContent>
-            </Sheet>
+            <ProductFiltersSheet
+              showCategory={false}
+              sizes={distictFilterValues.sizes.filter((i) => i !== "")}
+              colors={distictFilterValues.colors.filter((i) => i !== "")}
+              categories={distictFilterValues.categories}
+              filterData={filterData}
+              onFilterChange={(value) => {
+                setFilterData(value);
+              }}
+              onClearFilters={() => {
+                setFilterData({
+                  categoryId: Array.isArray(categoryId)
+                    ? categoryId[0]
+                    : categoryId,
+                  color: "",
+                  size: "",
+                  price: "",
+                });
+              }}
+            />
           </div>
           {filterData &&
             (filterData?.color || filterData?.size) &&
