@@ -26,7 +26,9 @@ const PaymentMethod: FC<Props> = ({
         </span>
         <div className='flex w-full items-center justify-between'>
           <div className='sm:ml-8'>
-            <h3 className='uppercase font-serif tracking-[0.2em] text-neutral-900'>PAYMENT METHOD</h3>
+            <h3 className='uppercase font-serif tracking-[0.2em] text-neutral-900'>
+              PAYMENT METHOD
+            </h3>
             <div className='mt-1 text-sm font-semibold'></div>
           </div>
         </div>
@@ -35,7 +37,7 @@ const PaymentMethod: FC<Props> = ({
       <div
         className={`space-y-6 border-t border-neutral-200 px-6 py-7 ${"block"}`}>
         {/* ==================== */}
-        <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4'>
+        <div className='w-full grid grid-cols-1 sm:grid-cols-1 gap-4'>
           <Button
             variant={paymentMethod === "cashondelivery" ? "default" : "outline"}
             className={`font-serif tracking-wide transition-all duration-300 ${
@@ -44,19 +46,20 @@ const PaymentMethod: FC<Props> = ({
                 : "rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50"
             }`}
             onClick={() => handlePaymentMethodChange("cashondelivery")}>
-            <Banknote className='mr-2 size-5' />{" "}
-            {!!prePaymentAmount && prePaymentAmount > 0
+            <Banknote className='mr-2 size-5' /> Cash On Delivery
+            {/**{!!prePaymentAmount && prePaymentAmount > 0
               ? `Cash On Delivery (Advance ${prePaymentAmount}TK)`
               : district.toLowerCase().includes("dhaka")
               ? "Cash On Delivery"
               : ["gazipur", "tongi", "narayanganj", "savar"].includes(
-                  district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
+                  district.replace(/\s*\(.*?\)\s*\/g, "").toLowerCase()
                 )
               ? "Cash On Delivery (Advance 130TK)"
-              : "Cash On Delivery (Advance 150TK)"}
+              : "Cash On Delivery (Advance 150TK)"} */}
           </Button>
           <Button
-            className={`flex justify-center items-center font-serif tracking-wide transition-all duration-300 ${
+            disabled
+            className={`hidden justify-center items-center font-serif tracking-wide transition-all duration-300 ${
               paymentMethod === "bkash"
                 ? "rounded-none bg-neutral-900 text-white hover:bg-neutral-800"
                 : "rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50"
