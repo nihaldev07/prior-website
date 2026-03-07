@@ -84,7 +84,7 @@ const CheckoutPage = () => {
     deliveryCharge: 0,
   });
 
-  const [paymentMethod, setPaymentMethod] = useState("cashondelivery");
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [notes, setNotes] = useState("");
 
   const [formData, setFormData] = useState<UserFormData>({
@@ -333,7 +333,7 @@ const CheckoutPage = () => {
   }, [cart, appliedCoupon]);
 
   useEffect(() => {
-    if (paymentMethod === "" || paymentMethod === "cashondelivery") return;
+    if (paymentMethod === "") return;
     if (formData?.district === "" || formData.division === "") {
       Swal.fire("Oops!!", "Enter valid shipping address", "error");
     } else {
@@ -365,7 +365,7 @@ const CheckoutPage = () => {
       setTransectionData({ ...transectionData, deliveryCharge, remaining });
     }
     //eslint-disable-next-line
-  }, [appliedCoupon]);
+  }, [paymentMethod, appliedCoupon]);
 
   useEffect(() => {
     let deliveryChargeX = transectionData?.deliveryCharge ?? 0;
@@ -668,8 +668,10 @@ const CheckoutPage = () => {
             };
           }),
         });
-        const orderId = response.data?.order?.id;
-        if (paymentMethod === "bkash") {
+        const orderId = hasPayment
+          ? response?.data?.orderId
+          : response.data?.order?.id;
+        if (hasPayment) {
           setLoading(false);
           setRedirecting(true);
           console.log(hasPayment);
@@ -764,21 +766,21 @@ const CheckoutPage = () => {
       return Swal.fire("Oops!!", "Please enter a valid phone number", "error");
     }
 
-    // // Check for deliveries outside Dhaka and prompt for prepayment
-    // if (!district.toLowerCase().includes("dhaka")) {
-    //   return Swal.fire({
-    //     title: "Terms & Condition",
-    //     text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for deliveries outside Dhaka.`,
-    //     showDenyButton: false,
-    //     showCancelButton: true,
-    //     confirmButtonText: "Continue",
-    //     denyButtonText: "Don't save",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       confirmOrderAndCreateOne();
-    //     }
-    //   });
-    // }
+    // Check for deliveries outside Dhaka and prompt for prepayment
+    if (!district.toLowerCase().includes("dhaka")) {
+      return Swal.fire({
+        title: "Terms & Condition",
+        text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for deliveries outside Dhaka.`,
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: "Continue",
+        denyButtonText: "Don't save",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          confirmOrderAndCreateOne();
+        }
+      });
+    }
 
     // Confirm order if all checks pass
     confirmOrderAndCreateOne();
