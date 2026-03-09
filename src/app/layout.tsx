@@ -132,7 +132,7 @@ export default function RootLayout({
           </AuthProvider>
         </PageStateProvider>
         <Toaster position='top-center' />
-        <Script
+        {/* <Script
           id='myalice-chat'
           strategy='afterInteractive'
           dangerouslySetInnerHTML={{
@@ -163,7 +163,7 @@ export default function RootLayout({
               })();
             `,
           }}
-        />
+        /> */}
       </body>
     </html>
   );
