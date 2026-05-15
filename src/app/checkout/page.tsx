@@ -172,7 +172,7 @@ const CheckoutPage = () => {
 
           const response = await fetchAutoApplyCoupon({
             customerPhone: formData.mobileNumber,
-            orderTotal: transectionData.totalPrice,
+            orderTotal: transectionData.totalPrice + transectionData.deliveryCharge,
             products,
           });
 
@@ -1023,7 +1023,7 @@ const CheckoutPage = () => {
         onRemoveCoupon={handleRemoveCoupon}
         appliedCoupon={appliedCoupon}
         customerPhone={formData.mobileNumber}
-        orderTotal={transectionData.totalPrice}
+        orderTotal={transectionData.totalPrice + transectionData.deliveryCharge}
         cartItems={cart.map((item) => ({
           id: item.id,
           quantity: item.quantity,
