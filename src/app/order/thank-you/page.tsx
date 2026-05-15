@@ -105,7 +105,7 @@ const ThankYouPage = () => {
     };
 
     fetchOrderDetails();
-  }, [orderNumber]);
+  }, [orderNumber, method, totalFromQuery]);
 
   // Auto-redirect countdown
   useEffect(() => {
@@ -168,7 +168,7 @@ const ThankYouPage = () => {
                   Order Information Missing
                 </h3>
                 <p className="font-serif text-neutral-600 tracking-wide">
-                  We couldn't find the order information. Please check your email or contact us.
+                  We couldn&apos;t find the order information. Please check your email or contact us.
                 </p>
               </div>
               <Button
@@ -292,7 +292,7 @@ const ThankYouPage = () => {
                 <ul className="space-y-2 text-sm font-serif text-neutral-700">
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">✓</span>
-                    <span>You'll receive an order confirmation email shortly</span>
+                    <span>You&apos;ll receive an order confirmation email shortly</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">✓</span>
@@ -300,7 +300,7 @@ const ThankYouPage = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 font-bold">✓</span>
-                    <span>We'll contact you via phone when your order is shipped</span>
+                    <span>We&apos;ll contact you via phone when your order is shipped</span>
                   </li>
                   {isBkash && (
                     <li className="flex items-start gap-2">
