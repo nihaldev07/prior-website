@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
@@ -27,6 +27,7 @@ import EnhancedVariantSelector from "@/app/collections/[collectionId]/EnhancedVa
 import ShareButton from "@/shared/ShareButton";
 import Swal from "sweetalert2";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/firebase-event";
 
 interface ProductDetailSectionProps {
   product: SingleProductType;
@@ -70,6 +71,30 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         ),
       ]);
     }
+  }, [product]);
+
+  // Track ViewContent event when product page loads
+  const hasTrackedViewContent = useRef(false);
+  useEffect(() => {
+    if (product && !hasTrackedViewContent.current) {
+      hasTrackedViewContent.current = true;
+
+      // Track ViewContent event
+      trackEvent("view_item", {
+        item_id: product?.id,
+        item_name: product?.name,
+        item_category: product?.categoryName || "",
+        item_category2: "",
+        item_category3: "",
+        item_category4: "",
+        item_category5: "",
+        item_variant: product?.hasVariation ? "has_variation" : "no_variation",
+        price: product?.unitPrice,
+        currency: "BDT",
+        value: product?.unitPrice || 0,
+      });
+    }
+    //eslint-disable-next-line
   }, [product]);
 
   const handleCartSelection = (isBuy = false) => {

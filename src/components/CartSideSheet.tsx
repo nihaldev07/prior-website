@@ -118,34 +118,8 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
           );
       return sum;
     }, 0);
-    trackEvent("begin_checkout", {
-      affiliation: "Web-Site",
-      Value: totalValue ?? 0,
-      coupon: "",
-      currency: "BDT",
-      items: cart?.map((product, index) => {
-        return {
-          item_id: product?.sku,
-          item_name: product?.name,
-          affiliation: "Prior Web-site Store",
-          coupon: "",
-          discount: product?.discount,
-          index,
-          item_brand: "Prior",
-          item_category: product?.categoryName ?? "",
-          item_category2: "",
-          item_category3: "",
-          item_category4: "",
-          item_category5: "",
-          item_list_id: product?.id,
-          item_list_name: "Related Products",
-          item_variant: formatVariant(product?.variation),
-          location_id: "",
-          price: product?.unitPrice,
-          quantity: product?.quantity,
-        };
-      }),
-    });
+    // begin_checkout event moved to /checkout page to fire when user arrives there
+    // This aligns with Facebook's InitiateCheckout standard
 
     console.log("wow");
     handleCloseMenu();
