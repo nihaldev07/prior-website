@@ -95,6 +95,28 @@ export default function RootLayout({
           }}
         />
 
+        {/* Facebook Pixel - Load after page is interactive */}
+        {process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID && (
+          <Script
+            id='facebook-pixel'
+            strategy='afterInteractive'
+            dangerouslySetInnerHTML={{
+              __html: `
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}');
+                fbq('track', 'PageView');
+              `,
+            }}
+          />
+        )}
+
         {/* Chat Widget Scripts - Load after page is interactive */}
         {/* <Script
           src='https://cdn.socket.io/4.7.2/socket.io.min.js'
@@ -132,7 +154,7 @@ export default function RootLayout({
           </AuthProvider>
         </PageStateProvider>
         <Toaster position='top-center' />
-        {/* <Script
+        <Script
           id='myalice-chat'
           strategy='afterInteractive'
           dangerouslySetInnerHTML={{
@@ -163,7 +185,7 @@ export default function RootLayout({
               })();
             `,
           }}
-        /> */}
+        />
       </body>
     </html>
   );

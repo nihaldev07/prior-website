@@ -172,7 +172,7 @@ const CheckoutPage = () => {
 
           const response = await fetchAutoApplyCoupon({
             customerPhone: formData.mobileNumber,
-            orderTotal: transectionData.totalPrice,
+            orderTotal: transectionData.totalPrice + transectionData.deliveryCharge,
             products,
           });
 
@@ -331,6 +331,53 @@ const CheckoutPage = () => {
     checkPrepaymentProductData();
     //eslint-disable-next-line
   }, [cart, appliedCoupon]);
+
+  // Fire begin_checkout event when user arrives on checkout page
+  useEffect(() => {
+    if (cart && cart.length > 0) {
+      const totalValue = cart.reduce((sum, cartdata) => {
+        return (
+          sum +
+          Number(cartdata.quantity) *
+            Number(
+              !!cartdata?.hasDiscount
+                ? (cartdata?.updatedPrice ?? cartdata?.unitPrice)
+                : cartdata?.unitPrice,
+            )
+        );
+      }, 0);
+
+      trackEvent("begin_checkout", {
+        affiliation: "Web-Site",
+        value: totalValue || 0,
+        coupon: appliedCoupon?.code || "",
+        currency: "BDT",
+        items: cart?.map((product, index) => {
+          return {
+            item_id: product?.sku,
+            item_name: product?.name,
+            affiliation: "Prior Web-site Store",
+            coupon: appliedCoupon?.code || "",
+            discount: product?.discount,
+            index,
+            item_brand: "Prior",
+            item_category: product?.categoryName ?? "",
+            item_category2: "",
+            item_category3: "",
+            item_category4: "",
+            item_category5: "",
+            item_list_id: product?.id,
+            item_list_name: "Checkout Products",
+            item_variant: formatVariant(product?.variation),
+            location_id: "",
+            price: product?.unitPrice,
+            quantity: product?.quantity,
+          };
+        }),
+      });
+    }
+    //eslint-disable-next-line
+  }, [cart.length]); // Only fire when cart length changes (page load)
 
   useEffect(() => {
     if (paymentMethod === "") return;
@@ -636,38 +683,10 @@ const CheckoutPage = () => {
 
       if (response.success) {
         clearCart();
-        trackEvent("purchase", {
-          transection_id: hasPayment
-            ? response?.data?.orderId
-            : response.data?.order?.id,
-          affiliation: "Web-Site",
-          Value: transectionData?.totalPrice,
-          shipping: transectionData?.deliveryCharge,
-          discount: transectionData?.discount,
-          currency: "BDT",
-          items: orderProducts?.map((product, index) => {
-            return {
-              item_id: product?.sku,
-              item_name: product?.name,
-              affiliation: "Prior Web-site Store",
-              coupon: "",
-              discount: product?.discount,
-              index,
-              item_brand: "Prior",
-              item_category: product?.categoryName ?? "",
-              item_category2: "",
-              item_category3: "",
-              item_category4: "",
-              item_category5: "",
-              item_list_id: product?.id,
-              item_list_name: "Related Products",
-              item_variant: formatVariant(product?.variation),
-              location_id: "",
-              price: product?.unitPrice,
-              quantity: product?.quantity,
-            };
-          }),
-        });
+
+        // Purchase event moved to Thank You page to fire after successful order/payment
+        // This ensures we only track completed orders, not initiated ones
+
         const orderId = hasPayment
           ? response?.data?.orderId
           : response.data?.order?.id;
@@ -684,32 +703,10 @@ const CheckoutPage = () => {
             formData?.mobileNumber,
           );
         } else {
-          let timerInterval: NodeJS.Timeout;
-          Swal.fire({
-            title: "Order Created Successfully 🎉",
-            html: "Our agent will contact you shortly<br><br><strong>Redirecting in <b id='swal-timer'>3</b> seconds...</strong>",
-            icon: "success",
-            timer: 3000,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: () => {
-              const timer =
-                Swal.getHtmlContainer()?.querySelector("#swal-timer");
-              if (timer) {
-                timerInterval = setInterval(() => {
-                  const currentTimer = parseInt(timer.textContent || "3");
-                  if (currentTimer > 0) {
-                    timer.textContent = (currentTimer - 1).toString();
-                  }
-                }, 1000);
-              }
-            },
-            willClose: () => {
-              clearInterval(timerInterval);
-            },
-          }).then(() => {
-            window.location.href = `/order/${orderId}`;
-          });
+          // Redirect to Thank You page for COD orders
+          const orderNumber = response.data?.order?.orderNumber;
+          const total = transectionData?.totalPrice;
+          window.location.href = `/order/thank-you?orderNumber=${orderNumber}&method=cod&total=${total}`;
         }
       } else {
         Swal.fire(
@@ -1026,7 +1023,7 @@ const CheckoutPage = () => {
         onRemoveCoupon={handleRemoveCoupon}
         appliedCoupon={appliedCoupon}
         customerPhone={formData.mobileNumber}
-        orderTotal={transectionData.totalPrice}
+        orderTotal={transectionData.totalPrice + transectionData.deliveryCharge}
         cartItems={cart.map((item) => ({
           id: item.id,
           quantity: item.quantity,
