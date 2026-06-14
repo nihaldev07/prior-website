@@ -22,7 +22,7 @@ const defaultShippingAddress = {
 interface IProps {
   formData: UserFormData;
   handleInputChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
   handleInputChange2: (name: string, value: any) => void;
 }
@@ -35,13 +35,13 @@ const UserInformation: React.FC<IProps> = ({
   const [divisionQuery, setDivisionQuery] = useState("");
   const [districtQuery, setDistrictQuery] = useState("");
   const [shippingAddress, setShippingAddress] = useState(
-    defaultShippingAddress
+    defaultShippingAddress,
   );
 
   const handleShippingDivChange = (id: string, name: string) => {
     if (name === "division") {
       const filteredDivision = BDDivisions.filter(
-        (division) => division?.id === id
+        (division) => division?.id === id,
       );
       if (filteredDivision.length > 0) {
         setShippingAddress({
@@ -51,12 +51,12 @@ const UserInformation: React.FC<IProps> = ({
         handleInputChange2(
           "division",
           //@ts-ignore
-          `${filteredDivision[0]?.name}(${filteredDivision[0]?.bn_name})`
+          `${filteredDivision[0]?.name}`,
         );
       }
     } else {
       const filteredDistrict = BDDistrictList.filter(
-        (District) => District?.id === id
+        (District) => District?.id === id,
       );
       if (filteredDistrict.length > 0) {
         setShippingAddress({
@@ -66,8 +66,9 @@ const UserInformation: React.FC<IProps> = ({
         handleInputChange2(
           "district",
           //@ts-ignore
-          `${filteredDistrict[0]?.name}(${filteredDistrict[0]?.bn_name})`
+          `${filteredDistrict[0]?.name}`,
         );
+        handleInputChange2("districtId", filteredDistrict[0]?.id);
       }
     }
   };
@@ -77,11 +78,15 @@ const UserInformation: React.FC<IProps> = ({
     type: string,
     id: string,
     placeholder: string,
-    value: any
+    value: any,
   ) => {
     return (
-      <div className="grid w-full  items-center gap-1.5">
-        <Label htmlFor={id} className="font-serif tracking-[0.2em] uppercase text-neutral-700">{label}</Label>
+      <div className='grid w-full  items-center gap-1.5'>
+        <Label
+          htmlFor={id}
+          className='font-serif tracking-[0.2em] uppercase text-neutral-700'>
+          {label}
+        </Label>
         <Input
           name={id}
           type={type}
@@ -89,15 +94,17 @@ const UserInformation: React.FC<IProps> = ({
           placeholder={placeholder}
           value={value}
           onChange={handleInputChange}
-          className="rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
+          className='rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900'
         />
       </div>
     );
   };
   return (
-    <Card className="rounded-none border-neutral-200">
+    <Card className='rounded-none border-neutral-200'>
       <CardHeader>
-        <CardTitle className="text-xl font-serif tracking-wide text-neutral-900">Personal Information</CardTitle>
+        <CardTitle className='text-xl font-serif tracking-wide text-neutral-900'>
+          Personal Information
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {renderFormView(
@@ -105,7 +112,7 @@ const UserInformation: React.FC<IProps> = ({
           "text",
           "name",
           "Enter Your Name",
-          formData["name"]
+          formData["name"],
         )}
         <br />
         {renderFormView(
@@ -113,7 +120,7 @@ const UserInformation: React.FC<IProps> = ({
           "text",
           "mobileNumber",
           "Enter Your Mobile Number",
-          formData["mobileNumber"]
+          formData["mobileNumber"],
         )}
         <br />
         {renderFormView(
@@ -121,25 +128,28 @@ const UserInformation: React.FC<IProps> = ({
           "email",
           "email",
           "Enter Your Email",
-          formData["email"]
+          formData["email"],
         )}
         <br />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3">
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3'>
           <div>
-            <Label htmlFor={"division"} className="font-serif tracking-[0.2em] uppercase text-neutral-700">Division</Label>
+            <Label
+              htmlFor={"division"}
+              className='font-serif tracking-[0.2em] uppercase text-neutral-700'>
+              District
+            </Label>
             <Select
               onValueChange={(value: string) => {
                 handleShippingDivChange(value, "division");
-              }}
-            >
-              <SelectTrigger className="w-full rounded-none border-neutral-300 font-serif tracking-wide">
-                <SelectValue placeholder="Division" />
+              }}>
+              <SelectTrigger className='w-full rounded-none border-neutral-300 font-serif tracking-wide'>
+                <SelectValue placeholder='District' />
               </SelectTrigger>
               <SelectContent>
                 <Input
-                  type="text"
-                  className="mb-2 rounded-none border-neutral-300 font-serif tracking-wide"
-                  placeholder="search"
+                  type='text'
+                  className='mb-2 rounded-none border-neutral-300 font-serif tracking-wide'
+                  placeholder='search'
                   value={divisionQuery}
                   onChange={(e) => setDivisionQuery(e.target.value)}
                 />
@@ -148,32 +158,34 @@ const UserInformation: React.FC<IProps> = ({
                     division.name
                       .toLowerCase()
                       .includes(divisionQuery.toLowerCase()) ||
-                    division.bn_name.includes(divisionQuery)
+                    division.bn_name.includes(divisionQuery),
                 ).map((division, index: number) => (
                   <SelectItem
                     key={index}
-                    value={division?.id}
-                  >{`${division?.name}(${division?.bn_name})`}</SelectItem>
+                    value={division?.id}>{`${division?.name}`}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Label htmlFor={"district"} className="font-serif tracking-[0.2em] uppercase text-neutral-700">District</Label>
+            <Label
+              htmlFor={"district"}
+              className='font-serif tracking-[0.2em] uppercase text-neutral-700'>
+              Area
+            </Label>
             {!!shippingAddress?.division && (
               <Select
                 onValueChange={(value: string) => {
                   handleShippingDivChange(value, "district");
-                }}
-              >
-                <SelectTrigger className="w-full rounded-none border-neutral-300 font-serif tracking-wide">
-                  <SelectValue placeholder="District" />
+                }}>
+                <SelectTrigger className='w-full rounded-none border-neutral-300 font-serif tracking-wide'>
+                  <SelectValue placeholder='Area' />
                 </SelectTrigger>
                 <SelectContent>
                   <Input
-                    type="text"
-                    className="mb-2 rounded-none border-neutral-300 font-serif tracking-wide"
-                    placeholder="search"
+                    type='text'
+                    className='mb-2 rounded-none border-neutral-300 font-serif tracking-wide'
+                    placeholder='search'
                     value={districtQuery}
                     onChange={(e) => setDistrictQuery(e.target.value)}
                   />
@@ -185,12 +197,11 @@ const UserInformation: React.FC<IProps> = ({
                       (district.name
                         .toLowerCase()
                         .includes(districtQuery.toLowerCase()) ||
-                        district.bn_name.includes(districtQuery))
+                        district.bn_name.includes(districtQuery)),
                   ).map((division, index: number) => (
                     <SelectItem
                       key={index}
-                      value={division?.id}
-                    >{`${division?.name}(${division?.bn_name})`}</SelectItem>
+                      value={division?.id}>{`${division?.name}`}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -203,7 +214,7 @@ const UserInformation: React.FC<IProps> = ({
           "text",
           "address",
           "Enter Your Address",
-          formData["address"]
+          formData["address"],
         )}
         <br />
         {/* {renderFormView(

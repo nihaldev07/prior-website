@@ -18,6 +18,7 @@ import {
   Minus,
   LineDotRightHorizontal,
   SquareArrowOutUpRight,
+  Search,
 } from "lucide-react";
 import LogoImg from "@/images/logo.png";
 import { useCart } from "@/context/CartContext";
@@ -498,12 +499,12 @@ export default function Header() {
           </nav>
 
           {/* Search Bar - Desktop */}
-          <div className='hidden md:flex flex-1 max-w-10 md:max-w-xs mx-6'>
+          <div className='hidden md:flex flex-1 max-w-16 md:max-w-sm mx-4'>
             <SearchBox className='w-full' />
           </div>
 
           {/* Right Side Actions */}
-          <div className='flex items-center gap-4'>
+          <div className='flex items-center gap-0.5'>
             {/* User Auth/Avatar - Desktop */}
             <div className='hidden md:block'>
               {isAuthenticated && user ? (
@@ -558,9 +559,8 @@ export default function Header() {
               ) : (
                 <Link
                   href='/login'
-                  className='text-sm font-serif tracking-wide text-neutral-900 hover:text-neutral-700 px-3 py-2 transition-colors duration-300 flex items-center gap-2'>
-                  <User className='w-4 h-4' />
-                  <span>Login</span>
+                  className='p-2 rounded-lg hover:bg-[#e8f0ff] text-gray-500 hover:text-[#0b3393] transition-colors flex items-center gap-2'>
+                  <User className='w-5 h-5' />
                 </Link>
               )}
             </div>
@@ -570,10 +570,11 @@ export default function Header() {
             {/* Shopping Cart */}
             <Link
               href='/cart'
-              className='relative p-2 text-neutral-900 hover:text-neutral-700 transition-colors duration-300'>
-              <ShoppingCart className='w-6 h-6' />
+              className='relative flex items-center gap-2 pl-2 pr-3 py-2 rounded-lg bg-[#0b3393] hover:bg-[#092875] text-white transition-colors ml-1'>
+              <ShoppingCart className='w-5 h-5' />
+
               {totalItems > 0 && (
-                <span className='absolute -top-1 -right-1 bg-neutral-900 text-white text-xs rounded-none w-5 h-5 flex items-center justify-center font-serif'>
+                <span className='absolute -top-1.5 -right-1.5 bg-white text-[#0b3393] text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow border border-[#0b3393]/20'>
                   {totalItems > 99 ? "99+" : totalItems}
                 </span>
               )}

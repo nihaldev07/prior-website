@@ -1,24 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Bird, Archive, ArchiveX } from "lucide-react";
-import Image from "next/image";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Search, X, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useSearchProduct from "@/hooks/useProductSearch";
+
+// Import the shared components and utilities from SearchBox
+// We'll need to redefine them here since they're in the same directory
+import {
+  ProductRow,
+  ResultsPanel,
+  getRecent,
+  saveRecent,
+  removeRecent,
+  TRENDING,
+} from "./SearchBox";
 
 interface MobileSearchBoxProps {
   className?: string;
@@ -34,35 +31,46 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
   const router = useRouter();
   const { loading, products, inputValue, setInputValue } = useSearchProduct();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [recent, setRecent] = useState<string[]>([]);
 
   // Auto-focus input when dialog opens
   useEffect(() => {
     if (open) {
+      setRecent(getRecent());
       // Small delay to ensure dialog is rendered
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
+      // Lock body scroll
+      document.body.style.overflow = "hidden";
+    } else {
+      setInputValue("");
+      document.body.style.overflow = "";
     }
-  }, [open]);
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open, setInputValue]);
 
   /**
    * Handle product selection
    */
   const handleSelectProduct = (productId: string) => {
     router.push(`/collections/${productId}`);
-    handleClose();
+    setInputValue("");
+    setOpen(false);
   };
 
   /**
    * Handle search submit (Enter key or search icon click)
    */
-  const handleSearchSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (inputValue.trim()) {
-      router.push(`/collections?search=${encodeURIComponent(inputValue)}`);
-      handleClose();
-    }
-  };
+  const handleSearchSubmit = useCallback(() => {
+    if (!inputValue.trim()) return;
+    saveRecent(inputValue.trim());
+    router.push(`/collections?search=${encodeURIComponent(inputValue)}`);
+    setInputValue("");
+    setOpen(false);
+  }, [inputValue, router, setInputValue]);
 
   /**
    * Clear search input
@@ -80,11 +88,19 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
     setOpen(false);
   };
 
-  /**
-   * Format price with BDT currency
-   */
-  const formatPrice = (price: number) => {
-    return `৳${price.toLocaleString()}`;
+  const handleRemoveRecent = (term: string) => {
+    removeRecent(term);
+    setRecent(getRecent());
+  };
+
+  const handleRecentClick = (t: string) => {
+    setInputValue(t);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  const handleTrendingClick = (t: string) => {
+    setInputValue(t);
+    setTimeout(() => inputRef.current?.focus(), 50);
   };
 
   return (
@@ -93,188 +109,105 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "md:hidden relative p-0 text-neutral-900 transition-colors duration-200",
+          "md:hidden p-2 rounded-lg hover:bg-[#e8f0ff] text-gray-500 hover:text-[#0b3393] transition-colors",
           className,
         )}
-        aria-label='Search products'>
-        <Search className='w-6 h-6' />
+        aria-label="Search products"
+      >
+        <Search className="w-5 h-5" />
       </button>
 
       {/* Search Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          className='p-0 w-full max-w-lg mx-auto gap-0 rounded-b-2xl rounded-t-none border-t-0 border-x-0 !top-0 !translate-y-0 max-h-[100vh] overflow-y-auto'
-          onOpenAutoFocus={(e) => {
-            e.preventDefault();
-            setTimeout(() => inputRef.current?.focus(), 100);
-          }}
-          onInteractOutside={(e) => {
-            // Close when clicking outside
-            e.preventDefault();
-          }}
-          onEscapeKeyDown={(e) => {
-            e.preventDefault();
-            handleClose();
-          }}>
-          {/* Dialog Header - Fixed at top */}
-          <DialogHeader className='sticky top-0 bg-white border-b border-neutral-200 px-4 py-4 z-10'>
-            <div className='flex items-center gap-3'>
-              <div className='flex-1 relative'>
-                <form onSubmit={handleSearchSubmit}>
-                  <div className='relative'>
-                    <input
-                      ref={inputRef}
-                      type='text'
-                      placeholder='Search products...'
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      className={cn(
-                        "w-full pl-10 pr-10 h-12 border border-neutral-300 rounded-none text-base font-serif",
-                        "focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900",
-                        "placeholder:text-neutral-400 transition-all duration-300 tracking-wide",
-                      )}
-                      aria-label='Search products'
-                      autoComplete='off'
-                    />
-                    <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4 pointer-events-none' />
-                    {inputValue && (
-                      <button
-                        type='button'
-                        onClick={handleClear}
-                        className='absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors duration-200'
-                        aria-label='Clear search'>
-                        <X className='w-4 h-4' />
-                      </button>
-                    )}
-                    {loading && (
-                      <div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
-                        <div className='w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin' />
-                      </div>
-                    )}
-                  </div>
-                </form>
-              </div>
+      {open && (
+        <div className="fixed inset-0 z-[200] flex flex-col bg-white">
+          {/* ── Top bar: back button + input ────────────────────────────────── */}
+          <div className="flex-shrink-0 flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-white shadow-sm">
+            {/* Back */}
+            <button
+              onClick={handleClose}
+              className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors text-gray-600"
+              aria-label="Close search"
+            >
+              <ArrowLeft size={20} />
+            </button>
 
-              {/* Close Button */}
-              <button
-                onClick={handleClose}
-                className='flex-shrink-0 p-2 text-neutral-600 hover:text-neutral-900 transition-colors duration-200'
-                aria-label='Close search'>
-                <X className='w-5 h-5' />
-              </button>
+            {/* Input wrapper */}
+            <div
+              className={cn(
+                "flex-1 flex items-center h-11 rounded-2xl border-2 transition-all duration-150",
+                inputValue
+                  ? "border-[#0b3393] bg-white"
+                  : "border-gray-200 bg-gray-50",
+              )}
+            >
+              <Search
+                size={16}
+                className={cn(
+                  "ml-3.5 flex-shrink-0",
+                  inputValue ? "text-[#0b3393]" : "text-gray-400",
+                )}
+              />
+              <input
+                ref={inputRef}
+                type="search"
+                inputMode="search"
+                enterKeyHint="search"
+                placeholder="What are you looking for?"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSearchSubmit();
+                  }
+                }}
+                onTouchStart={(e) => e.stopPropagation()}
+                className="flex-1 bg-transparent text-[15px] text-gray-800 placeholder:text-gray-400 outline-none px-2.5 py-0 min-w-0"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+              />
+              {inputValue && (
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleClear}
+                  className="mr-3 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 active:bg-gray-300 transition-colors flex-shrink-0"
+                >
+                  <X size={12} />
+                </button>
+              )}
             </div>
-          </DialogHeader>
 
-          {/* Search Results - Scrollable */}
-          <div className='max-h-[60vh] overflow-y-auto'>
-            <Command className='border-0 shadow-none'>
-              <CommandList>
-                <CommandEmpty className='py-8 text-center text-sm font-serif text-neutral-600 tracking-wide'>
-                  {!loading && (
-                    <>
-                      <Bird className='mx-auto mb-2' />
-                      {inputValue
-                        ? "No products found"
-                        : "Start typing to search..."}
-                    </>
-                  )}
-                </CommandEmpty>
-
-                {!loading && products.length > 0 && (
-                  <CommandGroup heading='Products'>
-                    {products.map((product) => (
-                      <CommandItem
-                        key={product?.id}
-                        value={product?.id}
-                        onSelect={() => handleSelectProduct(product.id)}
-                        className='cursor-pointer px-4 py-3'>
-                        <div className='flex items-center gap-3 w-full'>
-                          {/* Product Image */}
-                          <div className='relative w-12 h-12 flex-shrink-0 bg-neutral-50 rounded-none overflow-hidden border border-neutral-200'>
-                            {product.images && product.images.length > 0 ? (
-                              <Image
-                                src={product.images[0]}
-                                alt={product.name}
-                                fill
-                                className='object-cover'
-                                sizes='48px'
-                              />
-                            ) : (
-                              <div className='w-full h-full flex items-center justify-center text-neutral-400'>
-                                <Search className='w-5 h-5' />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Product Info */}
-                          <div className='flex-1 min-w-0'>
-                            <p className='text-sm uppercase font-serif tracking-wide text-neutral-900 truncate  font-medium mr-2 px-1.5  py-1'>
-                              {product.name} * {product?.categoryName}
-                            </p>
-                            <div className='flex items-center gap-2 mt-1 '>
-                              <span className='text-sm font-serif text-neutral-900'>
-                                {formatPrice(
-                                  product.updatedPrice || product.unitPrice,
-                                )}
-                              </span>
-                              {product.hasDiscount && product.updatedPrice && (
-                                <>
-                                  <span className='text-xs text-neutral-400 line-through font-serif'>
-                                    {formatPrice(product.unitPrice)}
-                                  </span>
-                                  <span className='text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-1 rounded-none border border-emerald-200 font-serif tracking-wide'>
-                                    {Math.round(
-                                      ((product.unitPrice -
-                                        product.updatedPrice) /
-                                        product.unitPrice) *
-                                        100,
-                                    )}
-                                    % OFF
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Stock indicator */}
-                          {product.quantity > 0 ? (
-                            <span className='inline-flex items-center bg-emerald-50 text-emerald-600 text-xs font-medium mr-2 pl-1.5 pr-2 rounded py-1'>
-                              <Archive className='w-3 h-3 mr-1 text-green-400' />{" "}
-                              In Stock
-                            </span>
-                          ) : (
-                            <span className='inline-flex items-center bg-red-50 text-red-600 text-xs font-medium mr-2 pl-1.5 pr-2 rounded py-1'>
-                              <ArchiveX className='w-3 h-3 mr-1 text-red-400' />{" "}
-                              Out of Stock
-                            </span>
-                          )}
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                )}
-
-                {loading && (
-                  <div className='p-6 flex justify-center items-center'>
-                    Searching...{" "}
-                    <div className='w-4 h-4 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin ml-2' />
-                  </div>
-                )}
-
-                {products.length > 0 && (
-                  <div className='border-t border-neutral-200 sticky bottom-0 bg-white'>
-                    <button
-                      onClick={handleSearchSubmit}
-                      className='w-full px-6 py-4 text-sm text-center font-serif tracking-wide text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 transition-colors duration-300'>
-                      View all results for &ldquo;{inputValue}&rdquo;
-                    </button>
-                  </div>
-                )}
-              </CommandList>
-            </Command>
+            {/* Search CTA — only shown when there's a query */}
+            {inputValue && (
+              <button
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={handleSearchSubmit}
+                className="flex-shrink-0 h-11 px-4 rounded-2xl bg-[#0b3393] text-white text-sm font-semibold active:bg-[#092875] transition-colors shadow-sm"
+              >
+                Go
+              </button>
+            )}
           </div>
-        </DialogContent>
-      </Dialog>
+
+          {/* ── Scrollable results ───────────────────────────────────────────── */}
+          <div className="flex-1 overflow-y-auto overscroll-y-contain">
+            <ResultsPanel
+              inputValue={inputValue}
+              loading={loading}
+              products={products}
+              recent={recent}
+              onSelect={handleSelectProduct}
+              onSubmit={handleSearchSubmit}
+              onRecentClick={handleRecentClick}
+              onRecentRemove={handleRemoveRecent}
+              onTrendingClick={handleTrendingClick}
+              compact
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }

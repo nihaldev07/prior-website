@@ -26,6 +26,7 @@ interface Props {
   selected: string;
   selectedVariant: Variation | null;
   onVariantChange: (variant: Variation) => void;
+  onImageGroupChange?: (attribute: string, value: string, groupId: string) => void;
 }
 
 const EnhancedVariantSelector: React.FC<Props> = ({
@@ -49,12 +50,17 @@ const EnhancedVariantSelector: React.FC<Props> = ({
   const handleVariantChange = (value: string) => {
     const vType: "size" | "color" = type;
     const rType = vType === "color" ? "size" : "color";
-    const selectedRev = !!selectedVariant ? selectedVariant[rType] ?? "" : "";
+    const selectedRev = !!selectedVariant ? (selectedVariant[rType] ?? "") : "";
 
     const filteredVariants = variations.filter((variant: Variation) => {
-      return (
-        variant[vType].includes(value) && variant[rType].includes(selectedRev)
-      );
+      // Handle empty string values - match if either value is empty or they match
+      const typeMatch =
+        value === "" || variant[vType] === "" || variant[vType].includes(value);
+      const reverseMatch =
+        selectedRev === "" ||
+        variant[rType] === "" ||
+        variant[rType].includes(selectedRev);
+      return typeMatch && reverseMatch;
     });
 
     if (filteredVariants.length > 0) {
@@ -75,18 +81,22 @@ const EnhancedVariantSelector: React.FC<Props> = ({
   const getVariantInfo = (value: string) => {
     const vType: "size" | "color" = type;
     const rType = vType === "color" ? "size" : "color";
-    const selectedRev = !!selectedVariant ? selectedVariant[rType] ?? "" : "";
+    const selectedRev = !!selectedVariant ? (selectedVariant[rType] ?? "") : "";
 
     const filteredVariants = variations.filter((variant: Variation) => {
-      return (
-        variant[vType].includes(value) &&
-        (selectedRev === "" || variant[rType].includes(selectedRev))
-      );
+      // Handle empty string values - match if either value is empty or they match
+      const typeMatch =
+        value === "" || variant[vType] === "" || variant[vType].includes(value);
+      const reverseMatch =
+        selectedRev === "" ||
+        variant[rType] === "" ||
+        variant[rType].includes(selectedRev);
+      return typeMatch && reverseMatch;
     });
 
     const totalQuantity = filteredVariants.reduce(
       (sum, variant) => sum + (variant.quantity || 0),
-      0
+      0,
     );
     const isAvailable = totalQuantity > 0;
 
@@ -147,57 +157,56 @@ const EnhancedVariantSelector: React.FC<Props> = ({
 
         {/* Button Grid for Visual Selection */}
         <div className='flex flex-wrap gap-2'>
-          {list
-            .filter((item) => !!item)
-            .map((value, index) => {
-              const variantInfo = getVariantInfo(value);
-              const isSelected = selected === value;
-              const isOutOfStock = !variantInfo.isAvailable;
+          {list.map((value, index) => {
+            const variantInfo = getVariantInfo(value);
+            const isSelected = selected === value;
+            const isOutOfStock = !variantInfo.isAvailable;
+            const displayValue = value === "" ? "Standard" : value;
 
-              return (
-                <Button
-                  key={index}
-                  variant={isSelected ? "default" : "outline"}
+            return (
+              <Button
+                key={index}
+                variant={isSelected ? "default" : "outline"}
+                className={cn(
+                  "relative h-9 px-4 transition-all duration-200",
+                  "border shadow-sm whitespace-nowrap rounded ",
+                  !isOutOfStock && !isSelected && "hover:bg-gray-100",
+                )}
+                onClick={() => {
+                  if (isOutOfStock) {
+                    const otherType = type === "color" ? "size" : "color";
+                    const otherValue = selectedVariant?.[otherType] || "";
+                    const colorText = type === "color" ? value : otherValue;
+                    const sizeText = type === "size" ? value : otherValue;
+
+                    toast.error(
+                      `${
+                        colorText ? `Color: ${colorText.toUpperCase()}` : ""
+                      }${colorText && sizeText ? " | " : ""}${
+                        sizeText ? `Size: ${sizeText.toUpperCase()}` : ""
+                      } is currently out of stock`,
+                    );
+                  } else {
+                    handleVariantChange(value);
+                  }
+                }}
+                onMouseEnter={() => setHoveredItem(null)}
+                onMouseLeave={() => setHoveredItem(null)}>
+                <span
                   className={cn(
-                    "relative h-9 px-4 transition-all duration-200",
-                    "border shadow-sm whitespace-nowrap rounded ",
-                    !isOutOfStock && !isSelected && "hover:bg-gray-100"
-                  )}
-                  onClick={() => {
-                    if (isOutOfStock) {
-                      const otherType = type === "color" ? "size" : "color";
-                      const otherValue = selectedVariant?.[otherType] || "";
-                      const colorText = type === "color" ? value : otherValue;
-                      const sizeText = type === "size" ? value : otherValue;
-
-                      toast.error(
-                        `${
-                          colorText ? `Color: ${colorText.toUpperCase()}` : ""
-                        }${colorText && sizeText ? " | " : ""}${
-                          sizeText ? `Size: ${sizeText.toUpperCase()}` : ""
-                        } is currently out of stock`
-                      );
-                    } else {
-                      handleVariantChange(value);
-                    }
-                  }}
-                  onMouseEnter={() => setHoveredItem(null)}
-                  onMouseLeave={() => setHoveredItem(null)}>
-                  <span
-                    className={cn(
-                      "font-medium text-sm flex items-center gap-1.5",
-                      isSelected
-                        ? "text-white"
-                        : isOutOfStock
+                    "font-medium text-sm flex items-center gap-1.5",
+                    isSelected
+                      ? "text-white"
+                      : isOutOfStock
                         ? "text-red-600"
-                        : "text-zinc-800 dark:text-zinc-200"
-                    )}>
-                    {value.toUpperCase()}
-                    {isOutOfStock && <XCircle className='h-3.5 w-3.5' />}
-                  </span>
-                </Button>
-              );
-            })}
+                        : "text-zinc-800 dark:text-zinc-200",
+                  )}>
+                  {displayValue.toUpperCase()}
+                  {isOutOfStock && <XCircle className='h-3.5 w-3.5' />}
+                </span>
+              </Button>
+            );
+          })}
         </div>
 
         {/* Hover Info Card */}
@@ -265,7 +274,7 @@ const EnhancedVariantSelector: React.FC<Props> = ({
                       disabled={isOutOfStock}
                       className={cn(
                         "cursor-pointer hover:bg-accent",
-                        isOutOfStock && "opacity-50 cursor-not-allowed"
+                        isOutOfStock && "opacity-50 cursor-not-allowed",
                       )}>
                       <div className='flex items-center justify-between w-full'>
                         <div className='flex items-center space-x-3'>
@@ -275,7 +284,7 @@ const EnhancedVariantSelector: React.FC<Props> = ({
                                 "w-4 h-4 rounded-full border",
                                 value.toLowerCase() === "white"
                                   ? "border-gray-300"
-                                  : "border-transparent"
+                                  : "border-transparent",
                               )}
                               style={{
                                 backgroundColor: getColorPreview(value),
