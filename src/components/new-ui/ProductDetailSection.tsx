@@ -33,6 +33,7 @@ import EnhancedVariantSelector from "@/app/collections/[collectionId]/EnhancedVa
 import ShareButton from "@/shared/ShareButton";
 import Swal from "sweetalert2";
 import { cn } from "@/lib/utils";
+import EnhancedProductImage from "@/shared/EnhancedProductImage";
 interface ProductDetailSectionProps {
   product: SingleProductType;
   shots: string[];
@@ -472,12 +473,13 @@ function ImageGallery({
                     : "border-neutral-200 hover:border-neutral-400 opacity-70 hover:opacity-100",
                 )}
                 aria-label={`View image ${index + 1}`}>
-                <img
-                  src={image}
-                  alt={`${productName} ${index + 1}`}
-                  width={80}
-                  height={80}
-                  className='w-full h-full object-cover'
+                <EnhancedProductImage
+                  src={displayImages[selectedImageIndex]}
+                  alt={productName}
+                  className='object-cover w-full h-full'
+                  sizes='(max-width: 1024px) 100vw, 50vw'
+                  sharpenStrength={0.45} // tweak 0.3–0.7 to taste
+                  enableSharpening={true}
                 />
                 {/* Active indicator bar */}
                 <span
