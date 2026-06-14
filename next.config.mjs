@@ -21,6 +21,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "d38c45qguy2pwg.cloudfront.net",
+        port: "",
+      },
+      {
+        protocol: "https",
         hostname: "app.priorbd.com",
         port: "",
         // FIX: restrict to /images/* so Next.js optimizer can't be abused

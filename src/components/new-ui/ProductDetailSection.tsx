@@ -420,14 +420,11 @@ function ImageGallery({
                     transition: "transform 0.25s ease-out",
                   }
             }>
-            <Image
+            <img
               src={displayImages[selectedImageIndex]}
               alt={productName}
-              fill
               className='object-cover'
               sizes='(max-width: 1024px) 100vw, 50vw'
-              priority
-              draggable={false}
             />
           </div>
 
@@ -475,7 +472,7 @@ function ImageGallery({
                     : "border-neutral-200 hover:border-neutral-400 opacity-70 hover:opacity-100",
                 )}
                 aria-label={`View image ${index + 1}`}>
-                <Image
+                <img
                   src={image}
                   alt={`${productName} ${index + 1}`}
                   width={80}
