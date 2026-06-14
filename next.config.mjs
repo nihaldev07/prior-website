@@ -21,8 +21,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "d38c45qguy2pwg.cloudfront.net",
+        hostname: "app.priorbd.com",
         port: "",
+        // FIX: restrict to /images/* so Next.js optimizer can't be abused
+        // to proxy arbitrary paths on your Express backend
+        pathname: "/images/**",
       },
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1440, 1920, 2048, 3840],
@@ -77,17 +80,11 @@ const nextConfig = {
       "zod",
     ],
     webpackBuildWorker: true, // Enable parallel builds
+    isrMemoryCacheSize: 0,
   },
+  // ─── HTTP Headers ─────────────────────────────────────────────────────────
   headers: async () => [
-    {
-      source: "/static/:path*",
-      headers: [
-        {
-          key: "Cache-Control",
-          value: "public, max-age=31536000, immutable",
-        },
-      ],
-    },
+    // Next.js static assets are content-hashed — safe to cache forever
     {
       source: "/_next/static/:path*",
       headers: [
@@ -97,6 +94,27 @@ const nextConfig = {
         },
       ],
     },
+    // Your /static folder (if any)
+    {
+      source: "/static/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "public, max-age=31536000, immutable",
+        },
+      ],
+    },
+    // API proxy routes — never cache
+    {
+      source: "/api/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "no-store",
+        },
+      ],
+    },
+    // All other pages — revalidate on every request (your existing behaviour)
     {
       source: "/:path*",
       headers: [
@@ -104,12 +122,19 @@ const nextConfig = {
           key: "Cache-Control",
           value: "public, max-age=0, must-revalidate",
         },
+        // Security headers — add these, they were missing
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
       ],
     },
   ],
   async rewrites() {
     return [
-      // Add rewrites if needed
+      {
+        source: "/api/:path*",
+        destination: "https://app.priorbd.com/:path*",
+      },
     ];
   },
 };

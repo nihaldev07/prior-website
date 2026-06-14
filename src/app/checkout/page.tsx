@@ -172,7 +172,8 @@ const CheckoutPage = () => {
 
           const response = await fetchAutoApplyCoupon({
             customerPhone: formData.mobileNumber,
-            orderTotal: transectionData.totalPrice + transectionData.deliveryCharge,
+            orderTotal:
+              transectionData.totalPrice + transectionData.deliveryCharge,
             products,
           });
 
@@ -463,55 +464,77 @@ const CheckoutPage = () => {
       categoryName,
       maxQuantity,
       variation,
+      hasDiscount,
+      updatedPrice,
     } = item;
 
-    return (
-      <div
-        key={index}
-        className='group relative flex flex-col sm:flex-row gap-4 py-6 last:pb-0 transition-all duration-300 hover:bg-neutral-50/50 rounded-none px-2 sm:px-3'>
-        <div className='relative h-28 w-28 sm:h-32 sm:w-32 shrink-0 overflow-hidden rounded bg-neutral-50 border border-neutral-200 transition-all duration-300'>
-          <Image
-            fill
-            src={thumbnail}
-            alt={name}
-            className='h-full w-full object-cover object-center p-2 transition-transform duration-300 group-hover:scale-105'
-          />
-          <Link className='absolute inset-0' href={`/products/${id}`} />
-        </div>
+    const currentPrice = hasDiscount ? (updatedPrice ?? unitPrice) : unitPrice;
+    const itemTotal = Number(currentPrice) * quantity;
 
-        <div className='flex flex-1 flex-col justify-between'>
-          <div className='space-y-2'>
-            <div className='flex flex-col sm:flex-row sm:justify-between gap-2'>
-              <div className='flex-1'>
-                <h3 className='font-serif text-base sm:text-lg md:text-xl text-neutral-900 line-clamp-2 hover:text-primary transition-colors duration-300 tracking-wide'>
-                  <Link href={`/products/${id}`}>{name}</Link>
-                </h3>
-                <div className='flex items-center gap-2 mt-2'>
-                  <Badge
-                    variant={"outline"}
-                    className='text-xs font-serif bg-blue-50 text-blue-700 border-blue-200 tracking-wide'>
-                    {formatVariant(variation)}
-                  </Badge>
+    return (
+      <div key={index} className='group'>
+        <div className='flex gap-4 py-5'>
+          {/* Product Image */}
+          <Link
+            href={`/products/${id}`}
+            className='relative h-[90px] w-[90px] shrink-0 overflow-hidden rounded-lg bg-neutral-50 border border-neutral-200 hover:border-neutral-300 transition-colors duration-200'>
+            <Image
+              fill
+              src={thumbnail}
+              alt={name}
+              className='object-contain transition-transform duration-300 group-hover:scale-105'
+            />
+          </Link>
+
+          {/* Product Details */}
+          <div className='flex flex-1 flex-col justify-between min-w-0'>
+            <div className='space-y-1.5'>
+              {/* Name & Delete Row */}
+              <div className='flex items-start justify-between gap-3'>
+                <div className='flex-1 min-w-0'>
+                  <Link
+                    href={`/products/${id}`}
+                    className='font-medium uppercase text-sm text-neutral-900 hover:text-neutral-600 transition-colors duration-200 line-clamp-2 leading-snug'>
+                    {name}
+                  </Link>
+                  {categoryName && (
+                    <p className='text-xs text-neutral-400 mt-0.5 tracking-wide'>
+                      {categoryName}
+                    </p>
+                  )}
                 </div>
+                <button
+                  onClick={() => removeFromCart(index)}
+                  className='text-neutral-300 hover:text-red-500 hover:bg-red-50 transition-all duration-200 p-1.5 rounded-md flex-shrink-0'
+                  aria-label='Remove item'>
+                  <TrashIcon className='w-4 h-4' />
+                </button>
               </div>
-              <div className='flex items-start'>
-                <span className='font-serif text-lg sm:text-xl text-primary whitespace-nowrap tracking-wide'>
-                  ৳{formatPrice(unitPrice * quantity)}
+
+              {/* Variant Badge */}
+              {variation && (
+                <Badge
+                  variant='secondary'
+                  className='text-[11px] px-2 py-0.5 bg-neutral-100 text-neutral-500 border-0 rounded-md font-normal'>
+                  {formatVariant(variation)}
+                </Badge>
+              )}
+
+              {/* Price */}
+              <div className='flex items-baseline gap-2'>
+                <span className='text-sm font-semibold text-neutral-900'>
+                  ৳{Number(currentPrice).toLocaleString()}
                 </span>
+                {hasDiscount && Number(unitPrice) > Number(currentPrice) && (
+                  <span className='text-xs text-neutral-400 line-through'>
+                    ৳{Number(unitPrice).toLocaleString()}
+                  </span>
+                )}
               </div>
             </div>
-          </div>
 
-          <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4'>
-            <button
-              className='flex items-center gap-2 text-sm font-serif text-red-600 hover:text-red-700 transition-colors duration-300 group/delete'
-              onClick={() => removeFromCart(index)}>
-              <TrashIcon className='size-4 transition-transform group-hover/delete:scale-110' />
-            </button>
-            <div className='flex items-center gap-3'>
-              <span className='text-sm font-serif text-neutral-600 tracking-wide hidden sm:inline'>
-                Qty:
-              </span>
+            {/* Quantity & Item Total */}
+            <div className='flex items-center justify-between mt-3'>
               <InputNumber
                 defaultValue={quantity}
                 min={1}
@@ -520,13 +543,25 @@ const CheckoutPage = () => {
                   updateToCart({
                     ...item,
                     quantity: value,
-                    totalPrice: Number(unitPrice) * Number(value),
+                    totalPrice: Number(currentPrice) * Number(value),
                   });
                 }}
               />
+
+              <div className='text-right'>
+                <p className='text-[11px] text-neutral-400 mb-0.5'>total</p>
+                <p className='text-sm font-semibold text-neutral-900'>
+                  ৳{itemTotal.toLocaleString()}
+                </p>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Divider — hidden after last item */}
+        {index < cart.length - 1 && (
+          <div className='border-t border-neutral-100' />
+        )}
       </div>
     );
   };
@@ -537,7 +572,7 @@ const CheckoutPage = () => {
         {/* Login/Register Prompt for Guest Users */}
         {!authState.isAuthenticated && (
           <Card className='rounded-none border-neutral-200'>
-            <CardHeader className='border-b border-neutral-200'>
+            <CardHeader>
               <CardTitle className='flex items-center font-serif tracking-wide text-neutral-900'>
                 <User className='h-5 w-5 mr-2' />
                 Sign In for Faster Checkout
