@@ -426,8 +426,12 @@ function ImageGallery({
               alt={productName}
               className='object-cover w-full h-full'
               sizes='(max-width: 1024px) 100vw, 50vw'
-              sharpenStrength={0.45} // tweak 0.3–0.7 to taste
-              enableSharpening={true}
+              sharpenStrength={0.6}
+              clarity={0.5}
+              contrast={1.05}
+              brightness={1.01}
+              saturation={1.07}
+              radius={1}
             />
           </div>
 

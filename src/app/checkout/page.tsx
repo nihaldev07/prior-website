@@ -482,7 +482,7 @@ const CheckoutPage = () => {
               fill
               src={thumbnail}
               alt={name}
-              className='object-contain transition-transform duration-300 group-hover:scale-105'
+              className='object-cover transition-transform duration-300 group-hover:scale-105'
             />
           </Link>
 
@@ -828,7 +828,7 @@ const CheckoutPage = () => {
         onContinue={() => setShowChangesDialog(false)}
       />
 
-      <main className='container py-8 sm:py-12 lg:py-16 lg:pb-28'>
+      <main className='px-2 md:container py-8 sm:py-12 lg:py-16 lg:pb-28'>
         {/* Enhanced Header */}
         <div className='mb-8 sm:mb-10 lg:mb-12'>
           <h2 className='text-2xl sm:ml-20 sm:text-3xl lg:text-4xl xl:text-5xl font-serif tracking-wide text-neutral-900'>

@@ -5,21 +5,32 @@ import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface EnhancedProductImageProps {
+export interface EnhancedProductImageProps {
   src: string;
   alt: string;
   className?: string;
   sizes?: string;
-  /** 0–1. How strong the sharpening is. Default: 0.45 */
+  /** Gaussian blur radius for unsharp mask. 1 = subtle, 2 = stronger. Default: 1 */
+  radius?: number;
+  /** Unsharp mask strength 0–1.5. Default: 0.55 */
   sharpenStrength?: number;
-  /** Whether to run canvas unsharp mask. Default: true */
-  enableSharpening?: boolean;
+  /** Clarity (local contrast / large-radius unsharp mask) 0–1. Default: 0.25 */
+  clarity?: number;
+  /** Contrast multiplier. 1.0 = unchanged. Default: 1.05 */
+  contrast?: number;
+  /** Brightness multiplier. 1.0 = unchanged. Default: 1.01 */
+  brightness?: number;
+  /** Saturation multiplier. 1.0 = unchanged. Default: 1.07 */
+  saturation?: number;
+  /** Disable canvas processing entirely (SVG filter still applies). Default: true */
+  enableEnhancement?: boolean;
 }
 
-// ─── SVG Filter (injected once, no canvas needed for basic pass) ──────────────
-// Used as a lightweight first-pass enhancer while canvas processes.
+// ─── SVG Filter ───────────────────────────────────────────────────────────────
+// Instant perceived-sharpness boost applied via CSS filter — zero processing
+// cost. Visible during the "preview" phase while canvas is working.
 
-const SVG_FILTER_ID = "product-sharpen-filter";
+const SVG_FILTER_ID = "prd-img-sharpen";
 
 function SharpenFilterDef() {
   return (
@@ -27,12 +38,6 @@ function SharpenFilterDef() {
       aria-hidden='true'
       style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}>
       <defs>
-        {/*
-          Unsharp mask via SVG:
-          1. Blur the image (feGaussianBlur)
-          2. Subtract it from the original (feComposite / feBlend)
-          This is the same algorithm as Photoshop's Unsharp Mask.
-        */}
         <filter
           id={SVG_FILTER_ID}
           x='0%'
@@ -40,33 +45,29 @@ function SharpenFilterDef() {
           width='100%'
           height='100%'
           colorInterpolationFilters='sRGB'>
-          {/* Step 1 — create a blurred copy */}
-          <feGaussianBlur in='SourceGraphic' stdDeviation='0.6' result='blur' />
-          {/* Step 2 — subtract blur from source to get the high-freq edge signal */}
+          <feGaussianBlur in='SourceGraphic' stdDeviation='0.5' result='blur' />
           <feComposite
             in='SourceGraphic'
             in2='blur'
             operator='arithmetic'
             k1='0'
-            k2='1.7'
-            k3='-0.7'
+            k2='1.8'
+            k3='-0.8'
             k4='0'
-            result='sharpened'
+            result='sharp'
           />
-          {/* Step 3 — slight contrast + saturation lift */}
-          <feComponentTransfer in='sharpened' result='contrasted'>
-            <feFuncR type='linear' slope='1.04' intercept='-0.02' />
-            <feFuncG type='linear' slope='1.04' intercept='-0.02' />
-            <feFuncB type='linear' slope='1.04' intercept='-0.02' />
+          <feComponentTransfer in='sharp' result='contrasted'>
+            <feFuncR type='linear' slope='1.05' intercept='-0.025' />
+            <feFuncG type='linear' slope='1.05' intercept='-0.025' />
+            <feFuncB type='linear' slope='1.05' intercept='-0.025' />
           </feComponentTransfer>
-          {/* Step 4 — subtle saturation boost to recover WebP warmth */}
           <feColorMatrix
             in='contrasted'
             type='matrix'
-            values='1.08 -0.04 -0.04 0 0
-                   -0.04  1.08 -0.04 0 0
-                   -0.04 -0.04  1.08 0 0
-                    0     0     0    1 0'
+            values='1.09 -0.045 -0.045 0 0
+                   -0.045  1.09 -0.045 0 0
+                   -0.045 -0.045  1.09 0 0
+                    0      0      0    1 0'
           />
         </filter>
       </defs>
@@ -74,116 +75,138 @@ function SharpenFilterDef() {
   );
 }
 
-// ─── Canvas Unsharp Mask ──────────────────────────────────────────────────────
-// Full unsharp mask on the pixel buffer:
-// sharpened = original + strength * (original − gaussian_blur(original))
+// ─── Canvas helpers ───────────────────────────────────────────────────────────
 
-function applyUnsharpMask(
-  imageData: ImageData,
-  radius: number,
-  strength: number,
-): ImageData {
-  const { data, width, height } = imageData;
-  const blurred = gaussianBlur(data, width, height, radius);
-  const output = new Uint8ClampedArray(data.length);
-
-  for (let i = 0; i < data.length; i += 4) {
-    // Alpha channel — copy unchanged
-    output[i + 3] = data[i + 3];
-    // RGB channels — unsharp mask formula
-    for (let c = 0; c < 3; c++) {
-      const orig = data[i + c];
-      const blur = blurred[i + c];
-      const sharpened = orig + strength * (orig - blur);
-      output[i + c] = Math.max(0, Math.min(255, sharpened));
-    }
-  }
-
-  return new ImageData(output, width, height);
+function gaussianKernel(radius: number): number[] {
+  const sigma = radius / 2 || 0.5;
+  const k: number[] = [];
+  for (let i = -radius; i <= radius; i++)
+    k.push(Math.exp(-(i * i) / (2 * sigma * sigma)));
+  const sum = k.reduce((a, b) => a + b, 0);
+  return k.map((v) => v / sum);
 }
 
-// Fast separable Gaussian blur (horizontal then vertical pass)
 function gaussianBlur(
   data: Uint8ClampedArray,
-  width: number,
-  height: number,
+  w: number,
+  h: number,
   radius: number,
 ): Uint8ClampedArray {
-  const kernel = gaussianKernel(radius);
+  const kern = gaussianKernel(radius);
   const tmp = new Float32Array(data.length);
   const out = new Uint8ClampedArray(data.length);
 
   // Horizontal pass
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
       let r = 0,
         g = 0,
         b = 0,
-        a = 0,
-        wSum = 0;
+        a = 0;
       for (let k = -radius; k <= radius; k++) {
-        const nx = Math.min(Math.max(x + k, 0), width - 1);
-        const idx = (y * width + nx) * 4;
-        const w = kernel[k + radius];
-        r += data[idx] * w;
-        g += data[idx + 1] * w;
-        b += data[idx + 2] * w;
-        a += data[idx + 3] * w;
-        wSum += w;
+        const nx = Math.min(Math.max(x + k, 0), w - 1);
+        const idx = (y * w + nx) * 4;
+        const wt = kern[k + radius];
+        r += data[idx] * wt;
+        g += data[idx + 1] * wt;
+        b += data[idx + 2] * wt;
+        a += data[idx + 3] * wt;
       }
-      const tidx = (y * width + x) * 4;
-      tmp[tidx] = r / wSum;
-      tmp[tidx + 1] = g / wSum;
-      tmp[tidx + 2] = b / wSum;
-      tmp[tidx + 3] = a / wSum;
+      const ti = (y * w + x) * 4;
+      tmp[ti] = r;
+      tmp[ti + 1] = g;
+      tmp[ti + 2] = b;
+      tmp[ti + 3] = a;
     }
   }
 
   // Vertical pass
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
       let r = 0,
         g = 0,
         b = 0,
-        a = 0,
-        wSum = 0;
+        a = 0;
       for (let k = -radius; k <= radius; k++) {
-        const ny = Math.min(Math.max(y + k, 0), height - 1);
-        const tidx = (ny * width + x) * 4;
-        const w = kernel[k + radius];
-        r += tmp[tidx] * w;
-        g += tmp[tidx + 1] * w;
-        b += tmp[tidx + 2] * w;
-        a += tmp[tidx + 3] * w;
-        wSum += w;
+        const ny = Math.min(Math.max(y + k, 0), h - 1);
+        const ti = (ny * w + x) * 4;
+        const wt = kern[k + radius];
+        r += tmp[ti] * wt;
+        g += tmp[ti + 1] * wt;
+        b += tmp[ti + 2] * wt;
+        a += tmp[ti + 3] * wt;
       }
-      const oidx = (y * width + x) * 4;
-      out[oidx] = Math.round(r / wSum);
-      out[oidx + 1] = Math.round(g / wSum);
-      out[oidx + 2] = Math.round(b / wSum);
-      out[oidx + 3] = Math.round(a / wSum);
+      const oi = (y * w + x) * 4;
+      out[oi] = r;
+      out[oi + 1] = g;
+      out[oi + 2] = b;
+      out[oi + 3] = a;
     }
   }
 
   return out;
 }
 
-function gaussianKernel(radius: number): number[] {
-  const sigma = radius / 2;
-  const kernel: number[] = [];
-  for (let i = -radius; i <= radius; i++) {
-    kernel.push(Math.exp(-(i * i) / (2 * sigma * sigma)));
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b);
+  let h = 0,
+    s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      default:
+        h = ((r - g) / d + 4) / 6;
+    }
   }
-  return kernel;
+  return [h, s, l];
 }
 
-// ─── Worker-safe canvas processing ───────────────────────────────────────────
-// Runs on a hidden OffscreenCanvas (if available) or regular canvas.
-// Returns a blob URL so we can swap the <img> src without re-requesting the network.
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  if (s === 0) {
+    const v = Math.round(l * 255);
+    return [v, v, v];
+  }
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  const hue2 = (t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  return [
+    Math.round(hue2(h + 1 / 3) * 255),
+    Math.round(hue2(h) * 255),
+    Math.round(hue2(h - 1 / 3) * 255),
+  ];
+}
+
+// ─── Core enhancement pipeline ────────────────────────────────────────────────
 
 async function enhanceImageToBlob(
   src: string,
-  strength: number,
+  opts: {
+    radius: number;
+    sharpenStrength: number;
+    clarity: number;
+    contrast: number;
+    brightness: number;
+    saturation: number;
+  },
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
@@ -198,21 +221,96 @@ async function enhanceImageToBlob(
         if (!ctx) return reject(new Error("No 2d context"));
 
         ctx.drawImage(img, 0, 0);
+        const {
+          data,
+          width: w,
+          height: h,
+        } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const src32 = new Uint8ClampedArray(data);
+        const out = new Uint8ClampedArray(src32.length);
 
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // Pass 1 — unsharp mask (edge sharpening, small radius)
+        const blurred = gaussianBlur(src32, w, h, opts.radius);
 
-        // Unsharp mask — radius 1 is enough for display-level sharpening
-        // Stronger radius = sharper but slower
-        const enhanced = applyUnsharpMask(imageData, 1, strength);
-        ctx.putImageData(enhanced, 0, 0);
+        // Pass 2 — clarity / local contrast (larger radius, lower strength)
+        const clarityBlur =
+          opts.clarity > 0
+            ? gaussianBlur(src32, w, h, Math.min(opts.radius + 1, 3))
+            : null;
 
+        for (let i = 0; i < src32.length; i += 4) {
+          let r = src32[i],
+            g = src32[i + 1],
+            b = src32[i + 2];
+          const a = src32[i + 3];
+
+          // Unsharp mask
+          r = Math.max(
+            0,
+            Math.min(255, r + opts.sharpenStrength * (r - blurred[i])),
+          );
+          g = Math.max(
+            0,
+            Math.min(255, g + opts.sharpenStrength * (g - blurred[i + 1])),
+          );
+          b = Math.max(
+            0,
+            Math.min(255, b + opts.sharpenStrength * (b - blurred[i + 2])),
+          );
+
+          // Clarity
+          if (clarityBlur) {
+            r = Math.max(
+              0,
+              Math.min(255, r + opts.clarity * (r - clarityBlur[i])),
+            );
+            g = Math.max(
+              0,
+              Math.min(255, g + opts.clarity * (g - clarityBlur[i + 1])),
+            );
+            b = Math.max(
+              0,
+              Math.min(255, b + opts.clarity * (b - clarityBlur[i + 2])),
+            );
+          }
+
+          // Brightness
+          r = Math.max(0, Math.min(255, r * opts.brightness));
+          g = Math.max(0, Math.min(255, g * opts.brightness));
+          b = Math.max(0, Math.min(255, b * opts.brightness));
+
+          // Contrast around midpoint 128
+          r = Math.max(0, Math.min(255, (r - 128) * opts.contrast + 128));
+          g = Math.max(0, Math.min(255, (g - 128) * opts.contrast + 128));
+          b = Math.max(0, Math.min(255, (b - 128) * opts.contrast + 128));
+
+          // Saturation via HSL
+          if (opts.saturation !== 1) {
+            const [hh, s, l] = rgbToHsl(r, g, b);
+            const [nr, ng, nb] = hslToRgb(
+              hh,
+              Math.max(0, Math.min(1, s * opts.saturation)),
+              l,
+            );
+            r = nr;
+            g = ng;
+            b = nb;
+          }
+
+          out[i] = r;
+          out[i + 1] = g;
+          out[i + 2] = b;
+          out[i + 3] = a;
+        }
+
+        ctx.putImageData(new ImageData(out, w, h), 0, 0);
         canvas.toBlob(
           (blob) => {
             if (!blob) return reject(new Error("toBlob failed"));
             resolve(URL.createObjectURL(blob));
           },
           "image/webp",
-          0.95, // high quality for the canvas output
+          0.95,
         );
       } catch (err) {
         reject(err);
@@ -224,134 +322,146 @@ async function enhanceImageToBlob(
   });
 }
 
-// ─── State machine ────────────────────────────────────────────────────────────
-type Phase = "loading" | "preview" | "enhanced" | "error";
+// ─── Component ────────────────────────────────────────────────────────────────
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+type Phase = "loading" | "preview" | "enhanced" | "error";
 
 export function EnhancedProductImage({
   src,
   alt,
   className,
   sizes,
-  sharpenStrength = 0.45,
-  enableSharpening = true,
+  radius = 1,
+  sharpenStrength = 0.55,
+  clarity = 0.25,
+  contrast = 1.05,
+  brightness = 1.01,
+  saturation = 1.07,
+  enableEnhancement = true,
 }: EnhancedProductImageProps) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [displaySrc, setDisplaySrc] = useState(src);
-  const enhancedBlobRef = useRef<string | null>(null);
+  const blobRef = useRef<string | null>(null);
   const processingRef = useRef(false);
 
-  // Cleanup blob URL on unmount or src change
+  // Revoke old blob on unmount or src change
   useEffect(() => {
     return () => {
-      if (enhancedBlobRef.current) {
-        URL.revokeObjectURL(enhancedBlobRef.current);
-        enhancedBlobRef.current = null;
+      if (blobRef.current) {
+        URL.revokeObjectURL(blobRef.current);
+        blobRef.current = null;
       }
     };
   }, [src]);
 
-  // Reset when src changes (thumbnail switch)
+  // Reset state when src changes (e.g. thumbnail switch)
   useEffect(() => {
-    if (enhancedBlobRef.current) {
-      URL.revokeObjectURL(enhancedBlobRef.current);
-      enhancedBlobRef.current = null;
+    if (blobRef.current) {
+      URL.revokeObjectURL(blobRef.current);
+      blobRef.current = null;
     }
     processingRef.current = false;
     setDisplaySrc(src);
     setPhase("loading");
   }, [src]);
 
-  // Once compressed image is shown, kick off canvas sharpening
   const handleImageLoaded = useCallback(async () => {
-    if (phase !== "loading") return; // already processed
-    setPhase("preview"); // show compressed version immediately
+    if (phase !== "loading") return;
+    setPhase("preview"); // show compressed image immediately
 
-    if (!enableSharpening || processingRef.current) return;
+    if (!enableEnhancement || processingRef.current) return;
     processingRef.current = true;
 
     try {
-      const blobUrl = await enhanceImageToBlob(src, sharpenStrength);
-      enhancedBlobRef.current = blobUrl;
-      setDisplaySrc(blobUrl);
+      const blob = await enhanceImageToBlob(src, {
+        radius,
+        sharpenStrength,
+        clarity,
+        contrast,
+        brightness,
+        saturation,
+      });
+      blobRef.current = blob;
+      setDisplaySrc(blob);
       setPhase("enhanced");
     } catch {
-      // Enhancement failed silently — compressed version stays visible
       setPhase("error");
     }
-  }, [src, phase, enableSharpening, sharpenStrength]);
+  }, [
+    src,
+    phase,
+    enableEnhancement,
+    radius,
+    sharpenStrength,
+    clarity,
+    contrast,
+    brightness,
+    saturation,
+  ]);
 
-  // CSS filters applied during each phase:
-  // - loading   → nothing (shimmer overlay)
-  // - preview   → SVG sharpen filter + slight CSS contrast to "pre-enhance" while canvas works
-  // - enhanced  → clean (canvas already did the work) + slight brightness to pop
-  // - error     → same as preview (SVG filter stays on)
   const filterStyle: React.CSSProperties = (() => {
     switch (phase) {
       case "loading":
         return {};
+      // While canvas is working: SVG unsharp mask + CSS contrast/sat for instant boost
       case "preview":
         return {
-          filter: `url(#${SVG_FILTER_ID}) contrast(1.04) brightness(1.01)`,
-          // SVG filter gives immediate perceived sharpness boost
-          // while canvas processes in the background
+          filter: `url(#${SVG_FILTER_ID}) contrast(${contrast}) brightness(${brightness}) saturate(${saturation})`,
         };
+      // Canvas done: just a tiny polish pass (canvas already did the heavy work)
       case "enhanced":
         return {
-          // Canvas already sharpened — just a tiny brightness lift
-          filter: "contrast(1.03) brightness(1.01) saturate(1.04)",
-          transition: "filter 0.4s ease",
+          filter: `contrast(1.01) brightness(1.005) saturate(1.02)`,
+          transition: "filter 0.5s ease",
         };
       case "error":
+        // Canvas failed — stay on SVG filter permanently
         return {
-          filter: `url(#${SVG_FILTER_ID}) contrast(1.04)`,
+          filter: `url(#${SVG_FILTER_ID}) contrast(${contrast}) brightness(${brightness}) saturate(${saturation})`,
         };
     }
   })();
 
   return (
     <>
-      {/* SVG filter definition — injected once, referenced by CSS filter */}
       <SharpenFilterDef />
 
       <div className='relative w-full h-full'>
-        {/* Shimmer skeleton — only during initial network load */}
+        {/* Shimmer while image downloads */}
         {phase === "loading" && (
           <div
             className='absolute inset-0 z-10 pointer-events-none'
             style={{
               background:
-                "linear-gradient(90deg, #f0f0f0 25%, #fafafa 50%, #f0f0f0 75%)",
+                "linear-gradient(90deg,#f0f0f0 25%,#fafafa 50%,#f0f0f0 75%)",
               backgroundSize: "200% 100%",
-              animation: "shimmer 1.4s ease-in-out infinite",
+              animation: "prd-shimmer 1.4s ease-in-out infinite",
             }}
           />
         )}
 
-        {/* "Enhancing…" pill — visible during canvas processing phase */}
-        {phase === "preview" && enableSharpening && (
+        {/* "Enhancing" pill — visible while canvas runs */}
+        {phase === "preview" && enableEnhancement && (
           <div
             className='absolute bottom-3 left-3 z-10 flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-neutral-500 text-[10px] font-serif tracking-widest px-2.5 py-1 rounded-full pointer-events-none select-none'
-            style={{ animation: "fadeInUp 0.3s ease both" }}>
+            style={{ animation: "prd-fadeup 0.3s ease both" }}>
             <span
               className='inline-block w-1.5 h-1.5 rounded-full bg-amber-400'
-              style={{ animation: "pulse 1s ease-in-out infinite" }}
+              style={{ animation: "prd-pulse 1s ease-in-out infinite" }}
             />
             Enhancing…
           </div>
         )}
 
-        {/* "HD" badge — appears once canvas sharpening is done */}
+        {/* HD badge — appears after canvas finishes */}
         {phase === "enhanced" && (
           <div
             className='absolute bottom-3 left-3 z-10 text-[10px] font-serif tracking-widest text-emerald-600 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-full pointer-events-none select-none'
-            style={{ animation: "fadeInUp 0.4s ease both" }}>
+            style={{ animation: "prd-fadeup 0.4s ease both" }}>
             ✦ HD
           </div>
         )}
 
-        {/* The actual image */}
         <img
           src={displaySrc}
           alt={alt}
@@ -362,7 +472,6 @@ export function EnhancedProductImage({
           )}
           style={{
             ...filterStyle,
-            // Smooth crossfade when src swaps from compressed → enhanced blob
             transition:
               phase === "enhanced"
                 ? "opacity 0.4s ease, filter 0.5s ease"
@@ -374,19 +483,18 @@ export function EnhancedProductImage({
         />
       </div>
 
-      {/* Keyframes injected inline (no Tailwind plugin needed) */}
       <style>{`
-        @keyframes shimmer {
+        @keyframes prd-shimmer {
           0%   { background-position: 200% 0; }
           100% { background-position: -200% 0; }
         }
-        @keyframes fadeInUp {
+        @keyframes prd-fadeup {
           from { opacity: 0; transform: translateY(4px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0.3; }
+        @keyframes prd-pulse {
+          0%,100% { opacity: 1; }
+          50%      { opacity: 0.3; }
         }
       `}</style>
     </>
