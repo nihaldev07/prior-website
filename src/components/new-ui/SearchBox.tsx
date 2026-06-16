@@ -15,17 +15,9 @@ import {
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import useSearchProduct from "@/hooks/useProductSearch";
+import { useTrendingSearches } from "@/hooks/useTrendingSearches";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-
-const TRENDING = [
-  "Baby rompers",
-  "Feeding bottles",
-  "Diaper bags",
-  "Soft toys",
-  "Nursing covers",
-  "Baby shoes",
-];
 const RECENT_KEY = "bb_recent_searches";
 
 function getRecent(): string[] {
@@ -152,6 +144,8 @@ function ResultsPanel({
   loading,
   products,
   recent,
+  trendingSearches,
+  trendingLoading,
   onSelect,
   onSubmit,
   onRecentClick,
@@ -163,6 +157,8 @@ function ResultsPanel({
   loading: boolean;
   products: any[];
   recent: string[];
+  trendingSearches: Array<{ query: string; frequency: number; growth: string; rank: number }>;
+  trendingLoading: boolean;
   onSelect: (id: string) => void;
   onSubmit: () => void;
   onRecentClick: (t: string) => void;
@@ -274,18 +270,33 @@ function ResultsPanel({
         <p className="px-4 pb-2.5 text-[10px] font-semibold uppercase tracking-widest text-gray-400 flex items-center gap-1.5">
           <TrendingUp size={10} /> Trending now
         </p>
-        <div className="px-4 flex flex-wrap gap-2">
-          {TRENDING.map((term) => (
-            <button
-              key={term}
-              onClick={() => onTrendingClick(term)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 hover:bg-[#e8f0ff] hover:text-[#0b3393] border border-gray-100 hover:border-[#b8d4ff] text-xs text-gray-600 active:bg-[#d0e4ff] transition-all duration-100"
-            >
-              <Tag size={9} className="text-[#0b3393]/50" />
-              {term}
-            </button>
-          ))}
-        </div>
+        {trendingLoading ? (
+          <div className="px-4 flex flex-wrap gap-2">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="h-7 w-20 bg-gray-100 rounded-full animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="px-4 flex flex-wrap gap-2">
+            {trendingSearches.length > 0 ? (
+              trendingSearches.map((item) => (
+                <button
+                  key={item.query}
+                  onClick={() => onTrendingClick(item.query)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 hover:bg-[#e8f0ff] hover:text-[#0b3393] border border-gray-100 hover:border-[#b8d4ff] text-xs text-gray-600 active:bg-[#d0e4ff] transition-all duration-100"
+                >
+                  <Tag size={9} className="text-[#0b3393]/50" />
+                  {item.query}
+                </button>
+              ))
+            ) : (
+              <div className="px-4 text-xs text-gray-400">No trending searches yet</div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -298,6 +309,7 @@ function DesktopSearch({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const [recent, setRecent] = useState<string[]>([]);
   const { loading, products, inputValue, setInputValue } = useSearchProduct();
+  const { trending: trendingSearches, loading: trendingLoading } = useTrendingSearches();
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -413,6 +425,8 @@ function DesktopSearch({ className }: { className?: string }) {
             loading={loading}
             products={products}
             recent={recent}
+            trendingSearches={trendingSearches}
+            trendingLoading={trendingLoading}
             onSelect={(id) => {
               router.push(`/collections/${id}`);
               setInputValue("");
@@ -450,4 +464,4 @@ export default function SearchBox({
 }
 
 // Export shared components for MobileSearchBox
-export { ProductRow, ResultsPanel, getRecent, saveRecent, removeRecent, TRENDING };
+export { ProductRow, ResultsPanel, getRecent, saveRecent, removeRecent };
