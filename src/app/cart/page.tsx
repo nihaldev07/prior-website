@@ -111,7 +111,7 @@ const CartPage = () => {
               fill
               src={thumbnail}
               alt={name}
-              className='object-cover p-2 transition-transform duration-300 group-hover:scale-105'
+              className='object-cover transition-transform duration-300 group-hover:scale-105'
             />
           </Link>
 
