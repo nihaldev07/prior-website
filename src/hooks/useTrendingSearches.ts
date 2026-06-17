@@ -3,8 +3,12 @@
  * Fetches and caches trending search queries with SWR strategy
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import { getCachedTrending, setCachedTrending, isCacheStale } from '@/lib/trendingCache';
+import { useState, useEffect, useCallback } from "react";
+import {
+  getCachedTrending,
+  setCachedTrending,
+  isCacheStale,
+} from "@/lib/trendingCache";
 
 export interface TrendingItem {
   query: string;
@@ -35,21 +39,21 @@ interface UseTrendingSearchesResult {
 }
 
 const STATIC_FALLBACK: TrendingItem[] = [
-  { query: 'Baby rompers', frequency: 0, growth: '+0%', rank: 1 },
-  { query: 'Feeding bottles', frequency: 0, growth: '+0%', rank: 2 },
-  { query: 'Diaper bags', frequency: 0, growth: '+0%', rank: 3 },
-  { query: 'Soft toys', frequency: 0, growth: '+0%', rank: 4 },
-  { query: 'Nursing covers', frequency: 0, growth: '+0%', rank: 5 },
-  { query: 'Baby shoes', frequency: 0, growth: '+0%', rank: 6 },
-  { query: 'Strollers', frequency: 0, growth: '+0%', rank: 7 },
-  { query: 'Baby monitors', frequency: 0, growth: '+0%', rank: 8 }
+  { query: "Baby rompers", frequency: 0, growth: "+0%", rank: 1 },
+  { query: "Feeding bottles", frequency: 0, growth: "+0%", rank: 2 },
+  { query: "Diaper bags", frequency: 0, growth: "+0%", rank: 3 },
+  { query: "Soft toys", frequency: 0, growth: "+0%", rank: 4 },
+  { query: "Nursing covers", frequency: 0, growth: "+0%", rank: 5 },
+  { query: "Baby shoes", frequency: 0, growth: "+0%", rank: 6 },
+  { query: "Strollers", frequency: 0, growth: "+0%", rank: 7 },
+  { query: "Baby monitors", frequency: 0, growth: "+0%", rank: 8 },
 ];
 
 export function useTrendingSearches(): UseTrendingSearchesResult {
   const [trending, setTrending] = useState<TrendingItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [source, setSource] = useState<string>('initial');
+  const [source, setSource] = useState<string>("initial");
 
   // Fetch trending searches from API
   const fetchTrending = useCallback(async (forceRefresh = false) => {
@@ -57,14 +61,18 @@ export function useTrendingSearches(): UseTrendingSearchesResult {
       setLoading(true);
       setError(null);
 
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://shop.priorbd.com/prior';
-      const refreshParam = forceRefresh ? '?refresh=true' : '';
-      const response = await fetch(`${API_URL}/search/trending${refreshParam}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || "https://shop.priorbd.com";
+      const refreshParam = forceRefresh ? "?refresh=true" : "";
+      const response = await fetch(
+        `${API_URL}/prior/search/trending${refreshParam}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,31 +82,35 @@ export function useTrendingSearches(): UseTrendingSearchesResult {
 
       if (result.success && result.data && result.data.length > 0) {
         setTrending(result.data);
-        setSource(result.meta?.source || 'api');
+        setSource(result.meta?.source || "api");
         setCachedTrending(result.data);
       } else {
         // Use cached data if API returns empty
         const cached = getCachedTrending();
         if (cached) {
           setTrending(cached);
-          setSource('cache_fallback');
+          setSource("cache_fallback");
         } else {
           setTrending(STATIC_FALLBACK);
-          setSource('static_fallback');
+          setSource("static_fallback");
         }
       }
     } catch (err) {
-      console.error('[useTrendingSearches] Error fetching trending:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch trending searches');
+      console.error("[useTrendingSearches] Error fetching trending:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch trending searches",
+      );
 
       // Try to use cached data on error
       const cached = getCachedTrending();
       if (cached) {
         setTrending(cached);
-        setSource('cache_fallback');
+        setSource("cache_fallback");
       } else {
         setTrending(STATIC_FALLBACK);
-        setSource('static_fallback');
+        setSource("static_fallback");
       }
     } finally {
       setLoading(false);
@@ -117,7 +129,7 @@ export function useTrendingSearches(): UseTrendingSearchesResult {
 
     if (cached) {
       setTrending(cached);
-      setSource('cache');
+      setSource("cache");
       setLoading(false);
     }
 
@@ -127,9 +139,12 @@ export function useTrendingSearches(): UseTrendingSearchesResult {
     }
 
     // Set up auto-refresh interval (every 5 minutes)
-    const intervalId = setInterval(() => {
-      fetchTrending(false);
-    }, 5 * 60 * 1000); // 5 minutes
+    const intervalId = setInterval(
+      () => {
+        fetchTrending(false);
+      },
+      5 * 60 * 1000,
+    ); // 5 minutes
 
     return () => clearInterval(intervalId);
   }, [fetchTrending]);
@@ -139,6 +154,6 @@ export function useTrendingSearches(): UseTrendingSearchesResult {
     loading,
     error,
     source,
-    refresh
+    refresh,
   };
 }

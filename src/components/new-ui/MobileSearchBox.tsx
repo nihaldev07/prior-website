@@ -14,8 +14,8 @@ import {
   getRecent,
   saveRecent,
   removeRecent,
-  TRENDING,
 } from "./SearchBox";
+import { useTrendingSearches } from "@/hooks/useTrendingSearches";
 
 interface MobileSearchBoxProps {
   className?: string;
@@ -30,6 +30,7 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const { loading, products, inputValue, setInputValue } = useSearchProduct();
+  const { trending: trendingSearches, loading: trendingLoading } = useTrendingSearches();
   const inputRef = useRef<HTMLInputElement>(null);
   const [recent, setRecent] = useState<string[]>([]);
 
@@ -198,6 +199,8 @@ export default function MobileSearchBox({ className }: MobileSearchBoxProps) {
               loading={loading}
               products={products}
               recent={recent}
+              trendingSearches={trendingSearches}
+              trendingLoading={trendingLoading}
               onSelect={handleSelectProduct}
               onSubmit={handleSearchSubmit}
               onRecentClick={handleRecentClick}
