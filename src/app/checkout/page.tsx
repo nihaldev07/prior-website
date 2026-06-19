@@ -15,7 +15,10 @@ import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
 import { createOrder } from "@/utils/orderFunctions";
 import { bkashCheckout } from "@/utils/payment";
-import { isValidBangladeshiPhoneNumber } from "@/utils/content";
+import {
+  isValidBangladeshiPhoneNumber,
+  getDeliveryChargeByDistrictId,
+} from "@/utils/content";
 import { fetchBulkProducts } from "@/services/productServices";
 import { compareProducts } from "@/utils/productComparison";
 import ProductChangesDialog from "@/components/checkout/ProductChangesDialog";
@@ -58,6 +61,7 @@ export interface UserFormData {
   mobileNumber: string;
   email?: string;
   district: string;
+  districtId?: string;
   division: string;
   address: string;
   postalCode?: string;
@@ -92,6 +96,7 @@ const CheckoutPage = () => {
     mobileNumber: "",
     email: "",
     district: "",
+    districtId: "",
     division: "",
     address: "",
     postalCode: "1234",
@@ -382,25 +387,11 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (paymentMethod === "") return;
-    if (formData?.district === "" || formData.division === "") {
+    if (formData?.districtId === "" || formData.division === "") {
       Swal.fire("Oops!!", "Enter valid shipping address", "error");
     } else {
-      let deliveryCharge = 0;
-      if (
-        formData.district.toLowerCase().includes("dhaka") &&
-        formData.division.toLowerCase().includes("dhaka")
-      ) {
-        deliveryCharge = 80;
-      } else if (
-        formData.division.toLowerCase().includes("dhaka") &&
-        ["gazipur", "tongi", "narayanganj", "savar"].includes(
-          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase(),
-        )
-      ) {
-        deliveryCharge = 130;
-      } else {
-        deliveryCharge = 150;
-      }
+      // Use getDeliveryChargeByDistrictId to get delivery charge
+      const deliveryCharge = getDeliveryChargeByDistrictId(formData.districtId || "");
 
       const couponDiscount = appliedCoupon?.discountAmount || 0;
       const remaining = ceilPrice(
@@ -417,24 +408,11 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     let deliveryChargeX = transectionData?.deliveryCharge ?? 0;
-    if (formData?.district === "" && formData.division === "") {
+    if (formData?.districtId === "" && formData.division === "") {
       deliveryChargeX = 0;
     } else {
-      if (
-        formData.district.toLowerCase().includes("dhaka") &&
-        formData.division.toLowerCase().includes("dhaka")
-      ) {
-        deliveryChargeX = 80;
-      } else if (
-        formData.division.toLowerCase().includes("dhaka") &&
-        ["gazipur", "tongi", "narayanganj", "savar"].includes(
-          formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase(),
-        )
-      ) {
-        deliveryChargeX = 130;
-      } else {
-        deliveryChargeX = 150;
-      }
+      // Use getDeliveryChargeByDistrictId to get delivery charge
+      deliveryChargeX = getDeliveryChargeByDistrictId(formData.districtId || "");
 
       const couponDiscount = appliedCoupon?.discountAmount || 0;
       const remaining = ceilPrice(
@@ -449,10 +427,13 @@ const CheckoutPage = () => {
         deliveryCharge: deliveryChargeX,
         remaining,
       });
-      if (hasPrepayment) calculateOrderPrepayment(deliveryChargeX);
+      // Calculate prepayment only when deliveryCharge > 80
+      if (hasPrepayment && deliveryChargeX > 80) {
+        calculateOrderPrepayment(deliveryChargeX);
+      }
     }
     //eslint-disable-next-line
-  }, [formData?.district, appliedCoupon]);
+  }, [formData?.districtId, appliedCoupon]);
 
   const renderProduct = (item: CartItem, index: number) => {
     const {
@@ -671,20 +652,20 @@ const CheckoutPage = () => {
 
   const confirmOrderAndCreateOne = async () => {
     setLoading(true);
+    // Has payment if: using bkash, has prepayment amount, or delivery charge > 80
     const hasPayment =
       paymentMethod === "bkash" ||
       prePaymentAmount > 0 ||
-      !formData.district.toLowerCase().includes("dhaka");
-    const paymentAmount =
-      prePaymentAmount > 0
-        ? prePaymentAmount
-        : !formData.district.toLowerCase().includes("dhaka")
-          ? ["gazipur", "tongi", "narayanganj", "savar"].includes(
-              formData.district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase(),
-            )
-            ? Math.min(130, transectionData?.remaining)
-            : Math.min(150, transectionData?.remaining)
-          : 0;
+      transectionData.deliveryCharge > 80;
+
+    // Calculate payment amount
+    let paymentAmount = 0;
+    if (prePaymentAmount > 0) {
+      paymentAmount = prePaymentAmount;
+    } else if (transectionData.deliveryCharge > 80) {
+      // For delivery charges > 80, require prepayment of delivery charge
+      paymentAmount = Math.min(transectionData.deliveryCharge, transectionData?.remaining);
+    }
     const orderData = {
       customerInformation: {
         //@ts-ignore
@@ -798,11 +779,11 @@ const CheckoutPage = () => {
       return Swal.fire("Oops!!", "Please enter a valid phone number", "error");
     }
 
-    // Check for deliveries outside Dhaka and prompt for prepayment
-    if (!district.toLowerCase().includes("dhaka")) {
+    // Check for deliveries with delivery charge > 80 and prompt for prepayment
+    if (transectionData.deliveryCharge > 80) {
       return Swal.fire({
         title: "Terms & Condition",
-        text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for deliveries outside Dhaka.`,
+        text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for your delivery location.`,
         showDenyButton: false,
         showCancelButton: true,
         confirmButtonText: "Continue",

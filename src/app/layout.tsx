@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Devanagari } from "next/font/google";
+// @ts-ignore: global CSS import may not have type declarations available.
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";

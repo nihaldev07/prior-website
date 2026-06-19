@@ -39,14 +39,14 @@ interface UseTrendingSearchesResult {
 }
 
 const STATIC_FALLBACK: TrendingItem[] = [
-  { query: "Baby rompers", frequency: 0, growth: "+0%", rank: 1 },
-  { query: "Feeding bottles", frequency: 0, growth: "+0%", rank: 2 },
-  { query: "Diaper bags", frequency: 0, growth: "+0%", rank: 3 },
-  { query: "Soft toys", frequency: 0, growth: "+0%", rank: 4 },
-  { query: "Nursing covers", frequency: 0, growth: "+0%", rank: 5 },
-  { query: "Baby shoes", frequency: 0, growth: "+0%", rank: 6 },
-  { query: "Strollers", frequency: 0, growth: "+0%", rank: 7 },
-  { query: "Baby monitors", frequency: 0, growth: "+0%", rank: 8 },
+  // { query: "Baby rompers", frequency: 0, growth: "+0%", rank: 1 },
+  // { query: "Feeding bottles", frequency: 0, growth: "+0%", rank: 2 },
+  // { query: "Diaper bags", frequency: 0, growth: "+0%", rank: 3 },
+  // { query: "Soft toys", frequency: 0, growth: "+0%", rank: 4 },
+  // { query: "Nursing covers", frequency: 0, growth: "+0%", rank: 5 },
+  // { query: "Baby shoes", frequency: 0, growth: "+0%", rank: 6 },
+  // { query: "Strollers", frequency: 0, growth: "+0%", rank: 7 },
+  // { query: "Baby monitors", frequency: 0, growth: "+0%", rank: 8 },
 ];
 
 export function useTrendingSearches(): UseTrendingSearchesResult {

@@ -2,6 +2,7 @@
 import SwiperCore from "swiper";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+// @ts-ignore
 import "swiper/css";
 
 SwiperCore.use([Autoplay]);
@@ -35,8 +36,7 @@ const CarouselComponent: React.FC<IProps> = ({
         delay: delay,
         disableOnInteraction: false,
       }}
-      className="w-full h-full"
-    >
+      className='w-full h-full'>
       {items.map((item, index) => (
         <SwiperSlide key={index}>{item}</SwiperSlide>
       ))}
