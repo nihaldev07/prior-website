@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import SwiperCore from "swiper";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+// @ts-ignore
 import "swiper/css";
 import Image from "next/image";
 

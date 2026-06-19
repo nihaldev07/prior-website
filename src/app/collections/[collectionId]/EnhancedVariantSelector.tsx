@@ -1,21 +1,7 @@
 "use client";
 import * as React from "react";
-import { Palette, Ruler, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { SingleProductType, Variation } from "@/data/types";
 import Swal from "sweetalert2";
 
@@ -26,7 +12,11 @@ interface Props {
   selected: string;
   selectedVariant: Variation | null;
   onVariantChange: (variant: Variation) => void;
-  onImageGroupChange?: (attribute: string, value: string, groupId: string) => void;
+  onImageGroupChange?: (
+    attribute: string,
+    value: string,
+    groupId: string,
+  ) => void;
 }
 
 const EnhancedVariantSelector: React.FC<Props> = ({
@@ -37,341 +27,280 @@ const EnhancedVariantSelector: React.FC<Props> = ({
   selectedVariant,
   onVariantChange,
 }) => {
-  const [variations, setVariations] = React.useState<any[]>([]);
-  const [hoveredItem, setHoveredItem] = React.useState<string | null>(null);
+  const [variations, setVariations] = React.useState<Variation[]>([]);
 
   React.useEffect(() => {
-    if (!!selectedProduct && !!selectedProduct?.variation) {
-      setVariations(selectedProduct?.variation ?? []);
+    if (selectedProduct?.variation) {
+      setVariations(selectedProduct.variation);
     }
-    //eslint-disable-next-line
   }, [selectedProduct]);
 
-  const handleVariantChange = (value: string) => {
-    const vType: "size" | "color" = type;
-    const rType = vType === "color" ? "size" : "color";
-    const selectedRev = !!selectedVariant ? (selectedVariant[rType] ?? "") : "";
+  const getVariantInfo = React.useCallback(
+    (value: string) => {
+      const rType = type === "color" ? "size" : "color";
+      const selectedRev = selectedVariant?.[rType] ?? "";
 
-    const filteredVariants = variations.filter((variant: Variation) => {
-      // Handle empty string values - match if either value is empty or they match
-      const typeMatch =
-        value === "" || variant[vType] === "" || variant[vType].includes(value);
-      const reverseMatch =
-        selectedRev === "" ||
-        variant[rType] === "" ||
-        variant[rType].includes(selectedRev);
-      return typeMatch && reverseMatch;
-    });
-
-    if (filteredVariants.length > 0) {
-      const selectedVariantData = filteredVariants[0];
-      onVariantChange(selectedVariantData);
-    } else {
-      Swal.fire({
-        title: "Out Of Stock",
-        text: "This variant is currently out of stock",
-        icon: "error",
-        confirmButtonColor: "#3b82f6",
-        confirmButtonText: "OK",
+      const matched = variations.filter((v) => {
+        const typeMatch =
+          value === "" || v[type] === "" || v[type].includes(value);
+        const reverseMatch =
+          selectedRev === "" ||
+          v[rType] === "" ||
+          v[rType].includes(selectedRev);
+        return typeMatch && reverseMatch;
       });
-    }
-  };
 
-  // Get available quantities for each variant
-  const getVariantInfo = (value: string) => {
-    const vType: "size" | "color" = type;
-    const rType = vType === "color" ? "size" : "color";
-    const selectedRev = !!selectedVariant ? (selectedVariant[rType] ?? "") : "";
+      const qty = matched.reduce((s, v) => s + (v.quantity || 0), 0);
+      return { quantity: qty, isAvailable: qty > 0 };
+    },
+    [variations, type, selectedVariant],
+  );
 
-    const filteredVariants = variations.filter((variant: Variation) => {
-      // Handle empty string values - match if either value is empty or they match
-      const typeMatch =
-        value === "" || variant[vType] === "" || variant[vType].includes(value);
-      const reverseMatch =
-        selectedRev === "" ||
-        variant[rType] === "" ||
-        variant[rType].includes(selectedRev);
-      return typeMatch && reverseMatch;
-    });
+  const handleSelect = React.useCallback(
+    (value: string) => {
+      const rType = type === "color" ? "size" : "color";
+      const selectedRev = selectedVariant?.[rType] ?? "";
 
-    const totalQuantity = filteredVariants.reduce(
-      (sum, variant) => sum + (variant.quantity || 0),
-      0,
-    );
-    const isAvailable = totalQuantity > 0;
+      const matched = variations.filter((v) => {
+        const typeMatch =
+          value === "" || v[type] === "" || v[type].includes(value);
+        const reverseMatch =
+          selectedRev === "" ||
+          v[rType] === "" ||
+          v[rType].includes(selectedRev);
+        return typeMatch && reverseMatch;
+      });
 
-    return { quantity: totalQuantity, isAvailable };
-  };
-
-  const getIcon = () => {
-    return type === "color" ? (
-      <Palette className='h-4 w-4' />
-    ) : (
-      <Ruler className='h-4 w-4' />
-    );
-  };
-
-  const getColorPreview = (colorName: string) => {
-    const colorMap: { [key: string]: string } = {
-      red: "#ef4444",
-      blue: "#3b82f6",
-      green: "#10b981",
-      yellow: "#f59e0b",
-      purple: "#8b5cf6",
-      pink: "#ec4899",
-      black: "#000000",
-      white: "#ffffff",
-      gray: "#6b7280",
-      brown: "#92400e",
-      orange: "#f97316",
-      navy: "#1e3a8a",
-      beige: "#f5f5dc",
-      maroon: "#800000",
-      olive: "#808000",
-      teal: "#14b8a6",
-    };
-
-    const colorKey = colorName.toLowerCase();
-    return colorMap[colorKey] || "#6b7280";
-  };
+      if (matched.length > 0) {
+        onVariantChange(matched[0]);
+      } else {
+        Swal.fire({
+          title: "Out of Stock",
+          text: "This variant is currently unavailable.",
+          icon: "error",
+          confirmButtonColor: "#111111",
+          confirmButtonText: "Got it",
+        });
+      }
+    },
+    [variations, type, selectedVariant, onVariantChange],
+  );
 
   if (!list || list.length === 0) return null;
 
+  const visibleList = list.filter((v) => v.trim() !== "");
+  if (visibleList.length === 0) return null;
+
+  const label = type === "color" ? "Color" : "Size";
+  const selectedLabel = selected?.trim() !== "" ? selected : null;
+
   return (
-    <div className='space-y-3'>
-      {/* Custom Button-based Selector for Better Visual Appeal */}
-      <div className='space-y-3'>
-        <div className='flex items-center space-x-2'>
-          {getIcon()}
-          <span className='font-medium text-sm text-zinc-900'>
-            {type === "color" ? "Color" : "Size"}
+    <div className='space-y-2.5'>
+      {/* Header row */}
+      <div className='items-baseline gap-1.5 hidden'>
+        <span className='text-[11px] font-semibold uppercase tracking-widest text-zinc-400'>
+          {label}
+        </span>
+        {selectedLabel && (
+          <span className='text-[13px] font-medium text-zinc-700'>
+            : <span className='text-zinc-900'>{selectedLabel}</span>
           </span>
-          {/* {selected && (
-            <Badge
-              variant='secondary'
-              className='text-xs bg-gray-800 text-white'>
-              {selected.toUpperCase()}
-            </Badge>
-          )} */}
-        </div>
-
-        {/* Button Grid for Visual Selection */}
-        <div className='flex flex-wrap gap-2'>
-          {list.map((value, index) => {
-            const variantInfo = getVariantInfo(value);
-            const isSelected = selected === value;
-            const isOutOfStock = !variantInfo.isAvailable;
-            const displayValue = value === "" ? "Standard" : value;
-
-            return (
-              <Button
-                key={index}
-                variant={isSelected ? "default" : "outline"}
-                className={cn(
-                  "relative h-9 px-4 transition-all duration-200",
-                  "border shadow-sm whitespace-nowrap rounded ",
-                  !isOutOfStock && !isSelected && "hover:bg-gray-100",
-                )}
-                onClick={() => {
-                  if (isOutOfStock) {
-                    const otherType = type === "color" ? "size" : "color";
-                    const otherValue = selectedVariant?.[otherType] || "";
-                    const colorText = type === "color" ? value : otherValue;
-                    const sizeText = type === "size" ? value : otherValue;
-
-                    toast.error(
-                      `${
-                        colorText ? `Color: ${colorText.toUpperCase()}` : ""
-                      }${colorText && sizeText ? " | " : ""}${
-                        sizeText ? `Size: ${sizeText.toUpperCase()}` : ""
-                      } is currently out of stock`,
-                    );
-                  } else {
-                    handleVariantChange(value);
-                  }
-                }}
-                onMouseEnter={() => setHoveredItem(null)}
-                onMouseLeave={() => setHoveredItem(null)}>
-                <span
-                  className={cn(
-                    "font-medium text-sm flex items-center gap-1.5",
-                    isSelected
-                      ? "text-white"
-                      : isOutOfStock
-                        ? "text-red-600"
-                        : "text-zinc-800 dark:text-zinc-200",
-                  )}>
-                  {displayValue.toUpperCase()}
-                  {isOutOfStock && <XCircle className='h-3.5 w-3.5' />}
-                </span>
-              </Button>
-            );
-          })}
-        </div>
-
-        {/* Hover Info Card */}
-        {hoveredItem && (
-          <Card className='absolute z-50 mt-2 p-0 shadow-lg border animate-in fade-in-0 zoom-in-95'>
-            <CardContent className='p-3'>
-              <div className='flex items-center space-x-2'>
-                <span className='text-sm font-medium'>
-                  {hoveredItem.toUpperCase()}
-                </span>
-                {(() => {
-                  const info = getVariantInfo(hoveredItem);
-                  return info.isAvailable ? (
-                    <Badge
-                      variant='outline'
-                      className='text-xs text-green-600 border-green-200 ml-2'>
-                      {info.quantity} available
-                    </Badge>
-                  ) : (
-                    <Badge
-                      variant='outline'
-                      className='text-xs text-red-600 border-red-200 ml-2'>
-                      Out of stock
-                    </Badge>
-                  );
-                })()}
-              </div>
-            </CardContent>
-          </Card>
         )}
       </div>
 
-      {/* Fallback Select Component for Complex Cases */}
-      <div className='hidden'>
-        <Select
-          value={selected}
-          onValueChange={(value: string) => handleVariantChange(value)}>
-          <SelectTrigger className='w-full h-12 border-2 hover:border-primary/50 transition-colors'>
-            <div className='flex items-center space-x-2'>
-              {getIcon()}
-              <SelectValue
-                placeholder={`Select ${type}`}
-                className='text-left'
-              />
-            </div>
-          </SelectTrigger>
-          <SelectContent position='popper' className='z-50 min-w-[200px]'>
-            <SelectGroup>
-              <SelectLabel className='flex items-center space-x-2 py-2'>
-                {getIcon()}
-                <span>
-                  {type.charAt(0).toUpperCase() + type.slice(1)} Options
-                </span>
-              </SelectLabel>
-              {list
-                .filter((item) => !!item)
-                .map((value, index) => {
-                  const variantInfo = getVariantInfo(value);
-                  const isOutOfStock = !variantInfo.isAvailable;
+      {/* Chips */}
+      <div className='flex flex-wrap gap-2'>
+        {visibleList.map((value) => {
+          const { isAvailable } = getVariantInfo(value);
+          const isSelected = selected === value;
 
-                  return (
-                    <SelectItem
-                      key={index}
-                      value={value}
-                      disabled={isOutOfStock}
-                      className={cn(
-                        "cursor-pointer hover:bg-accent",
-                        isOutOfStock && "opacity-50 cursor-not-allowed",
-                      )}>
-                      <div className='flex items-center justify-between w-full'>
-                        <div className='flex items-center space-x-3'>
-                          {type === "color" && (
-                            <div
-                              className={cn(
-                                "w-4 h-4 rounded-full border",
-                                value.toLowerCase() === "white"
-                                  ? "border-gray-300"
-                                  : "border-transparent",
-                              )}
-                              style={{
-                                backgroundColor: getColorPreview(value),
-                              }}
-                            />
-                          )}
-                          <span className='font-medium'>
-                            {value.toUpperCase()}
-                          </span>
-                        </div>
-                        <div className='flex items-center space-x-2'>
-                          {isOutOfStock ? (
-                            <Badge
-                              variant='outline'
-                              className='text-xs text-red-600 border-red-200 ml-2'>
-                              Out of stock
-                            </Badge>
-                          ) : (
-                            <Badge
-                              variant='outline'
-                              className='text-xs text-green-600 border-green-200 ml-2'>
-                              {variantInfo.quantity} left
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+          return (
+            <Chip
+              key={value}
+              value={value}
+              isSelected={isSelected}
+              isAvailable={isAvailable}
+              isColor={type === "color"}
+              onSelect={handleSelect}
+            />
+          );
+        })}
       </div>
-
-      {/* Selection Summary */}
-      {/* {selected && (
-        <div className=' items-center justify-between text-sm text-muted-foreground bg-zinc-100 rounded-lg p-3 '>
-          <div className='flex items-center space-x-2'>
-            <span>Selected {type}:</span>
-            <Badge variant='default' className='font-medium bg-orange-800'>
-              {selected.toUpperCase()}
-            </Badge>
-          </div>
-          {(() => {
-            const info = getVariantInfo(selected);
-            return (
-              <span className='text-xs'>
-                {info.quantity} {info.quantity === 1 ? "item" : "items"}{" "}
-                available
-              </span>
-            );
-          })()}
-        </div>
-      )} */}
     </div>
   );
 };
 
+/* ─────────────────────────────────────────────
+   Shared Chip — used for both color and size
+   Color chips get a small dot accent derived
+   from the name using CSS currentColor hashing.
+───────────────────────────────────────────── */
+interface ChipProps {
+  value: string;
+  isSelected: boolean;
+  isAvailable: boolean;
+  isColor: boolean;
+  onSelect: (v: string) => void;
+}
+
+// Generate a deterministic hue from any arbitrary color name string
+// so long multi-word names like "Dusty Rose Mauve" still get a
+// recognisable tint without relying on a finite lookup table.
+function hueFromName(name: string): number {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) {
+    h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+  }
+  return Math.abs(h) % 360;
+}
+
+// Known exact overrides for the most common single-word names
+const HUE_OVERRIDES: Record<string, number> = {
+  red: 0,
+  orange: 25,
+  yellow: 50,
+  green: 130,
+  teal: 175,
+  cyan: 190,
+  blue: 220,
+  indigo: 240,
+  purple: 270,
+  violet: 280,
+  pink: 330,
+  rose: 345,
+  coral: 16,
+  maroon: 355,
+  brown: 20,
+  olive: 65,
+  navy: 225,
+  gold: 45,
+  lime: 90,
+  mint: 155,
+  sky: 200,
+  lavender: 265,
+  khaki: 48,
+  beige: 40,
+};
+
+function dotHue(name: string): number {
+  const key = name.toLowerCase().split(/\s+/)[0]; // first word
+  return HUE_OVERRIDES[key] ?? hueFromName(name);
+}
+
+// Special cases that should render as neutral (no color dot)
+const ACHROMATIC = new Set([
+  "black",
+  "white",
+  "gray",
+  "grey",
+  "silver",
+  "charcoal",
+  "cream",
+  "ivory",
+  "off-white",
+]);
+
+function isAchromatic(name: string): boolean {
+  const lower = name.toLowerCase();
+  return (
+    ACHROMATIC.has(lower) || ACHROMATIC.has(lower.split(/\s+/).pop() ?? "")
+  );
+}
+
+const Chip: React.FC<ChipProps> = ({
+  value,
+  isSelected,
+  isAvailable,
+  isColor,
+  onSelect,
+}) => {
+  const handleClick = () => {
+    if (!isAvailable) {
+      toast.error(`${value} is currently out of stock`, {
+        description: "Try a different option or check back later.",
+      });
+      return;
+    }
+    onSelect(value);
+  };
+
+  // Derive dot color for color chips
+  const hue = isColor ? dotHue(value) : 0;
+  const achromatic = isColor && isAchromatic(value);
+
+  // dot style — vivid HSL for chromatic, gradient for black/white/gray
+  const dotStyle: React.CSSProperties = achromatic
+    ? {
+        background:
+          value.toLowerCase().includes("black") ||
+          value.toLowerCase().includes("charcoal")
+            ? "#1a1a1a"
+            : value.toLowerCase().includes("white") ||
+                value.toLowerCase().includes("cream") ||
+                value.toLowerCase().includes("ivory")
+              ? "linear-gradient(135deg,#f5f5f5,#d4d4d4)"
+              : "linear-gradient(135deg,#d1d5db,#9ca3af)",
+        border: "1px solid rgba(0,0,0,0.12)",
+      }
+    : {
+        background: `hsl(${hue},72%,52%)`,
+      };
+
+  return (
+    <button
+      type='button'
+      aria-label={`${value}${!isAvailable ? " — out of stock" : ""}`}
+      aria-pressed={isSelected}
+      onClick={handleClick}
+      className={cn(
+        // base
+        "group relative inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5",
+        "text-[11.5px] font-medium leading-none tracking-wide",
+        "transition-all duration-150 select-none",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2",
+
+        // available + selected
+        isSelected &&
+          isAvailable &&
+          "border-zinc-900 bg-zinc-900 text-white shadow-sm",
+
+        // available + not selected
+        !isSelected &&
+          isAvailable &&
+          "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-400 hover:text-zinc-900",
+
+        // out of stock
+        !isAvailable &&
+          "cursor-not-allowed border-zinc-100 bg-zinc-50 text-zinc-300",
+      )}>
+      {/* Color dot — only for color type */}
+      {isColor && (
+        <span
+          aria-hidden
+          className={cn(
+            "inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full",
+            !isAvailable && "opacity-40",
+          )}
+          style={dotStyle}
+        />
+      )}
+
+      {/* Label */}
+      <span
+        className={cn(
+          !isAvailable && "line-through decoration-zinc-300 decoration-1",
+        )}>
+        {value}
+      </span>
+
+      {/* OOS label */}
+      {!isAvailable && (
+        <span className='text-[10px] font-normal text-zinc-400 ml-0.5'>
+          · out of stock
+        </span>
+      )}
+    </button>
+  );
+};
+
 export default EnhancedVariantSelector;
-/**
- * type === "color" ? (
-                    <div className='relative w-full h-full flex items-center justify-center'>
-                      <div
-                        className={cn(
-                          "w-8 h-8 rounded-full border-4 shadow-sm",
-                          isSelected
-                            ? "border-primary"
-                            : isOutOfStock
-                            ? "border-red-300"
-                            : "border-gray-300"
-                        )}
-                        style={{ backgroundColor: getColorPreview(value) }}
-                        onClick={() =>
-                          !isOutOfStock &&
-                          type === "color" &&
-                          handleVariantChange(value)
-                        }
-                      />
-                      {isSelected && (
-                        <Check
-                          className={`absolute h-4 w-4 ${
-                            value.toLowerCase() === "white"
-                              ? "text-primary"
-                              : "text-white"
-                          } `}
-                        />
-                      )}
-                    </div>
-                  ) :
- */

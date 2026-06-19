@@ -556,7 +556,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className={cn("group relative", className)}>
           <Link href={`/collections/${product.slug || product.id}`}>
             <div className='relative'>
-              <div className='aspect-square  border-4 transition-all relative border-neutral-300 group-hover:border-neutral-100 overflow-hidden bg-neutral-100'>
+              <div className='aspect-square  border-4 transition-all relative border-neutral-100 group-hover:border-neutral-300 overflow-hidden bg-neutral-100'>
                 <Image
                   src={product.image}
                   alt={product.name}
