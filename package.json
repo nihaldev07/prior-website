@@ -1,6 +1,6 @@
 {
   "name": "prior-website",
-  "version": "2.4.6",
+  "version": "2.4.7",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/runtime": "7.29.7",
     "@hookform/resolvers": "^3.9.0",
     "@intercom/messenger-js-sdk": "^0.0.18",
     "@netlify/functions": "^2.8.2",
