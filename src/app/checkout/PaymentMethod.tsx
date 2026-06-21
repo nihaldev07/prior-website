@@ -26,7 +26,9 @@ const PaymentMethod: FC<Props> = ({
         </span>
         <div className='flex w-full items-center justify-between'>
           <div className='sm:ml-8'>
-            <h3 className='uppercase font-serif tracking-[0.2em] text-neutral-900'>PAYMENT METHOD</h3>
+            <h3 className='uppercase font-serif tracking-[0.2em] text-neutral-900'>
+              PAYMENT METHOD
+            </h3>
             <div className='mt-1 text-sm font-semibold'></div>
           </div>
         </div>
@@ -48,12 +50,12 @@ const PaymentMethod: FC<Props> = ({
             {!!prePaymentAmount && prePaymentAmount > 0
               ? `Cash On Delivery (Advance ${prePaymentAmount}TK)`
               : district.toLowerCase().includes("dhaka")
-              ? "Cash On Delivery"
-              : ["gazipur", "tongi", "narayanganj", "savar"].includes(
-                  district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase()
-                )
-              ? "Cash On Delivery (Advance 130TK)"
-              : "Cash On Delivery (Advance 150TK)"}
+                ? "Cash On Delivery"
+                : ["gazipur", "tongi", "narayanganj", "savar"].includes(
+                      district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase(),
+                    )
+                  ? "Cash On Delivery"
+                  : "Cash On Delivery"}
           </Button>
           <Button
             className={`flex justify-center items-center font-serif tracking-wide transition-all duration-300 ${
