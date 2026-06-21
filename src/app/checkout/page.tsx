@@ -391,7 +391,9 @@ const CheckoutPage = () => {
       Swal.fire("Oops!!", "Enter valid shipping address", "error");
     } else {
       // Use getDeliveryChargeByDistrictId to get delivery charge
-      const deliveryCharge = getDeliveryChargeByDistrictId(formData.districtId || "");
+      const deliveryCharge = getDeliveryChargeByDistrictId(
+        formData.districtId || "",
+      );
 
       const couponDiscount = appliedCoupon?.discountAmount || 0;
       const remaining = ceilPrice(
@@ -412,7 +414,9 @@ const CheckoutPage = () => {
       deliveryChargeX = 0;
     } else {
       // Use getDeliveryChargeByDistrictId to get delivery charge
-      deliveryChargeX = getDeliveryChargeByDistrictId(formData.districtId || "");
+      deliveryChargeX = getDeliveryChargeByDistrictId(
+        formData.districtId || "",
+      );
 
       const couponDiscount = appliedCoupon?.discountAmount || 0;
       const remaining = ceilPrice(
@@ -653,19 +657,17 @@ const CheckoutPage = () => {
   const confirmOrderAndCreateOne = async () => {
     setLoading(true);
     // Has payment if: using bkash, has prepayment amount, or delivery charge > 80
-    const hasPayment =
-      paymentMethod === "bkash" ||
-      prePaymentAmount > 0 ||
-      transectionData.deliveryCharge > 80;
+    const hasPayment = paymentMethod === "bkash" || prePaymentAmount > 0;
 
     // Calculate payment amount
     let paymentAmount = 0;
     if (prePaymentAmount > 0) {
       paymentAmount = prePaymentAmount;
-    } else if (transectionData.deliveryCharge > 80) {
-      // For delivery charges > 80, require prepayment of delivery charge
-      paymentAmount = Math.min(transectionData.deliveryCharge, transectionData?.remaining);
     }
+    //else if (transectionData.deliveryCharge > 80) {
+    //   // For delivery charges > 80, require prepayment of delivery charge
+    //   paymentAmount = Math.min(transectionData.deliveryCharge, transectionData?.remaining);
+    // }
     const orderData = {
       customerInformation: {
         //@ts-ignore
@@ -780,20 +782,20 @@ const CheckoutPage = () => {
     }
 
     // Check for deliveries with delivery charge > 80 and prompt for prepayment
-    if (transectionData.deliveryCharge > 80) {
-      return Swal.fire({
-        title: "Terms & Condition",
-        text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for your delivery location.`,
-        showDenyButton: false,
-        showCancelButton: true,
-        confirmButtonText: "Continue",
-        denyButtonText: "Don't save",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          confirmOrderAndCreateOne();
-        }
-      });
-    }
+    // if (transectionData.deliveryCharge > 80) {
+    //   return Swal.fire({
+    //     title: "Terms & Condition",
+    //     text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for your delivery location.`,
+    //     showDenyButton: false,
+    //     showCancelButton: true,
+    //     confirmButtonText: "Continue",
+    //     denyButtonText: "Don't save",
+    //   }).then((result) => {
+    //     if (result.isConfirmed) {
+    //       confirmOrderAndCreateOne();
+    //     }
+    //   });
+    // }
 
     // Confirm order if all checks pass
     confirmOrderAndCreateOne();
