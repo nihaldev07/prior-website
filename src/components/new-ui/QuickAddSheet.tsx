@@ -28,6 +28,7 @@ import EnhancedVariantSelector from "@/app/collections/[collectionId]/EnhancedVa
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import TiptapRenderer from "../TiptapRenderer";
 
 interface QuickAddSheetProps {
   productId: string;
@@ -288,9 +289,12 @@ export default function QuickAddSheet({
               <h4 className='text-xs font-serif tracking-[0.2em] uppercase text-neutral-700'>
                 Details
               </h4>
-              <p className='text-sm font-serif leading-relaxed text-neutral-600'>
-                {product.description}
-              </p>
+              <div className='prose max-w-none'>
+                <TiptapRenderer
+                  content={product.description ?? "No description available."}
+                  className='text-sm font-serif text-neutral-600 leading-relaxed'
+                />
+              </div>
             </div>
           )}
 
