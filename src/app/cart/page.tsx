@@ -17,7 +17,7 @@ import {
   ShoppingCart,
   Tag,
 } from "lucide-react";
-import { trackEvent } from "@/lib/firebase-event";
+import { trackCustomEvent } from "@/lib/analytics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatVariant } from "@/utils/functions";
@@ -25,7 +25,7 @@ import { formatVariant } from "@/utils/functions";
 const CartPage = () => {
   const { cart, removeFromCart, updateToCart } = useCart();
 
-  trackEvent("view_cart", {
+  trackCustomEvent("view_cart", {
     currency: "BDT",
     value: cart.reduce((sum, cartdata) => {
       return (

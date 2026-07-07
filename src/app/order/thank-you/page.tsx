@@ -16,7 +16,7 @@ import {
   LucideTruck,
 } from "lucide-react";
 import { getOrderDetails } from "@/lib/fetchFunctions";
-import { trackEvent } from "@/lib/firebase-event";
+import { trackPurchase } from "@/lib/analytics";
 
 const ThankYouPage = () => {
   const searchParams = useSearchParams();
@@ -46,38 +46,20 @@ const ThankYouPage = () => {
         if (!hasFiredPurchaseEvent.current && orderData) {
           hasFiredPurchaseEvent.current = true;
 
-          // Prepare items array for analytics
-          const items = orderData?.products?.map((product: any, index: number) => ({
-            item_id: product?.sku,
-            item_name: product?.name,
-            affiliation: "Prior Web-site Store",
-            coupon: "",
-            discount: product?.discount,
-            index,
-            item_brand: "Prior",
-            item_category: product?.categoryName ?? "",
-            item_category2: "",
-            item_category3: "",
-            item_category4: "",
-            item_category5: "",
-            item_list_id: product?.id,
-            item_list_name: "Order Products",
-            item_variant: product?.variation ? JSON.stringify(product?.variation) : "no variation",
-            location_id: "",
-            price: product?.unitPrice,
-            quantity: product?.quantity,
-          }));
-
-          // Fire purchase event
-          trackEvent("purchase", {
+          // Fire purchase event via unified analytics (Firebase + FB Pixel + GTM)
+          trackPurchase({
             transaction_id: orderData?.orderNumber || orderNumber,
-            affiliation: "Web-Site",
             value: orderData?.totalPrice || totalFromQuery || 0,
             shipping: orderData?.deliveryCharge || 0,
             discount: orderData?.discount || 0,
             currency: "BDT",
             payment_type: method === "bkash" ? "bkash" : "cod",
-            items: items || [],
+            items: orderData?.products?.map((product: any) => ({
+              item_id: product?.sku,
+              item_name: product?.name,
+              price: product?.unitPrice,
+              quantity: product?.quantity,
+            })) || [],
           });
 
           // Push to Data Layer for GTM
@@ -92,7 +74,12 @@ const ThankYouPage = () => {
                 discount: orderData?.discount || 0,
                 currency: "BDT",
                 payment_type: method === "bkash" ? "bkash" : "cod",
-                items: items || [],
+                items: orderData?.products?.map((product: any) => ({
+                  item_id: product?.sku,
+                  item_name: product?.name,
+                  price: product?.unitPrice,
+                  quantity: product?.quantity,
+                })) || [],
               },
             });
           }
