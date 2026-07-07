@@ -11,7 +11,7 @@ import { CartItem, useCart } from "@/context/CartContext";
 import { ShoppingCart, Trash } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 import { Badge } from "./ui/badge";
-import { trackEvent } from "@/lib/firebase-event";
+import { trackCustomEvent } from "@/lib/analytics";
 import { formatVariant } from "@/utils/functions";
 
 export interface CartSideBarProps {}
@@ -25,7 +25,7 @@ const CartSideBar: React.FC<CartSideBarProps> = () => {
 
   useEffect(() => {
     if (isVisable) {
-      trackEvent("view_cart", {
+      trackCustomEvent("view_cart", {
         currency: "BDT",
         value: cart.reduce((sum, cartdata) => {
           sum =

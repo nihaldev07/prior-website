@@ -5,6 +5,12 @@ import { toast } from "sonner";
 import { SingleProductType, Variation } from "@/data/types";
 import Swal from "sweetalert2";
 
+import {
+  resolveColorName,
+  colorResultToCss,
+  isAchromaticName,
+} from "@/utils/colorNameToHsl";
+
 interface Props {
   type: "size" | "color";
   selectedProduct: SingleProductType;
@@ -214,6 +220,18 @@ const Chip: React.FC<ChipProps> = ({
   isColor,
   onSelect,
 }) => {
+  const colorResult = isColor ? resolveColorName(value) : null;
+  const dotCss = colorResult ? colorResultToCss(colorResult) : null;
+  const achromatic = colorResult?.kind === "achromatic";
+
+  const dotStyle: React.CSSProperties = dotCss
+    ? {
+        background: dotCss,
+        // Achromatic dots get a subtle border so white/cream are visible
+        ...(achromatic && { border: "1px solid rgba(0,0,0,0.15)" }),
+      }
+    : {};
+
   const handleClick = () => {
     if (!isAvailable) {
       toast.error(`${value} is currently out of stock`, {
@@ -226,25 +244,8 @@ const Chip: React.FC<ChipProps> = ({
 
   // Derive dot color for color chips
   const hue = isColor ? dotHue(value) : 0;
-  const achromatic = isColor && isAchromatic(value);
 
   // dot style — vivid HSL for chromatic, gradient for black/white/gray
-  const dotStyle: React.CSSProperties = achromatic
-    ? {
-        background:
-          value.toLowerCase().includes("black") ||
-          value.toLowerCase().includes("charcoal")
-            ? "#1a1a1a"
-            : value.toLowerCase().includes("white") ||
-                value.toLowerCase().includes("cream") ||
-                value.toLowerCase().includes("ivory")
-              ? "linear-gradient(135deg,#f5f5f5,#d4d4d4)"
-              : "linear-gradient(135deg,#d1d5db,#9ca3af)",
-        border: "1px solid rgba(0,0,0,0.12)",
-      }
-    : {
-        background: `hsl(${hue},72%,52%)`,
-      };
 
   return (
     <button

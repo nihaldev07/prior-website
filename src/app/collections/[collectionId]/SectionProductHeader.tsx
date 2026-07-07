@@ -33,7 +33,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
-import { trackEvent } from "@/lib/firebase-event";
+import { trackViewContent, trackCustomEvent } from "@/lib/analytics";
 import useAnalytics from "@/hooks/useAnalytics";
 import EnhancedVariantSelector from "./EnhancedVariantSelector";
 import ShareButton from "@/shared/ShareButton";
@@ -75,15 +75,14 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 
   useEffect(() => {
     if (!!product) {
-      trackEvent("select_item", {
+      trackCustomEvent("select_item", {
         item_id: product?.id,
         item_name: product?.name,
       });
-      trackEvent("view_item", {
-        item_id: product?.id,
-        item_name: product?.name,
-        price: prevPrice > 0 ? prevPrice : currentPrice,
-        currency: "BDT",
+      trackViewContent({
+        id: product?.id,
+        name: product?.name,
+        unitPrice: prevPrice > 0 ? prevPrice : currentPrice,
       });
       setUniqueColors([
         ...new Set(

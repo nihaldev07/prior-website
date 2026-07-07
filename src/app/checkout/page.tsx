@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import LikeButton from "@/components/LikeButton";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
@@ -33,8 +33,10 @@ import {
 } from "lucide-react";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
-import { trackEvent } from "@/lib/firebase-event";
+import { trackBeginCheckout, trackCustomEvent } from "@/lib/analytics";
 import useAnalytics from "@/hooks/useAnalytics";
+import { hashUserData } from "@/lib/hashing";
+import { useFacebookCookies } from "@/hooks/useFacebookCookies";
 import { Badge } from "@/components/ui/badge";
 import {
   formatVariant,
@@ -78,6 +80,8 @@ const CheckoutPage = () => {
   const [verifyingProducts, setVerifyingProducts] = useState(false);
   const [showChangesDialog, setShowChangesDialog] = useState(false);
   const [productChanges, setProductChanges] = useState<any[]>([]);
+  const isSubmittingRef = useRef(false);
+  const { fbc, fbp } = useFacebookCookies();
 
   const [orderProducts, setOrderProduct] = useState<CartItem[]>([]);
   const [transectionData, setTransectionData] = useState({
@@ -353,34 +357,7 @@ const CheckoutPage = () => {
         );
       }, 0);
 
-      trackEvent("begin_checkout", {
-        affiliation: "Web-Site",
-        value: totalValue || 0,
-        coupon: appliedCoupon?.code || "",
-        currency: "BDT",
-        items: cart?.map((product, index) => {
-          return {
-            item_id: product?.sku,
-            item_name: product?.name,
-            affiliation: "Prior Web-site Store",
-            coupon: appliedCoupon?.code || "",
-            discount: product?.discount,
-            index,
-            item_brand: "Prior",
-            item_category: product?.categoryName ?? "",
-            item_category2: "",
-            item_category3: "",
-            item_category4: "",
-            item_category5: "",
-            item_list_id: product?.id,
-            item_list_name: "Checkout Products",
-            item_variant: formatVariant(product?.variation),
-            location_id: "",
-            price: product?.unitPrice,
-            quantity: product?.quantity,
-          };
-        }),
-      });
+      trackBeginCheckout(cart, totalValue, appliedCoupon?.code || "");
     }
     //eslint-disable-next-line
   }, [cart.length]); // Only fire when cart length changes (page load)
@@ -655,7 +632,14 @@ const CheckoutPage = () => {
   };
 
   const confirmOrderAndCreateOne = async () => {
+    // Prevent duplicate submissions
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
     setLoading(true);
+
+    // Generate idempotency key for duplicate order prevention
+    const idempotencyKey = crypto.randomUUID();
+
     // Has payment if: using bkash, has prepayment amount, or delivery charge > 80
     const hasPayment = paymentMethod === "bkash" || prePaymentAmount > 0;
 
@@ -664,10 +648,13 @@ const CheckoutPage = () => {
     if (prePaymentAmount > 0) {
       paymentAmount = prePaymentAmount;
     }
-    //else if (transectionData.deliveryCharge > 80) {
-    //   // For delivery charges > 80, require prepayment of delivery charge
-    //   paymentAmount = Math.min(transectionData.deliveryCharge, transectionData?.remaining);
-    // }
+
+    // Hash PII for CAPI Advanced Matching
+    const hashedPii = await hashUserData({
+      email: formData?.email,
+      phone: formData?.mobileNumber,
+    });
+
     const orderData = {
       customerInformation: {
         //@ts-ignore
@@ -687,9 +674,19 @@ const CheckoutPage = () => {
       products: [...orderProducts],
       hasPayment,
       couponCode: appliedCoupon?.code || undefined,
+      // Duplicate prevention
+      idempotencyKey,
+      // CAPI data for server-side event forwarding
+      _capi: {
+        fbc,
+        fbp,
+        email: hashedPii.em,
+        phone: hashedPii.ph,
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+      },
     };
     try {
-      trackEvent("add_payment_info", {
+      trackCustomEvent("add_payment_info", {
         payment_type: hasPayment ? "bkash" : paymentMethod,
         value:
           paymentMethod === "bkash"
@@ -733,6 +730,7 @@ const CheckoutPage = () => {
           "error",
         );
         setLoading(false);
+        isSubmittingRef.current = false;
       }
     } catch (error) {
       Swal.fire(
@@ -742,6 +740,7 @@ const CheckoutPage = () => {
       );
       console.log("error");
       setLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 
