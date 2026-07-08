@@ -67,7 +67,7 @@ const OrderProductsTable = ({ order }: { order: Order }) => {
                       ) : null}
                     </div>
                     <div className='min-w-0'>
-                      <p className='font-medium text-slate-900 leading-snug line-clamp-2'>
+                      <p className='font-medium text-slate-900 leading-snug line-clamp-2 uppercase'>
                         {product.name}
                       </p>
                       <VariationChips variation={product.variation} />
