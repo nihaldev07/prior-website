@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { createContactInfo, IContact } from "@/services/contactService";
 import Swal from "sweetalert2";
-import useAnalytics from "@/hooks/useAnalytics";
 
 const contactCards = [
   {
@@ -60,7 +59,6 @@ const businessHours = [
 ];
 
 const ContactUs = () => {
-  useAnalytics();
   const [formData, setFormData] = useState({
     name: "",
     email: "",

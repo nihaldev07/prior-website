@@ -34,7 +34,6 @@ import {
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackBeginCheckout, trackCustomEvent } from "@/lib/analytics";
-import useAnalytics from "@/hooks/useAnalytics";
 import { hashUserData } from "@/lib/hashing";
 import { useFacebookCookies } from "@/hooks/useFacebookCookies";
 import { Badge } from "@/components/ui/badge";
@@ -69,7 +68,6 @@ export interface UserFormData {
   postalCode?: string;
 }
 const CheckoutPage = () => {
-  useAnalytics();
   const { checkPrepaymentProducts, calculatePrepaymentAmount } = useCampaign();
   const { cart, clearCart, updateToCart, removeFromCart, bulkUpdateCart } =
     useCart();

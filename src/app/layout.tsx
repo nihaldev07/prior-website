@@ -11,6 +11,7 @@ import Footer from "@/shared/Footer/Footer";
 import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
+import PageViewTracker from "@/components/PageViewTracker";
 
 // Noto Sans Devanagari for all text
 const notoSansDevanagari = Noto_Sans_Devanagari({
@@ -162,6 +163,7 @@ export default function RootLayout({
               <CartProvider>
                 <>
                   <Header />
+                  <PageViewTracker />
                   {children}
                   <Footer />
                 </>

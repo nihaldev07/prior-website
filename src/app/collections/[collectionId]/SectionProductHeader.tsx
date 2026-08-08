@@ -34,7 +34,6 @@ import {
   Plus,
 } from "lucide-react";
 import { trackViewContent, trackCustomEvent } from "@/lib/analytics";
-import useAnalytics from "@/hooks/useAnalytics";
 import EnhancedVariantSelector from "./EnhancedVariantSelector";
 import ShareButton from "@/shared/ShareButton";
 
@@ -61,7 +60,6 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
 }) => {
   const { addToCart } = useCart();
   const router = useRouter();
-  useAnalytics();
 
   const [pQuantity, setPQuantity] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState<Variation | null>(

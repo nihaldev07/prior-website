@@ -7,7 +7,6 @@ import { LoaderCircle } from "lucide-react";
 import Heading from "@/shared/Heading/Heading";
 import { collectionTag } from "@/data/content";
 import { useParams } from "next/navigation";
-import useAnalytics from "@/hooks/useAnalytics";
 import { usePageState } from "@/context/PageStateContext";
 import ProductCard from "@/components/new-ui/ProductCard";
 import { convertProductTypeToProduct } from "@/utils/functions";
@@ -35,8 +34,6 @@ const SingleCategoryPage = () => {
     size: "",
     price: "",
   });
-
-  useAnalytics();
 
   useEffect(() => {
     //@ts-ignore
