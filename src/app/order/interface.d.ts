@@ -8,6 +8,8 @@ export interface Variation {
 export interface Product {
   id: string;
   name: string;
+  sku: string;
+  categoryName: string;
   thumbnail: string;
   quantity: number;
   unitPrice: number;

@@ -25,7 +25,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import useAnalytics from "@/hooks/useAnalytics";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import DeliveryHistorySheet from "@/components/DeliveryHistorySheet";
@@ -109,7 +108,6 @@ const formatDate = (date: Date | null | undefined) =>
     : "N/A";
 
 const OrderDetails = () => {
-  useAnalytics();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [deliverySheetOpen, setDeliverySheetOpen] = useState(false);

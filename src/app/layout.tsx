@@ -11,6 +11,7 @@ import Footer from "@/shared/Footer/Footer";
 import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
+import PageViewTracker from "@/components/PageViewTracker";
 
 // Noto Sans Devanagari for all text
 const notoSansDevanagari = Noto_Sans_Devanagari({
@@ -81,12 +82,18 @@ export default function RootLayout({
         <link rel='dns-prefetch' href='https://app.priorbd.com' /> */}
         <link rel='dns-prefetch' href='https://www.googletagmanager.com' />
 
-        {/* Google Tag Manager - changed to lazyOnload for better initial performance */}
+        {/* Google Tag Manager with Consent Initialization */}
         <Script
           id='google-tag-manager'
-          strategy='lazyOnload'
+          strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'analytics_storage': 'granted',
+                'ad_storage': 'granted'
+              });
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
               j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -146,6 +153,7 @@ export default function RootLayout({
               <CartProvider>
                 <>
                   <Header />
+                  <PageViewTracker />
                   {children}
                   <Footer />
                 </>

@@ -45,14 +45,19 @@ export const trackPageView = (pathname: string) => {
  * Track ViewContent / view_item event
  */
 export const trackViewContent = (product: any) => {
+  const effectivePrice = !!product?.hasDiscount
+    ? (product?.updatedPrice ?? product?.unitPrice)
+    : (product?.unitPrice || product?.price || 0);
+
   // Firebase Analytics
   firebaseTrackEvent("view_item", {
     item_id: product?.id,
     item_name: product?.name,
+    item_brand: "Prior",
     item_category: product?.categoryName || "",
-    price: product?.unitPrice || product?.price || 0,
+    price: effectivePrice,
     currency: "BDT",
-    value: product?.unitPrice || product?.price || 0,
+    value: effectivePrice,
   });
 
   // Facebook Pixel
@@ -67,8 +72,9 @@ export const trackViewContent = (product: any) => {
           {
             item_id: product?.id,
             item_name: product?.name,
+            item_brand: "Prior",
             item_category: product?.categoryName || "",
-            price: product?.unitPrice || product?.price || 0,
+            price: effectivePrice,
             currency: "BDT",
           },
         ],
@@ -81,12 +87,19 @@ export const trackViewContent = (product: any) => {
  * Track AddToCart event
  */
 export const trackAddToCart = (item: any) => {
+  const effectivePrice = !!item?.hasDiscount
+    ? (item?.updatedPrice ?? item?.unitPrice)
+    : (item?.unitPrice || item?.price || 0);
+
   // Firebase Analytics
   firebaseTrackEvent("add_to_cart", {
     item_id: item?.id,
     item_name: item?.name,
-    price: item?.unitPrice || item?.price || 0,
+    item_brand: "Prior",
+    item_category: item?.categoryName || "",
+    price: effectivePrice,
     currency: "BDT",
+    quantity: item?.quantity || 1,
   });
 
   // Facebook Pixel
@@ -101,7 +114,9 @@ export const trackAddToCart = (item: any) => {
           {
             item_id: item?.id,
             item_name: item?.name,
-            price: item?.unitPrice || item?.price || 0,
+            item_brand: "Prior",
+            item_category: item?.categoryName || "",
+            price: effectivePrice,
             currency: "BDT",
             quantity: item?.quantity || 1,
           },
@@ -115,6 +130,20 @@ export const trackAddToCart = (item: any) => {
  * Track InitiateCheckout event
  */
 export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: string) => {
+  const mapItem = (product: any, index: number) => {
+    const effectivePrice = !!product?.hasDiscount
+      ? (product?.updatedPrice ?? product?.unitPrice)
+      : product?.unitPrice;
+    return {
+      item_id: product?.sku,
+      item_name: product?.name,
+      item_brand: "Prior",
+      item_category: product?.categoryName ?? "",
+      price: effectivePrice,
+      quantity: product?.quantity,
+    };
+  };
+
   // Firebase Analytics
   firebaseTrackEvent("begin_checkout", {
     affiliation: "Web-Site",
@@ -123,14 +152,11 @@ export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: str
     currency: "BDT",
     items: cart?.map((product, index) => {
       return {
-        item_id: product?.sku,
-        item_name: product?.name,
+        ...mapItem(product, index),
         affiliation: "Prior Web-site Store",
         coupon: coupon || "",
         discount: product?.discount,
         index,
-        item_brand: "Prior",
-        item_category: product?.categoryName ?? "",
         item_category2: "",
         item_category3: "",
         item_category4: "",
@@ -139,8 +165,6 @@ export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: str
         item_list_name: "Checkout Products",
         item_variant: product?.variation ? JSON.stringify(product?.variation) : "no variation",
         location_id: "",
-        price: product?.unitPrice,
-        quantity: product?.quantity,
       };
     }),
   });
@@ -158,15 +182,10 @@ export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: str
         coupon: coupon || "",
         currency: "BDT",
         items: cart?.map((product, index) => ({
-          item_id: product?.sku,
-          item_name: product?.name,
+          ...mapItem(product, index),
           coupon: coupon || "",
           discount: product?.discount,
           index,
-          item_brand: "Prior",
-          item_category: product?.categoryName ?? "",
-          price: product?.unitPrice,
-          quantity: product?.quantity,
         })),
       },
     });
