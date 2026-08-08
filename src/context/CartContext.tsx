@@ -98,6 +98,10 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
       id: item?.id,
       name: item?.name,
       unitPrice: item?.unitPrice,
+      categoryName: item?.categoryName,
+      quantity: item?.quantity,
+      hasDiscount: item?.hasDiscount,
+      updatedPrice: item?.updatedPrice,
     });
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex((itemY) => {

@@ -81,6 +81,9 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
         id: product?.id,
         name: product?.name,
         unitPrice: prevPrice > 0 ? prevPrice : currentPrice,
+        categoryName: product?.categoryName,
+        hasDiscount: product?.hasDiscount,
+        updatedPrice: product?.updatedPrice,
       });
       setUniqueColors([
         ...new Set(

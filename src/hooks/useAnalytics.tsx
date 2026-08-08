@@ -18,7 +18,8 @@ const useAnalytics = () => {
         console.error("Error logging page view:", error);
       }
 
-      if (typeof window !== "undefined" && window.dataLayer) {
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
           event: "page_view",
           eventModel: {

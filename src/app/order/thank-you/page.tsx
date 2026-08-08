@@ -68,6 +68,8 @@ const ThankYouPage = () => {
                 orderData?.products?.map((product: any) => ({
                   item_id: product?.sku,
                   item_name: product?.name,
+                  item_brand: "Prior",
+                  item_category: product?.categoryName || "",
                   price: product?.unitPrice,
                   quantity: product?.quantity,
                 })) || [],
@@ -88,6 +90,8 @@ const ThankYouPage = () => {
                     orderData?.products?.map((product: any) => ({
                       item_id: product?.sku,
                       item_name: product?.name,
+                      item_brand: "Prior",
+                      item_category: product?.categoryName || "",
                       price: product?.unitPrice,
                       quantity: product?.quantity,
                     })) || [],

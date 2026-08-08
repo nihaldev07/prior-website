@@ -82,9 +82,9 @@ export default function RootLayout({
         <link rel='dns-prefetch' href='https://app.priorbd.com' /> */}
         <link rel='dns-prefetch' href='https://www.googletagmanager.com' />
 
-        {/* Default consent state - must be set before GTM loads */}
+        {/* Google Tag Manager with Consent Initialization */}
         <Script
-          id='gtm-consent'
+          id='google-tag-manager'
           strategy='beforeInteractive'
           dangerouslySetInnerHTML={{
             __html: `
@@ -94,16 +94,6 @@ export default function RootLayout({
                 'analytics_storage': 'granted',
                 'ad_storage': 'granted'
               });
-            `,
-          }}
-        />
-
-        {/* Google Tag Manager */}
-        <Script
-          id='google-tag-manager'
-          strategy='afterInteractive'
-          dangerouslySetInnerHTML={{
-            __html: `
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
               j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
