@@ -74,30 +74,6 @@ const ThankYouPage = () => {
                   quantity: product?.quantity,
                 })) || [],
             });
-
-            if (typeof window !== "undefined" && window.dataLayer) {
-              window.dataLayer.push({
-                event: "purchase",
-                ecommerce: {
-                  transaction_id: orderData?.orderNumber || orderNumber,
-                  affiliation: "Web-Site",
-                  value: orderData?.totalPrice || totalFromQuery || 0,
-                  shipping: orderData?.deliveryCharge || 0,
-                  discount: orderData?.discount || 0,
-                  currency: "BDT",
-                  payment_type: isBkash ? "bkash" : "cod",
-                  items:
-                    orderData?.products?.map((product: any) => ({
-                      item_id: product?.sku,
-                      item_name: product?.name,
-                      item_brand: "Prior",
-                      item_category: product?.categoryName || "",
-                      price: product?.unitPrice,
-                      quantity: product?.quantity,
-                    })) || [],
-                },
-              });
-            }
           } else {
             // Bkash payment not yet completed — don't fire event
             hasFiredPurchaseEvent.current = false;
@@ -132,6 +108,27 @@ const ThankYouPage = () => {
         if (orderData && (orderData.paid || 0) > 0) {
           clearInterval(retryInterval);
           setOrder(orderData);
+
+          if (!hasFiredPurchaseEvent.current) {
+            hasFiredPurchaseEvent.current = true;
+            trackPurchase({
+              transaction_id: orderData?.orderNumber || orderNumber,
+              value: orderData?.totalPrice || 0,
+              shipping: orderData?.deliveryCharge || 0,
+              discount: orderData?.discount || 0,
+              currency: "BDT",
+              payment_type: "bkash",
+              items:
+                orderData?.products?.map((product: any) => ({
+                  item_id: product?.sku,
+                  item_name: product?.name,
+                  item_brand: "Prior",
+                  item_category: product?.categoryName || "",
+                  price: product?.unitPrice,
+                  quantity: product?.quantity,
+                })) || [],
+            });
+          }
         }
       } catch (error) {
         console.error("Retry fetch failed:", error);

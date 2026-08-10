@@ -34,6 +34,7 @@ import ShareButton from "@/shared/ShareButton";
 import Swal from "sweetalert2";
 import { cn } from "@/lib/utils";
 import { EnhancedProductImage } from "@/shared/EnhancedProductImage";
+import { trackViewContent } from "@/lib/analytics";
 interface ProductDetailSectionProps {
   product: SingleProductType;
   shots: string[];
@@ -542,6 +543,20 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       const sizes = product.variation?.map((v) => v.size || "") ?? [];
       setUniqueSizes([...new Set(sizes)]);
     }
+  }, [product]);
+
+  useEffect(() => {
+    if (product) {
+      trackViewContent({
+        id: product?.id,
+        name: product?.name,
+        unitPrice: product?.unitPrice,
+        categoryName: product?.categoryName,
+        hasDiscount: product?.hasDiscount,
+        updatedPrice: product?.updatedPrice,
+      });
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product]);
 
   const masterShots = useMemo(() => {
