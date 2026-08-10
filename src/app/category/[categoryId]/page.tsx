@@ -86,15 +86,15 @@ const SingleCategoryPage = () => {
   }, []);
 
   // Save state before navigation
-  const handleProductClick = (productId: string) => {
-    setState((prev) => ({
-      ...prev,
-      scrollPosition: window.scrollY,
-      filterData,
-      currentPage,
-    }));
-    window.location.href = `/collections/${productId}`; // Navigate to product page
-  };
+  // const handleProductClick = (productId: string) => {
+  //   setState((prev) => ({
+  //     ...prev,
+  //     scrollPosition: window.scrollY,
+  //     filterData,
+  //     currentPage,
+  //   }));
+  //   window.location.href = `/collections/${productId}`; // Navigate to product page
+  // };
 
   return (
     <div className='my-6'>
@@ -160,9 +160,7 @@ const SingleCategoryPage = () => {
             <div className='grid flex-1 gap-3 md:gap-x-8 md:gap-y-10 grid-cols-2 md:grid-cols-4 '>
               {!!products &&
                 products.map((item: ProductType) => (
-                  <div
-                    key={item?.id}
-                    onClick={() => handleProductClick(item.id)}>
+                  <div key={item?.id}>
                     <ProductCard product={convertProductTypeToProduct(item)} />
                   </div>
                 ))}
