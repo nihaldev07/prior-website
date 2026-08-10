@@ -28,6 +28,7 @@ import EnhancedVariantSelector from "@/app/collections/[collectionId]/EnhancedVa
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { trackViewContent } from "@/lib/analytics";
 import TiptapRenderer from "../TiptapRenderer";
 
 interface QuickAddSheetProps {
@@ -75,6 +76,16 @@ export default function QuickAddSheet({
       setLoading(true);
       const data = await fetchProductById(productId);
       setProduct(data);
+      if (data) {
+        trackViewContent({
+          id: data?.id,
+          name: data?.name,
+          unitPrice: data?.unitPrice,
+          categoryName: data?.categoryName,
+          hasDiscount: data?.hasDiscount,
+          updatedPrice: data?.updatedPrice,
+        });
+      }
       if (data?.thumbnail && data?.images.length > 0)
         setShots([data?.thumbnail, ...data?.images]);
 
