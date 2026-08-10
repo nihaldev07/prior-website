@@ -391,9 +391,9 @@ const ThankYouPage = () => {
               <LucidePhone className='h-4 w-4' />
               Need help?{" "}
               <a
-                href='tel:+8801XXXXXXXXX'
+                href='tel:+8801700534317'
                 className='font-semibold text-neutral-800 hover:underline'>
-                +880 1XXX-XXXXXX
+                +880 1700-534317
               </a>
             </div>
           </CardContent>
