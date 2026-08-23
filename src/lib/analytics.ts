@@ -4,7 +4,6 @@
  * All events are tracked across all platforms simultaneously
  */
 
-import { trackEvent as firebaseTrackEvent } from "./firebase-event";
 import {
   trackPageView as fbTrackPageView,
   trackViewContent as fbTrackViewContent,
@@ -49,17 +48,6 @@ export const trackViewContent = (product: any) => {
     ? (product?.updatedPrice ?? product?.unitPrice)
     : (product?.unitPrice || product?.price || 0);
 
-  // Firebase Analytics
-  firebaseTrackEvent("view_item", {
-    item_id: product?.id,
-    item_name: product?.name,
-    item_brand: "Prior",
-    item_category: product?.categoryName || "",
-    price: effectivePrice,
-    currency: "BDT",
-    value: effectivePrice,
-  });
-
   // Facebook Pixel
   fbTrackViewContent(product);
 
@@ -90,17 +78,6 @@ export const trackAddToCart = (item: any) => {
   const effectivePrice = !!item?.hasDiscount
     ? (item?.updatedPrice ?? item?.unitPrice)
     : (item?.unitPrice || item?.price || 0);
-
-  // Firebase Analytics
-  firebaseTrackEvent("add_to_cart", {
-    item_id: item?.id,
-    item_name: item?.name,
-    item_brand: "Prior",
-    item_category: item?.categoryName || "",
-    price: effectivePrice,
-    currency: "BDT",
-    quantity: item?.quantity || 1,
-  });
 
   // Facebook Pixel
   fbTrackAddToCart(item);
@@ -144,31 +121,6 @@ export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: str
     };
   };
 
-  // Firebase Analytics
-  firebaseTrackEvent("begin_checkout", {
-    affiliation: "Web-Site",
-    value: totalValue || 0,
-    coupon: coupon || "",
-    currency: "BDT",
-    items: cart?.map((product, index) => {
-      return {
-        ...mapItem(product, index),
-        affiliation: "Prior Web-site Store",
-        coupon: coupon || "",
-        discount: product?.discount,
-        index,
-        item_category2: "",
-        item_category3: "",
-        item_category4: "",
-        item_category5: "",
-        item_list_id: product?.id,
-        item_list_name: "Checkout Products",
-        item_variant: product?.variation ? JSON.stringify(product?.variation) : "no variation",
-        location_id: "",
-      };
-    }),
-  });
-
   // Facebook Pixel
   fbTrackInitiateCheckout(cart, totalValue, coupon);
 
@@ -196,18 +148,6 @@ export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: str
  * Track Purchase event
  */
 export const trackPurchase = (order: any) => {
-  // Firebase Analytics
-  firebaseTrackEvent("purchase", {
-    transaction_id: order?.transaction_id || order?.orderNumber || "",
-    affiliation: "Web-Site",
-    value: order?.value || order?.totalPrice || 0,
-    shipping: order?.shipping || 0,
-    discount: order?.discount || 0,
-    currency: order?.currency || "BDT",
-    payment_type: order?.payment_type || "cod",
-    items: order?.items || [],
-  });
-
   // Facebook Pixel
   fbTrackPurchase(order);
 
@@ -233,12 +173,6 @@ export const trackPurchase = (order: any) => {
  * Track Search event
  */
 export const trackSearch = (searchString: string, resultsCount?: number) => {
-  // Firebase Analytics
-  firebaseTrackEvent("search", {
-    search_term: searchString,
-    results_count: resultsCount || 0,
-  });
-
   // Facebook Pixel
   fbTrackSearch(searchString, resultsCount);
 
@@ -260,11 +194,6 @@ export const trackSearch = (searchString: string, resultsCount?: number) => {
  * Track CompleteRegistration event
  */
 export const trackCompleteRegistration = () => {
-  // Firebase Analytics
-  firebaseTrackEvent("sign_up", {
-    method: "website",
-  });
-
   // Facebook Pixel
   fbTrackCompleteRegistration();
 
@@ -281,11 +210,6 @@ export const trackCompleteRegistration = () => {
  * Track Lead event
  */
 export const trackLead = (leadType?: string) => {
-  // Firebase Analytics
-  firebaseTrackEvent("generate_lead", {
-    lead_type: leadType || "contact_form",
-  });
-
   // Facebook Pixel
   fbTrackLead(leadType);
 
@@ -306,9 +230,6 @@ export const trackLead = (leadType?: string) => {
  * Track custom event across all platforms
  */
 export const trackCustomEvent = (eventName: string, parameters?: any) => {
-  // Firebase Analytics
-  firebaseTrackEvent(eventName, parameters);
-
   // Facebook Pixel - Use trackCustom for non-standard events
   if (typeof window !== "undefined" && typeof window.fbq !== "undefined") {
     // @ts-ignore
