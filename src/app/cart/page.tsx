@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import { CartItem, useCart } from "@/context/CartContext";
 import {
   Trash2,
@@ -25,20 +26,22 @@ import { formatVariant } from "@/utils/functions";
 const CartPage = () => {
   const { cart, removeFromCart, updateToCart } = useCart();
 
-  trackCustomEvent("view_cart", {
-    currency: "BDT",
-    value: cart.reduce((sum, cartdata) => {
-      return (
-        Number(sum) +
-        Number(cartdata.quantity) *
-          Number(
-            cartdata?.hasDiscount
-              ? (cartdata?.updatedPrice ?? cartdata?.unitPrice)
-              : cartdata?.unitPrice,
-          )
-      );
-    }, 0),
-  });
+  useEffect(() => {
+    trackCustomEvent("view_cart", {
+      currency: "BDT",
+      value: cart.reduce((sum, cartdata) => {
+        return (
+          Number(sum) +
+          Number(cartdata.quantity) *
+            Number(
+              cartdata?.hasDiscount
+                ? (cartdata?.updatedPrice ?? cartdata?.unitPrice)
+                : cartdata?.unitPrice,
+            )
+        );
+      }, 0),
+    });
+  }, [cart]);
 
   const handleQuantityChange = (item: CartItem, change: number) => {
     const newQuantity = Math.max(

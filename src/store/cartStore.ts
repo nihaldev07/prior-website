@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Variation } from "@/data/types";
-import { trackEvent } from "@/lib/firebase-event";
+import { trackAddToCart, trackCustomEvent } from "@/lib/analytics";
 
 // Cart item interface (from CartContext)
 export interface CartItem {
@@ -45,12 +45,14 @@ export const useCartStore = create<CartStore>()(
 
       // Add item to cart
       addToCart: (item: CartItem) => {
-        // Track Firebase Analytics event
-        trackEvent("add_to_cart", {
-          item_id: item?.id,
-          item_name: item?.name,
-          price: item?.unitPrice,
-          currency: "BDT",
+        // Track event via unified analytics (GTM + Facebook Pixel)
+        trackAddToCart({
+          id: item?.id,
+          name: item?.name,
+          unitPrice: item?.unitPrice,
+          quantity: 1,
+          hasDiscount: item?.hasDiscount,
+          updatedPrice: item?.updatedPrice,
         });
 
         set((state) => {
@@ -120,7 +122,7 @@ export const useCartStore = create<CartStore>()(
         const item = state.cart[index];
 
         if (item) {
-          trackEvent("remove_from_cart", {
+          trackCustomEvent("remove_from_cart", {
             item_id: item?.id,
             item_name: item?.name,
             price: item?.unitPrice,
