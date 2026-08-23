@@ -51,7 +51,7 @@ export const useCartStore = create<CartStore>()(
           name: item?.name,
           unitPrice: item?.unitPrice,
           quantity: 1,
-          hasDiscount: item?.hasDiscount,
+          hasDiscount: (item?.discount ?? 0) > 0,
           updatedPrice: item?.updatedPrice,
         });
 
