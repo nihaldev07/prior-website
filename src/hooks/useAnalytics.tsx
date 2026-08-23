@@ -17,17 +17,6 @@ const useAnalytics = () => {
       } catch (error) {
         console.error("Error logging page view:", error);
       }
-
-      if (typeof window !== "undefined") {
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "page_view",
-          eventModel: {
-            page_path: pathname,
-            send_to: process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID,
-          },
-        });
-      }
     };
 
     logPageView();
