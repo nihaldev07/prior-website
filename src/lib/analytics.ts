@@ -46,7 +46,7 @@ export const trackPageView = (pathname: string) => {
 export const trackViewContent = (product: any) => {
   const effectivePrice = !!product?.hasDiscount
     ? (product?.updatedPrice ?? product?.unitPrice)
-    : (product?.unitPrice || product?.price || 0);
+    : product?.unitPrice || product?.price || 0;
 
   // Facebook Pixel
   fbTrackViewContent(product);
@@ -77,7 +77,7 @@ export const trackViewContent = (product: any) => {
 export const trackAddToCart = (item: any) => {
   const effectivePrice = !!item?.hasDiscount
     ? (item?.updatedPrice ?? item?.unitPrice)
-    : (item?.unitPrice || item?.price || 0);
+    : item?.unitPrice || item?.price || 0;
 
   // Facebook Pixel
   fbTrackAddToCart(item);
@@ -106,7 +106,11 @@ export const trackAddToCart = (item: any) => {
 /**
  * Track InitiateCheckout event
  */
-export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: string) => {
+export const trackBeginCheckout = (
+  cart: any[],
+  totalValue: number,
+  coupon?: string,
+) => {
   const mapItem = (product: any, index: number) => {
     const effectivePrice = !!product?.hasDiscount
       ? (product?.updatedPrice ?? product?.unitPrice)
@@ -148,11 +152,16 @@ export const trackBeginCheckout = (cart: any[], totalValue: number, coupon?: str
  * Track Purchase event
  */
 export const trackPurchase = (order: any) => {
+  console.log("🛒 trackPurchase called", order);
+
   // Facebook Pixel
   fbTrackPurchase(order);
 
-  // GTM Data Layer
-  if (typeof window !== "undefined" && window.dataLayer) {
+  if (typeof window !== "undefined") {
+    console.log("📦 dataLayer before:", window.dataLayer);
+
+    window.dataLayer = window.dataLayer || [];
+
     window.dataLayer.push({
       event: "purchase",
       ecommerce: {
@@ -166,6 +175,8 @@ export const trackPurchase = (order: any) => {
         items: order?.items || [],
       },
     });
+
+    console.log("✅ purchase pushed", window.dataLayer);
   }
 };
 
