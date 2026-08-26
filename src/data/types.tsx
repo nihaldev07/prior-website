@@ -64,7 +64,25 @@ export type Category = {
   img: string;
   level: number;
   ancestors: string[];
+  slug?: string;
+  parentId?: string | null;
+  children?: { id: string; name: string; slug?: string }[];
+  description?: string;
   totalProducts?: number;
+};
+
+// SEO content from GET /prior/product/category-seo/:identifier
+export type CategorySeoType = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  img: string;
+  focusKeyphrase: string;
+  seoTitle: string;
+  metaDescription: string;
+  tags: string[];
 };
 
 export type RatingDetailsType = {

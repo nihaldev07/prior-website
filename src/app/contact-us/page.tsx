@@ -147,26 +147,43 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-neutral-900 text-white py-16 lg:py-20 relative overflow-hidden">
+      <div className="relative h-[50vh] sm:h-[60vh] bg-neutral-950 overflow-hidden flex items-center justify-center">
         <div
-          className='absolute inset-0 opacity-10'
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              "radial-gradient(ellipse at 30% 50%, rgba(11,51,147,0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(80,40,120,0.3) 0%, transparent 50%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.07]"
           style={{
             backgroundImage:
               "radial-gradient(circle, #ffffff 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
+            backgroundSize: "32px 32px",
           }}
         />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold tracking-wide uppercase mb-4">
-            Contact Us
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 border border-blue-400/30 backdrop-blur-sm rounded-full">
+            <MessageCircle className="w-3.5 h-3.5 text-blue-300" />
+            <span className="text-[11px] font-serif tracking-[0.3em] uppercase text-white/70">
+              Get in Touch
+            </span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white mb-6 leading-[0.9]">
+            Contact{" "}
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">
+              Us
+            </span>
           </h1>
-          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto">
+          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto text-base sm:text-lg">
             We&apos;d love to hear from you. Reach out to us through any of the
             channels below.
           </p>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -184,9 +201,9 @@ const ContactUs = () => {
                     ? "noopener noreferrer"
                     : undefined
                 }
-                className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200 hover:shadow-xl transition-all duration-300 text-center group"
+                className="group bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 p-6 hover:shadow-xl hover:shadow-blue-900/10 hover:border-blue-200 transition-all duration-500 text-center"
               >
-                <div className="w-12 h-12 bg-neutral-900 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-neutral-800 transition-colors duration-300">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#0b3393] to-blue-800 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-md shadow-blue-900/10 group-hover:scale-110 transition-transform duration-300">
                   <Icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-serif font-bold text-neutral-900 tracking-wide text-sm mb-1">
@@ -195,7 +212,7 @@ const ContactUs = () => {
                 <p className="text-xs text-neutral-500 font-serif mb-2">
                   {card.description}
                 </p>
-                <p className="text-xs text-neutral-700 font-serif font-medium truncate">
+                <p className="text-xs text-[#0b3393] font-serif font-medium truncate">
                   {card.detail}
                 </p>
               </a>
@@ -205,7 +222,7 @@ const ContactUs = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Form */}
-          <div className="lg:col-span-2 bg-white rounded-lg shadow-lg p-8 border border-neutral-200">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 p-8">
             <h2 className="text-2xl font-serif font-bold text-neutral-900 tracking-wide uppercase mb-2">
               Send a Message
             </h2>
@@ -226,7 +243,7 @@ const ContactUs = () => {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     placeholder="Your name"
-                    className="border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400"
+                    className="border-neutral-200 focus:border-[#0b3393] focus:ring-[#0b3393] rounded-xl"
                   />
                   {errors.name && (
                     <p className="text-red-500 text-xs mt-1 font-serif">
@@ -245,7 +262,7 @@ const ContactUs = () => {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     placeholder="your@email.com"
-                    className="border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400"
+                    className="border-neutral-200 focus:border-[#0b3393] focus:ring-[#0b3393] rounded-xl"
                   />
                   {errors.email && (
                     <p className="text-red-500 text-xs mt-1 font-serif">
@@ -265,7 +282,7 @@ const ContactUs = () => {
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   placeholder="+880-XXXXXXXXXX"
-                  className="border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400"
+                  className="border-neutral-200 focus:border-[#0b3393] focus:ring-[#0b3393] rounded-xl"
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-xs mt-1 font-serif">
@@ -284,7 +301,7 @@ const ContactUs = () => {
                   }
                   placeholder="How can we help you?"
                   rows={5}
-                  className="border-neutral-200 focus:border-neutral-400 focus:ring-neutral-400 resize-none"
+                  className="border-neutral-200 focus:border-[#0b3393] focus:ring-[#0b3393] resize-none rounded-xl"
                 />
                 {errors.message && (
                   <p className="text-red-500 text-xs mt-1 font-serif">
@@ -294,7 +311,7 @@ const ContactUs = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-neutral-900 text-white hover:bg-neutral-800 font-serif font-bold tracking-wide uppercase"
+                className="w-full bg-[#0b3393] text-white hover:bg-blue-800 font-serif font-bold tracking-wide uppercase rounded-xl shadow-md shadow-blue-900/20 transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/30"
               >
                 <Send className="w-4 h-4 mr-2" />
                 Send Message
@@ -305,9 +322,9 @@ const ContactUs = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Business Hours */}
-            <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+            <div className="bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-neutral-900 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#0b3393] to-blue-800 rounded-xl flex items-center justify-center shadow-md shadow-blue-900/10">
                   <Clock className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-serif font-bold text-neutral-900 tracking-wide">
@@ -318,7 +335,7 @@ const ContactUs = () => {
                 {businessHours.map((schedule, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center py-2 border-b border-neutral-100 last:border-0"
+                    className="flex justify-between items-center py-2 border-b border-blue-50 last:border-0"
                   >
                     <span className="text-sm font-serif text-neutral-600">
                       {schedule.day}
@@ -332,7 +349,7 @@ const ContactUs = () => {
             </div>
 
             {/* Social Media */}
-            <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+            <div className="bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 p-6">
               <h3 className="font-serif font-bold text-neutral-900 tracking-wide mb-4">
                 Follow Us
               </h3>
@@ -341,7 +358,7 @@ const ContactUs = () => {
                   href="https://www.facebook.com/Prioryourpriority"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors duration-200"
+                  className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-xl hover:bg-blue-50 transition-colors duration-200"
                 >
                   <Facebook className="w-5 h-5 text-blue-600" />
                   <div>
@@ -357,7 +374,7 @@ const ContactUs = () => {
                   href="https://wa.me/8801700534317"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors duration-200"
+                  className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-xl hover:bg-blue-50 transition-colors duration-200"
                 >
                   <MessageCircle className="w-5 h-5 text-green-600" />
                   <div>
@@ -373,7 +390,7 @@ const ContactUs = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="bg-white rounded-lg shadow-lg p-6 border border-neutral-200">
+            <div className="bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 p-6">
               <h3 className="font-serif font-bold text-neutral-900 tracking-wide mb-4">
                 Quick Links
               </h3>
@@ -387,7 +404,7 @@ const ContactUs = () => {
                   <a
                     key={link.href}
                     href={link.href}
-                    className="block text-sm font-serif text-neutral-600 hover:text-neutral-900 transition-colors duration-200 py-1.5"
+                    className="block text-sm font-serif text-neutral-600 hover:text-[#0b3393] transition-colors duration-200 py-1.5"
                   >
                     {link.label}
                   </a>
@@ -398,8 +415,8 @@ const ContactUs = () => {
         </div>
 
         {/* Map */}
-        <div className="mt-12 bg-white rounded-lg shadow-lg border border-neutral-200 overflow-hidden">
-          <div className="p-6 border-b border-neutral-200">
+        <div className="mt-12 bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 overflow-hidden">
+          <div className="p-6 border-b border-blue-50">
             <h3 className="font-serif font-bold text-neutral-900 tracking-wide">
               Our Location
             </h3>

@@ -104,7 +104,7 @@ const faqData: Record<string, { question: string; answer: string }[]> = {
     {
       question: "How do I exchange a product?",
       answer:
-        "Contact us at +880-1700534317 or message on Facebook within 24 hours. You can exchange in-store within 3 days or ship the product back to us."
+        "Contact us at +880-1700534317 or message on Facebook within 24 hours. You can exchange in-store within 3 days or ship the product back to us.",
 
     },
     {
@@ -270,14 +270,38 @@ const FAQContent = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-neutral-900 text-white py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold tracking-wide uppercase mb-4">
-            Frequently Asked Questions
+      <div className="relative h-[50vh] sm:h-[60vh] bg-neutral-950 overflow-hidden flex items-center justify-center">
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              "radial-gradient(ellipse at 30% 50%, rgba(11,51,147,0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(80,40,120,0.3) 0%, transparent 50%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 border border-blue-400/30 backdrop-blur-sm rounded-full">
+            <Search className="w-3.5 h-3.5 text-blue-300" />
+            <span className="text-[11px] font-serif tracking-[0.3em] uppercase text-white/70">
+              Help Center
+            </span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white mb-6 leading-[0.9]">
+            Frequently{" "}
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">
+              Asked
+            </span>
           </h1>
-          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto mb-8">
+          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto text-base sm:text-lg mb-8">
             Find answers to {totalQuestions} common questions across{" "}
             {Object.keys(filteredFaqs).length} categories.
           </p>
@@ -289,10 +313,11 @@ const FAQContent = () => {
               placeholder="Search questions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/10 border border-neutral-700 text-white placeholder:text-neutral-500 font-serif tracking-wide focus:outline-none focus:border-neutral-500 transition-colors duration-200"
+              className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-neutral-500 font-serif tracking-wide focus:outline-none focus:border-white/40 focus:bg-white/15 transition-all duration-200"
             />
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -301,7 +326,7 @@ const FAQContent = () => {
           <div className="lg:w-64 flex-shrink-0">
             <div
               ref={categoryNavRef}
-              className="lg:sticky lg:top-24 bg-white rounded-lg shadow-lg border border-neutral-200 p-4"
+              className="lg:sticky lg:top-24 bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 p-4"
             >
               <h3 className="text-sm font-serif font-bold text-neutral-900 tracking-wide uppercase mb-4">
                 Categories
@@ -314,10 +339,10 @@ const FAQContent = () => {
                     <button
                       key={cat.id}
                       onClick={() => scrollToCategory(cat.id)}
-                      className={`w-full text-left px-3 py-2.5 text-sm font-serif tracking-wide transition-colors duration-200 rounded-lg ${
+                      className={`w-full text-left px-3 py-2.5 text-sm font-serif tracking-wide transition-all duration-300 rounded-xl ${
                         activeCategory === cat.id
-                          ? "bg-neutral-900 text-white font-bold"
-                          : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                          ? "bg-[#0b3393] text-white font-bold shadow-md shadow-blue-900/20"
+                          : "text-neutral-600 hover:bg-blue-50 hover:text-neutral-900"
                       }`}
                     >
                       <span className="flex items-center justify-between">
@@ -326,7 +351,7 @@ const FAQContent = () => {
                           className={`text-xs px-2 py-0.5 rounded-full ${
                             activeCategory === cat.id
                               ? "bg-white/20 text-white"
-                              : "bg-neutral-100 text-neutral-500"
+                              : "bg-blue-50 text-neutral-500"
                           }`}
                         >
                           {count}
@@ -351,7 +376,7 @@ const FAQContent = () => {
                   className="mb-10"
                 >
                   <h2 className="text-xl md:text-2xl font-serif font-bold text-neutral-900 tracking-wide uppercase mb-5 flex items-center gap-3">
-                    <span className="w-1 h-6 bg-neutral-900" />
+                    <span className="w-1 h-6 bg-gradient-to-b from-[#0b3393] to-blue-400 rounded-full" />
                     {category.name}
                   </h2>
                   <div className="space-y-3">
@@ -361,28 +386,41 @@ const FAQContent = () => {
                       return (
                         <div
                           key={index}
-                          className="bg-white rounded-lg shadow-lg border border-neutral-200 overflow-hidden"
+                          className={`bg-white rounded-2xl border overflow-hidden transition-all duration-500 ${
+                            isOpen
+                              ? "border-blue-200 shadow-lg shadow-blue-900/10"
+                              : "border-blue-50 shadow-md shadow-blue-900/5 hover:shadow-lg hover:shadow-blue-900/10"
+                          }`}
                         >
                           <button
                             onClick={() => toggleItem(itemKey)}
-                            className="w-full flex items-center justify-between p-5 text-left hover:bg-neutral-50 transition-colors duration-200"
+                            className="w-full flex items-center justify-between p-5 sm:p-6 text-left group"
                           >
-                            <span className="font-serif font-bold text-neutral-900 tracking-wide pr-4">
+                            <span className="font-serif font-bold text-neutral-900 tracking-wide pr-4 group-hover:text-[#0b3393] transition-colors duration-300">
                               {item.question}
                             </span>
-                            {isOpen ? (
-                              <ChevronUp className="w-5 h-5 text-neutral-500 flex-shrink-0" />
-                            ) : (
-                              <ChevronDown className="w-5 h-5 text-neutral-500 flex-shrink-0" />
-                            )}
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                                isOpen
+                                  ? "bg-[#0b3393] text-white"
+                                  : "bg-blue-50 text-[#0b3393]"
+                              }`}
+                            >
+                              {isOpen ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              )}
+                            </div>
                           </button>
                           <div
-                            className={`overflow-hidden transition-all duration-300 ${
-                              isOpen ? "max-h-96" : "max-h-0"
+                            className={`transition-all duration-300 ${
+                              isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                             }`}
                           >
-                            <div className="px-5 pb-5 border-t border-neutral-100">
-                              <p className="text-neutral-600 font-serif leading-relaxed pt-4">
+                            <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0">
+                              <div className="h-px bg-gradient-to-r from-blue-100 via-blue-200 to-blue-100 mb-4" />
+                              <p className="text-neutral-600 font-serif leading-relaxed text-sm">
                                 {item.answer}
                               </p>
                             </div>
