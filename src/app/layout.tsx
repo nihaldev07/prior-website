@@ -12,6 +12,8 @@ import { PageStateProvider } from "@/context/PageStateContext";
 import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import PageViewTracker from "@/components/PageViewTracker";
+import { SITE_URL } from "@/lib/seo";
+import SiteSeoSchema from "@/components/seo/SiteSeoSchema";
 
 // Noto Sans Devanagari for all text
 const notoSansDevanagari = Noto_Sans_Devanagari({
@@ -24,9 +26,22 @@ const notoSansDevanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  title: "Women's Shoes and Bags | Prior - Your Priority in Fashion",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Women's Shoes and Bags | Prior - Your Priority in Fashion",
+    template: "%s | Prior",
+  },
   description:
     "Discover Prior's latest collection of women's shoes and bags, where style meets sophistication. Elevate your fashion game with our trendy footwear and handbags designed to make you stand out. Prioritize your style effortlessly with Prior - your ultimate destination for fashion-forward accessories.",
+  applicationName: "Prior",
+  openGraph: {
+    type: "website",
+    siteName: "Prior",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   icons: [
     {
       rel: "apple-touch-icon",
@@ -152,6 +167,7 @@ export default function RootLayout({
             <WishlistProvider>
               <CartProvider>
                 <>
+                  <SiteSeoSchema />
                   <Header />
                   <PageViewTracker />
                   {children}

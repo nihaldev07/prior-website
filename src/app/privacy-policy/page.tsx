@@ -84,14 +84,38 @@ const sections = [
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-neutral-900 text-white py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold tracking-wide uppercase mb-4">
-            Privacy Policy
+      <div className="relative h-[50vh] sm:h-[60vh] bg-neutral-950 overflow-hidden flex items-center justify-center">
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              "radial-gradient(ellipse at 30% 50%, rgba(11,51,147,0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(80,40,120,0.3) 0%, transparent 50%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 border border-blue-400/30 backdrop-blur-sm rounded-full">
+            <Shield className="w-3.5 h-3.5 text-blue-300" />
+            <span className="text-[11px] font-serif tracking-[0.3em] uppercase text-white/70">
+              Your Data
+            </span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white mb-6 leading-[0.9]">
+            Privacy{" "}
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">
+              Policy
+            </span>
           </h1>
-          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto">
+          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto text-base sm:text-lg">
             Your privacy is important to us. Learn how we collect, use, and
             protect your personal information.
           </p>
@@ -99,11 +123,12 @@ const PrivacyPolicy = () => {
             Last Updated: September 16, 2024
           </p>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         {/* Introduction */}
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-neutral-200 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg shadow-blue-900/5 border border-blue-50 p-8 mb-8">
           <p className="text-neutral-700 font-serif leading-relaxed text-lg">
             Welcome to <strong>Prior</strong>, your priority in fashion. We value
             your trust and are committed to protecting your personal information.
@@ -124,17 +149,17 @@ const PrivacyPolicy = () => {
             return (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-lg border border-neutral-200 overflow-hidden"
+                className="group bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 hover:shadow-xl hover:shadow-blue-900/10 hover:border-blue-200 transition-all duration-500 overflow-hidden"
               >
-                <div className="flex items-center gap-3 p-6 border-b border-neutral-100 bg-neutral-50">
-                  <div className="w-10 h-10 bg-neutral-900 rounded-lg flex items-center justify-center">
+                <div className="flex items-center gap-4 p-6 sm:p-8 border-b border-blue-50 bg-gradient-to-r from-blue-50/80 to-white">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#0b3393] to-blue-800 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-900/10 group-hover:scale-110 transition-transform duration-300">
                     <Icon className="w-5 h-5 text-white" />
                   </div>
                   <h2 className="text-lg font-serif font-bold text-neutral-900 tracking-wide">
                     {index + 1}. {section.title}
                   </h2>
                 </div>
-                <div className="p-6">
+                <div className="p-6 sm:p-8">
                   {section.title === "Your Rights" ? (
                     <ul className="space-y-3">
                       {section.content.map((item, i) => (
@@ -142,7 +167,7 @@ const PrivacyPolicy = () => {
                           key={i}
                           className="flex items-start gap-3 text-neutral-700 font-serif"
                         >
-                          <span className="w-1.5 h-1.5 rounded-full bg-neutral-900 mt-2 flex-shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#0b3393] mt-2 flex-shrink-0 opacity-40" />
                           <span>
                             <strong>{item.split(":")[0]}:</strong>
                             {item.split(":").slice(1).join(":")}
@@ -169,41 +194,58 @@ const PrivacyPolicy = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="bg-neutral-900 rounded-lg p-8 lg:p-12 mt-12">
-          <h2 className="text-2xl font-serif font-bold text-white tracking-wide uppercase mb-6 text-center">
-            Contact Us
-          </h2>
-          <p className="text-neutral-400 font-serif tracking-wide text-center mb-8">
-            If you have any questions or concerns regarding this Privacy Policy
-            or our data practices, feel free to contact us.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white/5 rounded-lg p-6 text-center">
-              <Mail className="w-8 h-8 text-white mx-auto mb-3" />
-              <p className="text-sm font-serif font-bold text-white mb-1">
-                Email
-              </p>
-              <p className="text-xs font-serif text-neutral-400">
-                prior.retailshop.info.bd@gmail.com
-              </p>
-            </div>
-            <div className="bg-white/5 rounded-lg p-6 text-center">
-              <Phone className="w-8 h-8 text-white mx-auto mb-3" />
-              <p className="text-sm font-serif font-bold text-white mb-1">
-                Phone
-              </p>
-              <p className="text-xs font-serif text-neutral-400">
-                +880-1700534317
-              </p>
-            </div>
-            <div className="bg-white/5 rounded-lg p-6 text-center">
-              <MapPin className="w-8 h-8 text-white mx-auto mb-3" />
-              <p className="text-sm font-serif font-bold text-white mb-1">
-                Address
-              </p>
-              <p className="text-xs font-serif text-neutral-400">
-                Dhanmondi 27, Genetic Plaza Shop No: 134, Dhaka, Bangladesh
-              </p>
+        <div className="bg-gradient-to-br from-[#0b3393] via-blue-900 to-blue-950 rounded-2xl p-8 lg:p-12 mt-12 relative overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 70%)",
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div className="relative z-10">
+            <h2 className="text-2xl font-serif font-bold text-white tracking-wide uppercase mb-6 text-center">
+              Contact Us
+            </h2>
+            <p className="text-blue-200/70 font-serif tracking-wide text-center mb-8">
+              If you have any questions or concerns regarding this Privacy Policy
+              or our data practices, feel free to contact us.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white/5 rounded-xl p-6 text-center">
+                <Mail className="w-8 h-8 text-white mx-auto mb-3" />
+                <p className="text-sm font-serif font-bold text-white mb-1">
+                  Email
+                </p>
+                <p className="text-xs font-serif text-blue-200/60">
+                  prior.retailshop.info.bd@gmail.com
+                </p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-6 text-center">
+                <Phone className="w-8 h-8 text-white mx-auto mb-3" />
+                <p className="text-sm font-serif font-bold text-white mb-1">
+                  Phone
+                </p>
+                <p className="text-xs font-serif text-blue-200/60">
+                  +880-1700534317
+                </p>
+              </div>
+              <div className="bg-white/5 rounded-xl p-6 text-center">
+                <MapPin className="w-8 h-8 text-white mx-auto mb-3" />
+                <p className="text-sm font-serif font-bold text-white mb-1">
+                  Address
+                </p>
+                <p className="text-xs font-serif text-blue-200/60">
+                  Dhanmondi 27, Genetic Plaza Shop No: 134, Dhaka, Bangladesh
+                </p>
+              </div>
             </div>
           </div>
         </div>

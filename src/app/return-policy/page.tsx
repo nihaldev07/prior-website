@@ -99,26 +99,61 @@ const banglaContent = {
 
 const ReturnPolicy = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-neutral-900 text-white py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold tracking-wide uppercase mb-4">
-            Return & Refund Policy
+      <div className="relative h-[50vh] sm:h-[60vh] bg-neutral-950 overflow-hidden flex items-center justify-center">
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background:
+              "radial-gradient(ellipse at 30% 50%, rgba(11,51,147,0.4) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(80,40,120,0.3) 0%, transparent 50%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 border border-blue-400/30 backdrop-blur-sm rounded-full">
+            <RotateCcw className="w-3.5 h-3.5 text-blue-300" />
+            <span className="text-[11px] font-serif tracking-[0.3em] uppercase text-white/70">
+              Hassle-Free
+            </span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-white mb-6 leading-[0.9]">
+            Return &{" "}
+            <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white">
+              Refund Policy
+            </span>
           </h1>
-          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto">
+          <p className="text-neutral-400 font-serif tracking-wide max-w-2xl mx-auto text-base sm:text-lg">
             We want you to be completely satisfied with your purchase. Learn
             about our return and refund terms below.
           </p>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         <Tabs defaultValue="english" className="w-full">
-          <div className="flex justify-center mb-10">
-            <TabsList className="grid grid-cols-2 w-fit">
-              <TabsTrigger value="english">English</TabsTrigger>
-              <TabsTrigger value="bangla">বাংলা</TabsTrigger>
+          <div className="flex justify-center mb-12">
+            <TabsList className="grid grid-cols-2 w-fit rounded-full bg-blue-50 border border-blue-100 p-1">
+              <TabsTrigger
+                value="english"
+                className="rounded-full text-xs font-serif tracking-[0.15em] uppercase px-6 py-2.5 data-[state=active]:bg-[#0b3393] data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-900/20"
+              >
+                English
+              </TabsTrigger>
+              <TabsTrigger
+                value="bangla"
+                className="rounded-full text-xs font-serif tracking-[0.15em] uppercase px-6 py-2.5 data-[state=active]:bg-[#0b3393] data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-900/20"
+              >
+                বাংলা
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -129,24 +164,24 @@ const ReturnPolicy = () => {
                 return (
                   <div
                     key={index}
-                    className="bg-white rounded-lg shadow-lg border border-neutral-200 overflow-hidden"
+                    className="group bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 hover:shadow-xl hover:shadow-blue-900/10 hover:border-blue-200 transition-all duration-500 overflow-hidden"
                   >
-                    <div className="flex items-center gap-3 p-6 border-b border-neutral-100 bg-neutral-50">
-                      <div className="w-10 h-10 bg-neutral-900 rounded-lg flex items-center justify-center">
+                    <div className="flex items-center gap-4 p-6 sm:p-8 border-b border-blue-50 bg-gradient-to-r from-blue-50/80 to-white">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#0b3393] to-blue-800 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-900/10 group-hover:scale-110 transition-transform duration-300">
                         <Icon className="w-5 h-5 text-white" />
                       </div>
                       <h2 className="text-lg font-serif font-bold text-neutral-900 tracking-wide">
                         {section.title}
                       </h2>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 sm:p-8">
                       <ul className="space-y-3">
                         {section.items.map((item, i) => (
                           <li
                             key={i}
                             className="flex items-start gap-3 text-neutral-700 font-serif"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-neutral-900 mt-2 flex-shrink-0" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0b3393] mt-2 flex-shrink-0 opacity-40" />
                             {item}
                           </li>
                         ))}
@@ -158,14 +193,16 @@ const ReturnPolicy = () => {
             </div>
 
             {/* Important Note */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mt-8">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-6 sm:p-8 shadow-lg shadow-amber-900/5 mt-10">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                </div>
                 <div>
-                  <h3 className="font-serif font-bold text-amber-800 tracking-wide mb-2">
+                  <h3 className="font-serif font-bold text-amber-900 tracking-wide mb-2">
                     Important
                   </h3>
-                  <p className="text-sm font-serif text-amber-700">
+                  <p className="text-sm font-serif text-amber-800 leading-relaxed">
                     For any return or exchange requests, please contact us
                     within 24 hours of receiving your order. Items returned
                     without prior contact may not be eligible for refund.
@@ -182,24 +219,24 @@ const ReturnPolicy = () => {
                 return (
                   <div
                     key={index}
-                    className="bg-white rounded-lg shadow-lg border border-neutral-200 overflow-hidden"
+                    className="group bg-white rounded-2xl border border-blue-50 shadow-lg shadow-blue-900/5 hover:shadow-xl hover:shadow-blue-900/10 hover:border-blue-200 transition-all duration-500 overflow-hidden"
                   >
-                    <div className="flex items-center gap-3 p-6 border-b border-neutral-100 bg-neutral-50">
-                      <div className="w-10 h-10 bg-neutral-900 rounded-lg flex items-center justify-center">
+                    <div className="flex items-center gap-4 p-6 sm:p-8 border-b border-blue-50 bg-gradient-to-r from-blue-50/80 to-white">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#0b3393] to-blue-800 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-900/10 group-hover:scale-110 transition-transform duration-300">
                         <Icon className="w-5 h-5 text-white" />
                       </div>
                       <h2 className="text-lg font-serif font-bold text-neutral-900 tracking-wide">
                         {section.title}
                       </h2>
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 sm:p-8">
                       <ul className="space-y-3">
                         {section.items.map((item, i) => (
                           <li
                             key={i}
                             className="flex items-start gap-3 text-neutral-700 font-serif"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-neutral-900 mt-2 flex-shrink-0" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0b3393] mt-2 flex-shrink-0 opacity-40" />
                             {item}
                           </li>
                         ))}
@@ -211,14 +248,16 @@ const ReturnPolicy = () => {
             </div>
 
             {/* Important Note - Bangla */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mt-8">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-2xl p-6 sm:p-8 shadow-lg shadow-amber-900/5 mt-10">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                </div>
                 <div>
-                  <h3 className="font-serif font-bold text-amber-800 tracking-wide mb-2">
+                  <h3 className="font-serif font-bold text-amber-900 tracking-wide mb-2">
                     গুরুত্বপূর্ণ
                   </h3>
-                  <p className="text-sm font-serif text-amber-700">
+                  <p className="text-sm font-serif text-amber-800 leading-relaxed">
                     যেকোনো ফেরত বা বিনিময়ের অনুরোধের জন্য, অনুগ্রহ করে আপনার
                     অর্ডার পাওয়ার ২৪ ঘণ্টার মধ্যে আমাদের সাথে যোগাযোগ করুন।
                     আগামী যোগাযোগ ছাড়া ফেরত দেওয়া আইটেমগুলি ফেরতের জন্য
@@ -231,29 +270,46 @@ const ReturnPolicy = () => {
         </Tabs>
 
         {/* Contact CTA */}
-        <div className="bg-neutral-900 rounded-lg p-8 lg:p-12 text-center mt-12">
-          <h2 className="text-2xl font-serif font-bold text-white tracking-wide uppercase mb-4">
-            Need Help With a Return?
-          </h2>
-          <p className="text-neutral-400 font-serif tracking-wide mb-8 max-w-xl mx-auto">
-            Contact our support team and we&apos;ll guide you through the process.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="tel:+8801700534317"
-              className="inline-flex items-center justify-center px-8 py-3 bg-white text-neutral-900 font-serif font-bold tracking-wide uppercase hover:bg-neutral-100 transition-colors duration-300"
-            >
-              <Phone className="w-4 h-4 mr-2" />
-              Call Us
-            </a>
-            <a
-              href="https://wa.me/8801700534317"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-8 py-3 border border-white text-white font-serif font-bold tracking-wide uppercase hover:bg-white hover:text-neutral-900 transition-colors duration-300"
-            >
-              WhatsApp
-            </a>
+        <div className="bg-gradient-to-br from-[#0b3393] via-blue-900 to-blue-950 rounded-2xl p-8 sm:p-12 lg:p-16 text-center mt-12 relative overflow-hidden">
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                "radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 70%)",
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div className="relative z-10">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white tracking-tight mb-4">
+              Need Help With a Return?
+            </h2>
+            <p className="text-blue-200/70 font-serif tracking-wide mb-10 max-w-xl mx-auto text-sm sm:text-base">
+              Contact our support team and we&apos;ll guide you through the process.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href="tel:+8801700534317"
+                className="group inline-flex items-center gap-3 bg-white text-[#0b3393] px-8 py-3.5 rounded-full font-serif text-xs tracking-[0.15em] uppercase hover:bg-blue-50 transition-all duration-300 shadow-lg shadow-blue-900/20"
+              >
+                <Phone className="w-4 h-4" />
+                Call Us
+              </a>
+              <a
+                href="https://wa.me/8801700534317"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-3 border-2 border-white/30 text-white px-8 py-3.5 rounded-full font-serif text-xs tracking-[0.15em] uppercase hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+              >
+                WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </div>
