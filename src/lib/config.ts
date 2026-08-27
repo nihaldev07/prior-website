@@ -14,6 +14,8 @@ export const config = {
     getBulkProducts: () => `${baseUrl}/product/bulk`,
     getCategorySeo: (identifier: string) =>
       `${baseUrl}/product/category-seo/${identifier}`,
+    getProductSeo: (identifier: string) =>
+      `${baseUrl}/product/seo/${identifier}`,
   },
   order: {
     createOrder: () => `${baseUrl}/order/create`,

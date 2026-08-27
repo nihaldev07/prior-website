@@ -85,6 +85,31 @@ export type CategorySeoType = {
   tags: string[];
 };
 
+export type ProductSeoType = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  focusKeyphrase: string;
+  seoTitle: string;
+  seoDescription: string;
+  tags: string[];
+  thumbnail: string;
+  images?: string[];
+  categoryId: string;
+  brand?: string;
+  sku?: string;
+  unitPrice: number;
+  hasDiscount: boolean;
+  updatedPrice: number;
+  inStock: boolean;
+  categoryName: string;
+  categorySlug: string;
+  rating?: number;
+  reviewCount?: number;
+};
+
 export type RatingDetailsType = {
   index: number;
   value: number;
