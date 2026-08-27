@@ -1,78 +1,79 @@
-"use client";
+// Product detail page — Server Component with SEO metadata + JSON-LD:
+// - generateMetadata from the product's stored SEO content
+//   (GET /prior/product/seo/:identifier, Redis-cached 5 min)
+// - id URLs 308-redirect to canonical slug URLs
+// - real 404s for unknown/inactive products
+// - JSON-LD Product + Offer + BreadcrumbList
+// - ISR revalidate aligned with backend cache TTL
+// Client-side fetch of /prior/product/by/:id preserves real-time stock
+import type { Metadata } from "next";
+import { notFound, permanentRedirect } from "next/navigation";
+import { fetchProductSeo } from "@/services/productSeoService";
+import { SITE_URL, absoluteUrl, stripHtml } from "@/lib/seo";
+import ProductPageClient from "./ProductPageClient";
+import ProductSeoSchema from "./ProductSeoSchema";
 
-import React, { useEffect, useState } from "react";
-import SectionMoreProducts from "./SectionMoreProducts";
-import ProductDetailSection from "@/components/new-ui/ProductDetailSection";
-import { fetchProductById } from "@/services/productServices";
-import { SingleProductType } from "@/data/types";
+export const revalidate = 300; // matches backend CACHE_TTL.PRODUCT_DETAIL
 
-interface PageProps {
-  params: {
-    collectionId: string;
+type Props = {
+  params: { collectionId: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const seo = await fetchProductSeo(params.collectionId);
+  if (!seo) {
+    return { title: "Product", robots: { index: false } };
+  }
+
+  const slugOrId = seo.slug || params.collectionId;
+  const canonical = `${SITE_URL}/collections/${slugOrId}`;
+  const title = seo.seoTitle || `${seo.name}`;
+  const description =
+    seo.seoDescription ||
+    seo.shortDescription ||
+    stripHtml(seo.description).slice(0, 160) ||
+    undefined;
+
+  return {
+    title,
+    description,
+    keywords: [...(seo.tags || []), seo.focusKeyphrase].filter(Boolean),
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: "Prior",
+      type: "website",
+      images: seo.thumbnail
+        ? [{ url: absoluteUrl(seo.thumbnail), alt: seo.name }]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: seo.thumbnail ? [absoluteUrl(seo.thumbnail)] : undefined,
+    },
   };
 }
 
-const SingleProductPage = ({ params }: PageProps) => {
-  const { collectionId } = params;
-  const [product, setProduct] = useState<SingleProductType | null>(null);
-  const [loading, setLoading] = useState(true);
+export default async function ProductPage({ params }: Props) {
+  const seo = await fetchProductSeo(params.collectionId);
+  if (!seo) notFound(); // real 404 (was a 200 "No Product Found")
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchProductById(collectionId);
-        setProduct(response);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [collectionId]);
-
-  if (loading) {
-    return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto'></div>
-          <p className='mt-4 text-gray-600'>Loading product...</p>
-        </div>
-      </div>
-    );
+  // Canonical discipline: id URLs permanently redirect to slug URLs so every
+  // canonical, JSON-LD id, and internal link agrees on one form.
+  if (seo.slug && seo.slug !== params.collectionId) {
+    permanentRedirect(`/collections/${seo.slug}`);
   }
 
-  if (!product) {
-    return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
-          <h1 className='text-2xl text-gray-600 mb-8'>No Product Found</h1>
-          <SectionMoreProducts categoryId='' />
-        </div>
-      </div>
-    );
-  }
-
-  const { images, thumbnail, categoryId } = product;
-
-  // Prepare image array
-  let imageData = [thumbnail];
-  if (images && images.length > 0) imageData = [...imageData, ...images];
-
+  // The product-seo fetch above is deduped by the Next data cache (same
+  // URL + revalidate as generateMetadata's call).
   return (
     <>
-      <ProductDetailSection product={product} shots={imageData} />
-
-      <div className='max-w-7xl mx-auto px-4 py-8'>
-        <div className='border-t border-gray-200 pt-12'>
-          <SectionMoreProducts categoryId={categoryId} />
-        </div>
-      </div>
+      <ProductSeoSchema seo={seo} />
+      <ProductPageClient collectionId={params.collectionId} />
     </>
   );
-};
-
-export default SingleProductPage;
+}
