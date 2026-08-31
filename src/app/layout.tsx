@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s | Prior",
   },
   description:
-    "Discover Prior's latest collection of women's shoes and bags, where style meets sophistication. Elevate your fashion game with our trendy footwear and handbags designed to make you stand out. Prioritize your style effortlessly with Prior - your ultimate destination for fashion-forward accessories.",
+    "Discover Prior's latest collection of women's shoes and bags, where style meets sophistication. Elevate your fashion game with our trendy footwear and handbags designed to make you stand out. Pri[...]
   applicationName: "Prior",
   openGraph: {
     type: "website",
@@ -64,6 +64,9 @@ export const metadata: Metadata = {
       url: "/favicons.ico",
     },
   ],
+  verification: {
+    google: "yDQTIxFNP5vd0FypyTnYzXlxe631MlTVuH5NPtG-tsQ",
+  },
 };
 
 export default function RootLayout({
