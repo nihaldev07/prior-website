@@ -31,8 +31,7 @@ export const metadata: Metadata = {
     default: "Women's Shoes and Bags | Prior - Your Priority in Fashion",
     template: "%s | Prior",
   },
-  description:
-    "Discover Prior's latest collection of women's shoes and bags, where style meets sophistication. Elevate your fashion game with our trendy footwear and handbags designed to make you stand out. Pri[...]
+  description:"Discover Prior's latest collection of women's shoes and bags, where style meets sophistication. Elevate your fashion game with our trendy footwear and handbags designed to make you stand out. Prioritize your style effortlessly with Prior - your ultimate destination for fashion-forward accessories.",
   applicationName: "Prior",
   openGraph: {
     type: "website",
