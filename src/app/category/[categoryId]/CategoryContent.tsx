@@ -6,7 +6,7 @@ import Link from "next/link";
 import Breadcrumb from "@/components/seo/Breadcrumb";
 import { buildBreadcrumbChain } from "@/lib/seo";
 import type { Category, CategorySeoType, ProductType } from "@/data/types";
-import CategoryInfoDialog from "./CategoryInfoDialog";
+import CategoryDescriptionPanel from "./CategoryDescriptionPanel";
 
 interface CategoryContentProps {
   seo: CategorySeoType;
@@ -89,7 +89,7 @@ export default function CategoryContent({
             {seo.name}
           </h1>
           {seo.description && (
-            <CategoryInfoDialog
+            <CategoryDescriptionPanel
               name={seo.name}
               description={seo.description}
               img={seo.img}
@@ -101,13 +101,13 @@ export default function CategoryContent({
         <div className='w-16 h-1 bg-gradient-to-r from-blue-400 to-sky-300 rounded-full mb-5' />
 
         {/* GEO answer-first sentence */}
-        <p className='text-[15px] text-gray-600 leading-relaxed max-w-2xl mb-3 hidden'>
+        <p className=' w-full text-center text-[15px] text-gray-600 leading-relaxed max-w-2xl mb-3 hidden'>
           {`${seo.name} at Prior${totalProducts > 0 ? ` \u2014 ${totalProducts} products to shop` : ""}${from !== null ? `, prices from \u09F3${Math.ceil(from)}` : ""}. Delivery across Bangladesh with cash on delivery. Shop online or in-store at Prior.`}
         </p>
 
         {/* Short description */}
         {seo.shortDescription && (
-          <p className='text-sm text-gray-500 leading-relaxed max-w-[80%] mb-5 italic'>
+          <p className=' w-full text-left text-sm text-gray-500 leading-relaxed max-w-[80%] mb-5 italic'>
             {seo.shortDescription}
           </p>
         )}
@@ -115,7 +115,7 @@ export default function CategoryContent({
         {/* Shop CTA */}
         <Link
           href='#body'
-          className='inline-flex items-center gap-2 text-sm font-semibold text-blue-500 transition-colors hover:text-blue-700'>
+          className='hidden items-center gap-2 text-sm font-semibold text-blue-500 transition-colors hover:text-blue-700'>
           Shop all {seo.name}
           <span className='text-blue-300'>&darr;</span>
         </Link>
