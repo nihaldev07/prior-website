@@ -5,17 +5,22 @@ import { ChevronRight, Home } from "lucide-react";
 
 interface BreadcrumbProps {
   items: { name: string; slugOrId: string }[];
+  /** "onDark" retints the chain for use over image banners. */
+  variant?: "default" | "onDark";
 }
 
-export default function Breadcrumb({ items }: BreadcrumbProps) {
+export default function Breadcrumb({ items, variant = "default" }: BreadcrumbProps) {
   if (!items || items.length === 0) return null;
+  const onDark = variant === "onDark";
   return (
-    <nav aria-label='Breadcrumb' className='text-[13px] text-gray-500'>
+    <nav
+      aria-label='Breadcrumb'
+      className={`text-[13px] ${onDark ? "text-white/70" : "text-gray-500"}`}>
       <ol className='flex flex-wrap items-center gap-1'>
         <li className='flex items-center'>
           <Link
             href='/'
-            className='hover:text-primary flex items-center gap-1'>
+            className={`flex items-center gap-1 ${onDark ? "hover:text-white transition-colors duration-200" : "hover:text-primary"}`}>
             <Home className='w-3.5 h-3.5' />
             <span className='sr-only'>Home</span>
           </Link>
@@ -24,15 +29,19 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
           const isLast = i === items.length - 1;
           return (
             <li key={item.slugOrId} className='flex items-center gap-1'>
-              <ChevronRight className='w-3.5 h-3.5 text-gray-400' />
+              <ChevronRight
+                className={`w-3.5 h-3.5 ${onDark ? "text-white/40" : "text-gray-400"}`}
+              />
               {isLast ? (
-                <span aria-current='page' className='text-gray-900 font-medium'>
+                <span
+                  aria-current='page'
+                  className={`font-medium ${onDark ? "text-white" : "text-gray-900"}`}>
                   {item.name}
                 </span>
               ) : (
                 <Link
                   href={`/category/${item.slugOrId}`}
-                  className='hover:text-primary'>
+                  className={onDark ? "hover:text-white transition-colors duration-200" : "hover:text-primary"}>
                   {item.name}
                 </Link>
               )}
