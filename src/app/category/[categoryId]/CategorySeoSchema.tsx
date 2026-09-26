@@ -1,6 +1,7 @@
 // JSON-LD for the category page: BreadcrumbList + CollectionPage with an
-// ItemList of the top products (each with Product + Offer). One @graph so
-// entities reference each other and the sitewide Organization/WebSite nodes.
+// ItemList of the products actually visible on the current ?page=N (each
+// with Product + Offer). One @graph so entities reference each other and
+// the sitewide Organization/WebSite nodes.
 import JsonLd from "@/components/seo/JsonLd";
 import { SITE_URL, absoluteUrl, buildBreadcrumbChain, stripHtml } from "@/lib/seo";
 import type { Category, CategorySeoType, ProductType } from "@/data/types";
@@ -10,6 +11,7 @@ interface CategorySeoSchemaProps {
   categories: Category[];
   products: ProductType[];
   totalProducts: number;
+  page: number;
 }
 
 export default function CategorySeoSchema({
@@ -17,10 +19,18 @@ export default function CategorySeoSchema({
   categories,
   products,
   totalProducts,
+  page,
 }: CategorySeoSchemaProps) {
-  const url = `${SITE_URL}/category/${seo.slug}`;
+  // Must mirror the meta canonical exactly: ?page=N only past page 1.
+  const url =
+    page > 1 ? `${SITE_URL}/category/${seo.slug}?page=${page}` : `${SITE_URL}/category/${seo.slug}`;
   const chain = buildBreadcrumbChain(
-    { id: seo.id, name: seo.name, parentId: undefined, slug: seo.slug },
+    {
+      id: seo.id,
+      name: seo.name,
+      slug: seo.slug,
+      parentId: categories.find((c) => c.id === seo.id)?.parentId,
+    },
     categories,
   );
 

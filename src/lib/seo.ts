@@ -47,6 +47,31 @@ export function buildBreadcrumbChain(
   return chain;
 }
 
+/** Lowest positive unit/discounted price in a product list (for "from ৳X"). */
+export function minPrice(products: any[]): number | null {
+  let min: number | null = null;
+  for (const p of products) {
+    const price = p?.hasDiscount ? p.updatedPrice : p.unitPrice;
+    if (typeof price === "number" && price > 0 && (min === null || price < min)) {
+      min = price;
+    }
+  }
+  return min;
+}
+
+/**
+ * Answer-first GEO/AEO sentence: "Handbags at Prior — 128 products to shop,
+ * prices from ৳750. Delivery across Bangladesh with cash on delivery..."
+ */
+export function buildGeoAnswerSentence(
+  name: string,
+  totalProducts: number,
+  products: any[],
+): string {
+  const from = minPrice(products);
+  return `${name} at Prior${totalProducts > 0 ? ` — ${totalProducts} products to shop` : ""}${from !== null ? `, prices from ৳${Math.ceil(from)}` : ""}. Delivery across Bangladesh with cash on delivery. Shop online or in-store at Prior.`;
+}
+
 // TipTap allow-list mirroring TiptapRenderer's DOMPurify config (minus
 // class, plus table cells kept from its main branch). Content is
 // admin-generated and pre-sanitized by the backend AI pipeline — this

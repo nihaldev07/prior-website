@@ -1,7 +1,7 @@
 // Thank You / Order Success Page
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
+import { Suspense, useEffect, useState, useRef, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,7 @@ import { trackPurchase } from "@/lib/analytics";
 
 const REDIRECT_SECONDS = 15;
 
-const ThankYouPage = () => {
+const ThankYouPageContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderNumber = searchParams.get("orderNumber");
@@ -419,5 +419,13 @@ const ThankYouPage = () => {
     </div>
   );
 };
+
+// useSearchParams() needs a Suspense boundary to prerender — the root
+// loading.tsx no longer provides one.
+const ThankYouPage = () => (
+  <Suspense fallback={null}>
+    <ThankYouPageContent />
+  </Suspense>
+);
 
 export default ThankYouPage;
