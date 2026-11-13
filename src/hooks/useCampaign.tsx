@@ -1,6 +1,7 @@
 import { config } from "@/lib/config";
 import { ICampaign, ICampaingProducts } from "@/lib/interface";
 import axios from "axios";
+import { useMemo } from "react";
 interface Iresponse {
   activeCampaign: ICampaign;
   products: ICampaingProducts[];
@@ -68,12 +69,17 @@ const useCampaign = () => {
     }
   };
 
-  return {
-    fetchActiveCampaign,
-    fetchActiveCampaignById,
-    checkPrepaymentProducts,
-    calculatePrepaymentAmount,
-  };
+  // Memoized so consumers can safely use these as effect dependencies
+  // (the functions are stateless axios wrappers and never go stale).
+  return useMemo(
+    () => ({
+      fetchActiveCampaign,
+      fetchActiveCampaignById,
+      checkPrepaymentProducts,
+      calculatePrepaymentAmount,
+    }),
+    []
+  );
 };
 
 export default useCampaign;

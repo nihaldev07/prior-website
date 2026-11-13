@@ -1,5 +1,5 @@
 import { ProductType, SingleProductType, Variation } from "@/data/types";
-import { IProduct } from "@/lib/interface";
+import { ICampaingProducts, IProduct } from "@/lib/interface";
 
 // New UI types
 export interface Color {
@@ -174,6 +174,33 @@ export const adaptIProductToNewFormat = (product: IProduct): Product => {
     createdAt: new Date().toISOString(),
   };
 };
+
+// Adapt slim campaign product (ICampaingProducts) to new UI Product format.
+// Campaign products carry no variations/slug, so the detail page's
+// id-to-slug redirect (/collections/[collectionId]) resolves the link.
+export const adaptCampaignProductToNewFormat = (
+  campaignProduct: ICampaingProducts,
+): Product => ({
+  id: campaignProduct.id,
+  name: campaignProduct.name || "",
+  slug: campaignProduct.id,
+  price: campaignProduct.unitPrice || 0,
+  originalPrice: undefined,
+  image: campaignProduct.thumbnail || "",
+  images: [],
+  category: "",
+  description: campaignProduct.description || "",
+  rating: 0,
+  reviewCount: 0,
+  inStock: (campaignProduct.quantity || 0) > 0,
+  stock: campaignProduct.quantity || 0,
+  isNew: false,
+  isHot: true,
+  colors: [],
+  sizes: [],
+  tags: [],
+  createdAt: new Date().toISOString(),
+});
 
 // Adapt array of products
 export const adaptProductsToNewFormat = (

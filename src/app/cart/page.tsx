@@ -21,7 +21,11 @@ import {
 import { trackCustomEvent } from "@/lib/analytics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatVariant } from "@/utils/functions";
+import {
+  formatVariant,
+  getEffectiveUnitPrice,
+  getLineDiscount,
+} from "@/utils/functions";
 
 const CartPage = () => {
   const { cart, removeFromCart, updateToCart } = useCart();
@@ -29,17 +33,11 @@ const CartPage = () => {
   useEffect(() => {
     trackCustomEvent("view_cart", {
       currency: "BDT",
-      value: cart.reduce((sum, cartdata) => {
-        return (
-          Number(sum) +
-          Number(cartdata.quantity) *
-            Number(
-              cartdata?.hasDiscount
-                ? (cartdata?.updatedPrice ?? cartdata?.unitPrice)
-                : cartdata?.unitPrice,
-            )
-        );
-      }, 0),
+      value: cart.reduce(
+        (sum, cartdata) =>
+          sum + getEffectiveUnitPrice(cartdata) * Number(cartdata.quantity),
+        0,
+      ),
     });
   }, [cart]);
 
@@ -51,12 +49,8 @@ const CartPage = () => {
     updateToCart({
       ...item,
       quantity: newQuantity,
-      totalPrice:
-        Number(
-          item.hasDiscount
-            ? (item.updatedPrice ?? item.unitPrice)
-            : item.unitPrice,
-        ) * newQuantity,
+      discount: getLineDiscount(item, newQuantity),
+      totalPrice: Number(item.unitPrice) * newQuantity,
     });
   };
 
@@ -64,25 +58,16 @@ const CartPage = () => {
     return sum + Number(item.quantity) * Number(item.unitPrice);
   }, 0);
 
-  const discount = cart.reduce((sum, item) => {
-    return (
-      sum +
-      Number(item.quantity) *
-        (Number(item.unitPrice) - Number(item.updatedPrice ?? item.unitPrice))
-    );
-  }, 0);
+  const discount = cart.reduce(
+    (sum, item) => sum + getLineDiscount(item),
+    0,
+  );
 
-  const total = cart.reduce((sum, item) => {
-    return (
-      sum +
-      Number(item.quantity) *
-        Number(
-          item?.hasDiscount
-            ? (item?.updatedPrice ?? item?.unitPrice)
-            : item?.unitPrice,
-        )
-    );
-  }, 0);
+  const total = cart.reduce(
+    (sum, item) =>
+      sum + getEffectiveUnitPrice(item) * Number(item.quantity),
+    0,
+  );
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 

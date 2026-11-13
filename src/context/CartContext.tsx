@@ -2,6 +2,7 @@
 // context/CartContext.tsx
 import { Variation } from "@/data/types";
 import { trackAddToCart, trackCustomEvent } from "@/lib/analytics";
+import { getLineDiscount, sanitizeCartItem } from "@/utils/functions";
 import React, {
   createContext,
   ReactElement,
@@ -61,10 +62,18 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
   children,
 }) => {
   const [cart, setCart] = useState<CartItem[]>(() => {
-    // Retrieve initial cart data from localStorage
+    // Retrieve initial cart data from localStorage.
+    // Re-derive pricing fields so carts saved by older versions (which stored
+    // updatedPrice: 0 for non-discounted items and stale/stale-doubled
+    // discount values) are sanitized on load.
     if (typeof window !== "undefined") {
       const savedCart = localStorage.getItem("cart");
-      return savedCart ? JSON.parse(savedCart) : [];
+      if (!savedCart) return [];
+      try {
+        return (JSON.parse(savedCart) as CartItem[]).map(sanitizeCartItem);
+      } catch {
+        return [];
+      }
     }
     return [];
   });
@@ -119,15 +128,11 @@ export const CartProvider: React.FC<{ children: ReactElement }> = ({
         return prevCart.map((itemX, idx) => {
           if (idx === existingIndex) {
             const newQuantity = itemX.quantity + 1;
-            const totalPrice = itemX.unitPrice * newQuantity;
-            const discount =
-              (itemX.unitPrice - (itemX.updatedPrice ?? 0)) * newQuantity;
-
             return {
               ...itemX,
               quantity: newQuantity,
-              totalPrice,
-              discount,
+              totalPrice: itemX.unitPrice * newQuantity,
+              discount: getLineDiscount(itemX, newQuantity),
             };
           }
           return itemX;

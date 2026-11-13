@@ -34,6 +34,7 @@ import {
   Plus,
 } from "lucide-react";
 import { trackViewContent, trackCustomEvent } from "@/lib/analytics";
+import { buildCartProduct } from "@/utils/functions";
 import EnhancedVariantSelector from "./EnhancedVariantSelector";
 import ShareButton from "@/shared/ShareButton";
 
@@ -110,33 +111,7 @@ const SectionProductHeader: FC<SectionProductHeaderProps> = ({
       return Swal.fire("Select quantity", "Please select quantity", "warning");
     }
 
-    const productData = {
-      id: product?.id,
-      sku: product?.sku,
-      name: product?.name,
-      active: true,
-      quantity: pQuantity,
-      unitPrice: product?.unitPrice,
-      manufactureId: "",
-      discountType: product?.discountType,
-      updatedPrice: product?.updatedPrice ?? 0,
-      hasDiscount: product?.discount > 0 && !!product?.updatedPrice,
-      discount: product?.discount,
-      description: product?.description,
-      thumbnail: product?.thumbnail,
-      productCode: product?.productCode,
-      totalPrice: Number(
-        (product?.discount > 0 && !!product?.updatedPrice
-          ? product?.updatedPrice
-          : product?.unitPrice) * Number(pQuantity),
-      ).toFixed(2),
-      categoryName: product?.categoryName,
-      hasVariation: product?.hasVariation,
-      variation: selectedVariant,
-      maxQuantity: !!selectedVariant
-        ? selectedVariant?.quantity
-        : product?.quantity,
-    };
+    const productData = buildCartProduct(product, pQuantity, selectedVariant);
     //@ts-ignore
     addToCart(productData);
 

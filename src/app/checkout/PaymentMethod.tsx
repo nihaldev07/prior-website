@@ -1,91 +1,129 @@
-import type { FC } from "react";
+"use client";
 
-// import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import { Button } from "@/components/ui/button";
-import { Banknote, Coins, Truck } from "lucide-react";
+import type { FC } from "react";
+import { Banknote, Wallet } from "lucide-react";
 import Image from "next/image";
 import BkashLogo from "@/images/BKash-Icon-Logo.wine.png";
+import { cn } from "@/lib/utils";
+
 interface Props {
   prePaymentAmount?: number;
-  district?: string;
+  prepaymentRuleName?: string | null;
   paymentMethod: string;
   handlePaymentMethodChange: (value: string) => void;
 }
 
 const PaymentMethod: FC<Props> = ({
   prePaymentAmount = 0,
-  district = "",
+  prepaymentRuleName,
   paymentMethod,
   handlePaymentMethodChange,
 }) => {
+  const hasAdvance = !!prePaymentAmount && prePaymentAmount > 0;
+
   return (
-    <div className='rounded-none border border-neutral-200 bg-white'>
-      <div className='flex flex-col items-start p-6 sm:flex-row'>
-        <span className='hidden sm:block'>
-          <Coins className='text-3xl text-primary' />
-        </span>
-        <div className='flex w-full items-center justify-between'>
-          <div className='sm:ml-8'>
-            <h3 className='uppercase font-serif tracking-[0.2em] text-neutral-900'>
-              PAYMENT METHOD
-            </h3>
-            <div className='mt-1 text-sm font-semibold'></div>
+    <div className='rounded-2xl border border-neutral-200 bg-white shadow-sm'>
+      <div className='p-4 sm:p-5'>
+        <h3 className='flex items-center font-semibold text-neutral-900 text-base mb-4'>
+          <div className='w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center mr-2.5'>
+            <Wallet className='h-4 w-4 text-neutral-600' />
           </div>
-        </div>
-      </div>
+          Payment Method
+        </h3>
 
-      <div
-        className={`space-y-6 border-t border-neutral-200 px-6 py-7 ${"block"}`}>
-        {/* ==================== */}
-        <div className='w-full grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <Button
-            variant={paymentMethod === "cashondelivery" ? "default" : "outline"}
-            className={`font-serif tracking-wide transition-all duration-300 ${
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+          {/* Cash on Delivery */}
+          <button
+            type='button'
+            onClick={() => handlePaymentMethodChange("cashondelivery")}
+            className={cn(
+              "flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left",
               paymentMethod === "cashondelivery"
-                ? "rounded-none bg-neutral-900 text-white hover:bg-neutral-800"
-                : "rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50"
-            }`}
-            onClick={() => handlePaymentMethodChange("cashondelivery")}>
-            <Banknote className='mr-2 size-5' />{" "}
-            {!!prePaymentAmount && prePaymentAmount > 0
-              ? `Cash On Delivery (Advance ${prePaymentAmount}TK)`
-              : district.toLowerCase().includes("dhaka")
-                ? "Cash On Delivery"
-                : ["gazipur", "tongi", "narayanganj", "savar"].includes(
-                      district.replace(/\s*\(.*?\)\s*/g, "").toLowerCase(),
-                    )
-                  ? "Cash On Delivery"
-                  : "Cash On Delivery"}
-          </Button>
-          <Button
-            className={`flex justify-center items-center font-serif tracking-wide transition-all duration-300 ${
-              paymentMethod === "bkash"
-                ? "rounded-none bg-neutral-900 text-white hover:bg-neutral-800"
-                : "rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50"
-            }`}
-            variant={paymentMethod === "bkash" ? "default" : "outline"}
-            onClick={() => handlePaymentMethodChange("bkash")}>
-            <Image
-              src={BkashLogo}
-              width={32}
-              height={32}
-              className='mr-2'
-              alt='bkash-logo'
-            />{" "}
-            Pay With Bkash
-          </Button>
-        </div>
+                ? "border-neutral-900 bg-neutral-50"
+                : "border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50/50",
+            )}>
+            <div
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200",
+                paymentMethod === "cashondelivery"
+                  ? "bg-neutral-900 text-white"
+                  : "bg-neutral-100 text-neutral-500",
+              )}>
+              <Banknote className='w-5 h-5' />
+            </div>
+            <div className='min-w-0'>
+              <p className='text-sm font-medium text-neutral-900'>
+                Cash on Delivery
+              </p>
+              <p className='text-[11px] text-neutral-500 mt-0.5'>
+                {hasAdvance
+                  ? `Advance ৳${prePaymentAmount.toLocaleString()} required${
+                      prepaymentRuleName ? ` (${prepaymentRuleName})` : ""
+                    }`
+                  : "Pay when you receive"}
+              </p>
+            </div>
+            {/* Radio indicator */}
+            <div
+              className={cn(
+                "ml-auto w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-200",
+                paymentMethod === "cashondelivery"
+                  ? "border-neutral-900"
+                  : "border-neutral-300",
+              )}>
+              {paymentMethod === "cashondelivery" && (
+                <div className='w-2 h-2 rounded-full bg-neutral-900' />
+              )}
+            </div>
+          </button>
 
-        {/* <div className='flex pt-6'>
-          <ButtonPrimary
-            className='w-full max-w-[240px]'
-            onClick={onCloseActive}>
-            Confirm order
-          </ButtonPrimary>
-          <ButtonSecondary className='ml-3' onClick={onCloseActive}>
-            Cancel
-          </ButtonSecondary>
-        </div> */}
+          {/* bKash */}
+          <button
+            type='button'
+            onClick={() => handlePaymentMethodChange("bkash")}
+            className={cn(
+              "flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left",
+              paymentMethod === "bkash"
+                ? "border-neutral-900 bg-neutral-50"
+                : "border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50/50",
+            )}>
+            <div
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden transition-colors duration-200",
+                paymentMethod === "bkash"
+                  ? "bg-neutral-100"
+                  : "bg-neutral-100",
+              )}>
+              <Image
+                src={BkashLogo}
+                width={24}
+                height={24}
+                className='object-contain'
+                alt='bKash'
+              />
+            </div>
+            <div className='min-w-0'>
+              <p className='text-sm font-medium text-neutral-900'>
+                Pay with bKash
+              </p>
+              <p className='text-[11px] text-neutral-500 mt-0.5'>
+                Secure online payment
+              </p>
+            </div>
+            {/* Radio indicator */}
+            <div
+              className={cn(
+                "ml-auto w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors duration-200",
+                paymentMethod === "bkash"
+                  ? "border-neutral-900"
+                  : "border-neutral-300",
+              )}>
+              {paymentMethod === "bkash" && (
+                <div className='w-2 h-2 rounded-full bg-neutral-900' />
+              )}
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );

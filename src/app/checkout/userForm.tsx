@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Popover,
   PopoverContent,
@@ -16,9 +17,10 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { BDDistrictList, BDDivisions } from "@/utils/content";
-import { ChangeEvent, useState } from "react";
+import { useLocations } from "@/hooks/useLocations";
+import { ChangeEvent, useMemo, useState } from "react";
 import { UserFormData } from "./page";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, MapPin, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const defaultShippingAddress = {
@@ -35,7 +37,7 @@ const defaultShippingAddress = {
 interface IProps {
   formData: UserFormData;
   handleInputChange: (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => void;
   handleInputChange2: (name: string, value: any) => void;
 }
@@ -51,9 +53,47 @@ const UserInformation: React.FC<IProps> = ({
   const [divisionPopoverOpen, setDivisionPopoverOpen] = useState(false);
   const [districtPopoverOpen, setDistrictPopoverOpen] = useState(false);
 
+  // Server-configured locations (divisions/districts + charges). Falls back
+  // to the hardcoded constants when the API is unavailable.
+  const { locations } = useLocations();
+
+  // Select-option shape shared by API data and the legacy constants
+  const divisionOptions = useMemo(() => {
+    if (!locations) return BDDivisions;
+    return locations.divisions.map((d) => ({
+      id: d.divisionId,
+      name: d.division,
+      bn_name: d.districts[0]?.bnName || "",
+    }));
+  }, [locations]);
+
+  const districtOptions = useMemo(() => {
+    if (!locations) return BDDistrictList;
+    return locations.divisions.flatMap((d) =>
+      d.districts.map((x) => ({
+        id: x.sourceId,
+        division_id: d.divisionId,
+        name: x.name,
+        bn_name: x.bnName,
+      })),
+    );
+  }, [locations]);
+
+  // Delivery charge per district option, shown in the picker when the
+  // server config knows it
+  const chargeById = useMemo(() => {
+    const map = new Map<string, number>();
+    if (locations) {
+      for (const d of locations.divisions) {
+        for (const x of d.districts) map.set(x.sourceId, x.charge);
+      }
+    }
+    return map;
+  }, [locations]);
+
   const handleShippingDivChange = (id: string, name: string) => {
     if (name === "division") {
-      const found = BDDivisions.find((d) => d.id === id);
+      const found = divisionOptions.find((d) => d.id === id);
       if (found) {
         setShippingAddress((prev) => ({
           ...prev,
@@ -65,7 +105,7 @@ const UserInformation: React.FC<IProps> = ({
         handleInputChange2("districtId", "");
       }
     } else {
-      const found = BDDistrictList.find((d) => d.id === id);
+      const found = districtOptions.find((d) => d.id === id);
       if (found) {
         setShippingAddress((prev) => ({ ...prev, district: found }));
         handleInputChange2("district", found.name);
@@ -73,6 +113,11 @@ const UserInformation: React.FC<IProps> = ({
       }
     }
   };
+
+  const inputClass =
+    "rounded-xl border-neutral-200 bg-white text-sm placeholder:text-neutral-400 focus:ring-1 focus:ring-neutral-200 focus:border-neutral-300 transition-all duration-200 h-11";
+
+  const labelClass = "text-xs font-medium text-neutral-600";
 
   const renderFormView = (
     label: string,
@@ -82,9 +127,7 @@ const UserInformation: React.FC<IProps> = ({
     value: any,
   ) => (
     <div className='grid w-full items-center gap-1.5'>
-      <Label
-        htmlFor={id}
-        className='font-serif tracking-[0.2em] uppercase text-neutral-700'>
+      <Label htmlFor={id} className={labelClass}>
         {label}
       </Label>
       <Input
@@ -94,50 +137,76 @@ const UserInformation: React.FC<IProps> = ({
         placeholder={placeholder}
         value={value}
         onChange={handleInputChange}
-        className='rounded-none border-neutral-300 font-serif tracking-wide focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900'
+        className={inputClass}
       />
     </div>
   );
 
+  const renderFormTextarea = (
+    label: string,
+    id: string,
+    placeholder: string,
+    value: any,
+  ) => (
+    <div className='grid w-full items-center gap-1.5'>
+      <Label htmlFor={id} className={labelClass}>
+        {label}
+      </Label>
+      <Textarea
+        name={id}
+        id={id}
+        rows={3}
+        placeholder={placeholder}
+        value={value}
+        onChange={handleInputChange}
+        className='rounded-xl border-neutral-200 bg-neutral-50/50 p-3 text-sm placeholder:text-neutral-400 focus:ring-1 focus:ring-neutral-200 focus:border-neutral-300 transition-colors duration-200 resize-none'
+      />
+    </div>
+  );
+
+  const selectTriggerClass = cn(
+    inputClass,
+    "h-11 w-full flex items-center justify-between text-left",
+    "bg-white",
+  );
+
   return (
-    <Card className='rounded-none border-neutral-200'>
-      <CardHeader>
-        <CardTitle className='text-xl font-serif tracking-wide text-neutral-900'>
-          Personal Information
+    <Card className='rounded-2xl border-neutral-200 shadow-sm'>
+      <CardHeader className='pb-3'>
+        <CardTitle className='flex items-center font-semibold text-neutral-900 text-base'>
+          <div className='w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center mr-2.5'>
+            <User className='h-4 w-4 text-neutral-600' />
+          </div>
+          Shipping Information
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className='space-y-4'>
         {renderFormView(
-          "Name",
+          "Full Name",
           "text",
           "name",
-          "Enter Your Name",
+          "Enter your full name",
           formData["name"],
         )}
-        <br />
         {renderFormView(
           "Phone Number",
           "text",
           "mobileNumber",
-          "Enter Your Mobile Number",
+          "01XXXXXXXXX",
           formData["mobileNumber"],
         )}
-        <br />
         {renderFormView(
           "Email",
           "email",
           "email",
-          "Enter Your Email",
+          "you@example.com",
           formData["email"],
         )}
-        <br />
 
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3'>
-          {/* DIVISION */}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+          {/* DISTRICT (Division) */}
           <div className='flex flex-col gap-1.5'>
-            <Label className='font-serif tracking-[0.2em] uppercase text-neutral-700'>
-              District
-            </Label>
+            <Label className={labelClass}>District</Label>
             <Popover
               open={divisionPopoverOpen}
               onOpenChange={setDivisionPopoverOpen}
@@ -147,17 +216,17 @@ const UserInformation: React.FC<IProps> = ({
                 <button
                   type='button'
                   className={cn(
-                    "w-full rounded-none border border-neutral-300 font-serif tracking-wide px-3 py-2 text-left hover:bg-accent focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 flex items-center justify-between",
-                    !shippingAddress.division && "text-muted-foreground",
+                    selectTriggerClass,
+                    !shippingAddress.division && "text-neutral-400",
                   )}>
-                  <span>
+                  <span className='truncate'>
                     {shippingAddress.division?.name ?? "Select district"}
                   </span>
                   <ChevronsUpDown className='h-4 w-4 opacity-50 shrink-0' />
                 </button>
               </PopoverTrigger>
               <PopoverContent
-                className='w-[--radix-popover-trigger-width] p-0 rounded-none border-neutral-300'
+                className='w-[--radix-popover-trigger-width] p-0 rounded-xl border-neutral-200 shadow-lg'
                 align='start'
                 onInteractOutside={(e) => {
                   // Prevent closing when interacting with the Command input on mobile
@@ -172,17 +241,17 @@ const UserInformation: React.FC<IProps> = ({
                 <Command>
                   <CommandInput
                     placeholder='Search district...'
-                    className='rounded-none border-neutral-300 font-serif tracking-wide'
+                    className='rounded-t-xl border-neutral-200 text-sm'
                   />
                   <CommandList>
                     <CommandEmpty>No district found.</CommandEmpty>
                     <CommandGroup>
-                      {BDDivisions.map((division) => (
+                      {divisionOptions.map((division) => (
                         <CommandItem
                           key={division.id}
                           value={division.name} // ← fix: use name so built-in search works
                           onSelect={(value) => {
-                            const found = BDDivisions.find(
+                            const found = divisionOptions.find(
                               (d) =>
                                 d.name.toLowerCase() === value.toLowerCase(),
                             );
@@ -190,7 +259,7 @@ const UserInformation: React.FC<IProps> = ({
                               handleShippingDivChange(found.id, "division");
                             setDivisionPopoverOpen(false);
                           }}
-                          className='font-serif tracking-wide rounded-none'>
+                          className='text-sm rounded-lg'>
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4 shrink-0",
@@ -209,11 +278,9 @@ const UserInformation: React.FC<IProps> = ({
             </Popover>
           </div>
 
-          {/* DISTRICT */}
+          {/* AREA (District) */}
           <div className='flex flex-col gap-1.5'>
-            <Label className='font-serif tracking-[0.2em] uppercase text-neutral-700'>
-              Area
-            </Label>
+            <Label className={labelClass}>Area</Label>
             <Popover
               open={districtPopoverOpen}
               onOpenChange={setDistrictPopoverOpen}
@@ -224,18 +291,20 @@ const UserInformation: React.FC<IProps> = ({
                   type='button'
                   disabled={!shippingAddress.division}
                   className={cn(
-                    "w-full rounded-none border border-neutral-300 font-serif tracking-wide px-3 py-2 text-left hover:bg-accent focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 flex items-center justify-between",
+                    selectTriggerClass,
                     (!shippingAddress.division || !shippingAddress.district) &&
-                      "text-muted-foreground",
+                      "text-neutral-400",
                     !shippingAddress.division &&
                       "opacity-50 cursor-not-allowed",
                   )}>
-                  <span>{shippingAddress.district?.name ?? "Select area"}</span>
+                  <span className='truncate'>
+                    {shippingAddress.district?.name ?? "Select area"}
+                  </span>
                   <ChevronsUpDown className='h-4 w-4 opacity-50 shrink-0' />
                 </button>
               </PopoverTrigger>
               <PopoverContent
-                className='w-[--radix-popover-trigger-width] p-0 rounded-none border-neutral-300'
+                className='w-[--radix-popover-trigger-width] p-0 rounded-xl border-neutral-200 shadow-lg'
                 align='start'
                 onInteractOutside={(e) => {
                   const target = e.target as HTMLElement;
@@ -249,19 +318,19 @@ const UserInformation: React.FC<IProps> = ({
                 <Command>
                   <CommandInput
                     placeholder='Search area...'
-                    className='rounded-none border-neutral-300 font-serif tracking-wide'
+                    className='rounded-t-xl border-neutral-200 text-sm'
                   />
                   <CommandList>
                     <CommandEmpty>No area found.</CommandEmpty>
                     <CommandGroup>
-                      {BDDistrictList.filter(
+                      {districtOptions.filter(
                         (d) => d.division_id === shippingAddress.division?.id,
                       ).map((district) => (
                         <CommandItem
                           key={district.id}
                           value={district.name} // ← fix: use name so built-in search works
                           onSelect={(value) => {
-                            const found = BDDistrictList.find(
+                            const found = districtOptions.find(
                               (d) =>
                                 d.name.toLowerCase() === value.toLowerCase(),
                             );
@@ -269,7 +338,7 @@ const UserInformation: React.FC<IProps> = ({
                               handleShippingDivChange(found.id, "district");
                             setDistrictPopoverOpen(false);
                           }}
-                          className='font-serif tracking-wide rounded-none'>
+                          className='text-sm rounded-lg'>
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4 shrink-0",
@@ -279,6 +348,8 @@ const UserInformation: React.FC<IProps> = ({
                             )}
                           />
                           {district.name}
+                          {chargeById.get(district.id) !== undefined &&
+                            ` — ৳${chargeById.get(district.id)}`}
                         </CommandItem>
                       ))}
                     </CommandGroup>
@@ -289,14 +360,17 @@ const UserInformation: React.FC<IProps> = ({
           </div>
         </div>
 
-        <br />
-        {renderFormView(
-          "Address",
-          "text",
+        {renderFormTextarea(
+          "Street Address",
           "address",
-          "Enter Your Address",
+          "House No, Road, Area",
           formData["address"],
         )}
+
+        <div className='flex items-center gap-1.5 text-[11px] text-neutral-400'>
+          <MapPin className='h-3 w-3' />
+          Delivery charge is calculated based on your selected area
+        </div>
       </CardContent>
     </Card>
   );

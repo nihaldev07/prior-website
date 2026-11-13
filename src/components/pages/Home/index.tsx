@@ -8,6 +8,7 @@ import EditorialHeroCarousel from "./HeroSectionV2";
 import { heroSlides } from "@/utils/heroSectionContents";
 import FeatureCard from "@/components/new-ui/FeatureCard";
 import PriorOutletSection from "@/components/new-ui/PriorOutletSection";
+import CampaignPopup from "@/components/CampaignPopup";
 
 // Define the interface for the component props
 interface HomePageProps {
@@ -24,6 +25,9 @@ const HomePage: React.FC<HomePageProps> = ({ products }) => {
 
   return (
     <div className='min-h-screen bg-white'>
+      {/* Campaign Popup - shown once per day when an active campaign exists */}
+      <CampaignPopup />
+
       {/* Hero Section - Editorial Style */}
       <EditorialHeroCarousel slides={heroSlides} />
 

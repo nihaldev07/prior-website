@@ -35,6 +35,7 @@ import Swal from "sweetalert2";
 import { cn } from "@/lib/utils";
 import { EnhancedProductImage } from "@/shared/EnhancedProductImage";
 import { trackViewContent } from "@/lib/analytics";
+import { buildCartProduct } from "@/utils/functions";
 interface ProductDetailSectionProps {
   product: SingleProductType;
   shots: string[];
@@ -604,33 +605,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     if (pQuantity < 1)
       return Swal.fire("Select quantity", "Please select quantity", "warning");
 
-    const productData = {
-      id: product.id,
-      sku: product.sku,
-      name: product.name,
-      active: true,
-      quantity: pQuantity,
-      unitPrice: product.unitPrice,
-      manufactureId: "",
-      discountType: product.discountType,
-      updatedPrice: product.updatedPrice ?? 0,
-      hasDiscount: product.discount > 0 && !!product.updatedPrice,
-      discount: product.discount,
-      description: product.description,
-      thumbnail: product.thumbnail,
-      productCode: product.productCode,
-      totalPrice: Number(
-        (product.discount > 0 && !!product.updatedPrice
-          ? product.updatedPrice
-          : product.unitPrice) * Number(pQuantity),
-      ).toFixed(2),
-      categoryName: product.categoryName,
-      hasVariation: product.hasVariation,
-      variation: selectedVariant,
-      maxQuantity: selectedVariant
-        ? selectedVariant.quantity
-        : product.quantity,
-    };
+    const productData = buildCartProduct(product, pQuantity, selectedVariant);
     // @ts-ignore
     addToCart(productData);
     if (isBuy) router.push("/checkout");
@@ -689,7 +664,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
   return (
     <div className='min-h-screen bg-white'>
-      <div className='max-w-7xl mx-auto px-4 py-12 lg:py-16'>
+      <div className='md:max-w-7xl mx-auto md:py-12 lg:py-16'>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12'>
           <ImageGallery
             displayImages={masterShots}
@@ -701,7 +676,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
           />
 
           {/* Product info — unchanged */}
-          <div className='space-y-6'>
+          <div className='space-y-6 px-4 mx-auto'>
             <div>
               <div className='flex items-start justify-between mb-4'>
                 <div className='flex-1'>
@@ -866,7 +841,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className='mt-16'>
+        <div className='mt-16 px-4 mx-auto'>
           <div className='border-b border-neutral-200'>
             <nav className='flex gap-8'>
               {[

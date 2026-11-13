@@ -161,7 +161,7 @@ export const compareProducts = (
       updatedPrice: newDiscountedPrice,
       quantity: updatedQuantity,
       maxQuantity: availableQuantity,
-      totalPrice: newDiscountedPrice * updatedQuantity,
+      totalPrice: freshProduct.unitPrice * updatedQuantity, // GROSS (discount kept separate)
       hasDiscount: discountPerItem > 0,
       discountType: freshProduct.discountType,
     });

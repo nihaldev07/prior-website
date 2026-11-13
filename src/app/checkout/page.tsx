@@ -5,8 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 
-import LikeButton from "@/components/LikeButton";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import InputNumber from "@/shared/InputNumber/InputNumber";
 
 import PaymentMethod from "./PaymentMethod";
@@ -19,32 +17,36 @@ import {
   isValidBangladeshiPhoneNumber,
   getDeliveryChargeByDistrictId,
 } from "@/utils/content";
+import { useLocations } from "@/hooks/useLocations";
+import { evaluatePrepayment } from "@/services/prepaymentService";
 import { fetchBulkProducts } from "@/services/productServices";
 import { compareProducts } from "@/utils/productComparison";
 import ProductChangesDialog from "@/components/checkout/ProductChangesDialog";
+import PrepaymentModal from "@/components/checkout/PrepaymentModal";
 import {
   Loader2,
-  Star,
   TrashIcon,
   User,
   LogIn,
   Disc2,
-  ShoppingBag,
+  PackageOpen,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import UserInformation from "./userForm";
 import TermsCondition from "./agreeToTerns";
 import { trackBeginCheckout, trackCustomEvent } from "@/lib/analytics";
 import { hashUserData } from "@/lib/hashing";
 import { useFacebookCookies } from "@/hooks/useFacebookCookies";
-import { Badge } from "@/components/ui/badge";
 import {
   formatVariant,
   formatPrice,
   ceilPrice,
   floorPrice,
+  getEffectiveUnitPrice,
+  getLineDiscount,
+  sanitizeCartItem,
 } from "@/utils/functions";
 import { Textarea } from "@/components/ui/textarea";
-import useCampaign from "@/hooks/useCampaign";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -68,7 +70,6 @@ export interface UserFormData {
   postalCode?: string;
 }
 const CheckoutPage = () => {
-  const { checkPrepaymentProducts, calculatePrepaymentAmount } = useCampaign();
   const { cart, clearCart, updateToCart, removeFromCart, bulkUpdateCart } =
     useCart();
   const { authState } = useAuth();
@@ -106,6 +107,25 @@ const CheckoutPage = () => {
 
   const [prePaymentAmount, setPrePaymentAmount] = useState<number>(0);
   const [hasPrepayment, setHasPrepayment] = useState<boolean>(false);
+  const [prepaymentRuleName, setPrepaymentRuleName] = useState<string | null>(
+    null,
+  );
+  // Confirmation popup for placing a COD order that carries an advance
+  const [showPrepaymentModal, setShowPrepaymentModal] = useState(false);
+
+  // Server-configured delivery charges (admin-managed locations). Falls back
+  // to the hardcoded table when the API hasn't loaded / doesn't know the
+  // district. The backend recomputes the authoritative charge on order create.
+  const { locations } = useLocations();
+  const deliveryChargeForDistrict = (districtId: string): number => {
+    if (locations) {
+      const district = locations.divisions
+        .flatMap((d) => d.districts)
+        .find((x) => x.sourceId === districtId);
+      if (district?.charge) return district.charge;
+    }
+    return getDeliveryChargeByDistrictId(districtId);
+  };
 
   // Coupon states
   const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
@@ -265,30 +285,32 @@ const CheckoutPage = () => {
     //eslint-disable-next-line
   }, []);
 
-  const checkPrepaymentProductData = async () => {
-    const response = await checkPrepaymentProducts(
-      cart.map((item: CartItem) => item?.id),
-    );
-    setHasPrepayment(response?.hasPrepaymentRequirement ?? false);
-  };
-
-  const calculateOrderPrepayment = async (deliveryChargeAmount = 0) => {
-    const orderItems = cart.map((item) => ({
+  const checkPrepaymentProductData = async (deliveryChargeAmount = 0) => {
+    // Rules engine: single evaluation covering campaign products, delivery
+    // zones, order total and customer risk (replaces the old two-call flow
+    // and the hardcoded deliveryCharge > 80 gate)
+    const orderItems = cart.map((item: CartItem) => ({
       productId: item?.id,
       quantity: item?.quantity,
-      unitPrice: item?.unitPrice,
+      unitPrice: item?.updatedPrice ?? item?.unitPrice,
     }));
-    const deliveryCharge = deliveryChargeAmount;
-    const response = await calculatePrepaymentAmount(
+    const response = await evaluatePrepayment(
+      {
+        district: formData?.district,
+        division: formData?.division,
+      },
       orderItems,
-      deliveryCharge,
+      deliveryChargeAmount,
+      // needed when a rule matches on fraud risk levels
+      formData?.mobileNumber,
     );
-
-    setPrePaymentAmount(response?.totalPrepayment ?? 0);
+    setHasPrepayment(response?.required ?? false);
+    setPrePaymentAmount(response?.required ? response.amount : 0);
+    setPrepaymentRuleName(response?.appliedRule?.name ?? null);
   };
 
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -313,13 +335,10 @@ const CheckoutPage = () => {
       }, 0),
     );
     const discount = floorPrice(
-      cart.reduce((sum, cartdata) => {
-        sum =
-          Number(sum) +
-          (Number(cartdata.unitPrice) - Number(cartdata.updatedPrice ?? 0)) *
-            cartdata.quantity;
-        return sum;
-      }, 0),
+      cart.reduce(
+        (sum, cartdata) => sum + getLineDiscount(cartdata),
+        0,
+      ),
     );
     const couponDiscount = appliedCoupon?.discountAmount || 0;
     const remaining = ceilPrice(
@@ -336,24 +355,17 @@ const CheckoutPage = () => {
       remaining,
     });
     setOrderProduct([...cart]);
-    checkPrepaymentProductData();
     //eslint-disable-next-line
   }, [cart, appliedCoupon]);
 
   // Fire begin_checkout event when user arrives on checkout page
   useEffect(() => {
     if (cart && cart.length > 0) {
-      const totalValue = cart.reduce((sum, cartdata) => {
-        return (
-          sum +
-          Number(cartdata.quantity) *
-            Number(
-              !!cartdata?.hasDiscount
-                ? (cartdata?.updatedPrice ?? cartdata?.unitPrice)
-                : cartdata?.unitPrice,
-            )
-        );
-      }, 0);
+      const totalValue = cart.reduce(
+        (sum, cartdata) =>
+          sum + getEffectiveUnitPrice(cartdata) * Number(cartdata.quantity),
+        0,
+      );
 
       trackBeginCheckout(cart, totalValue, appliedCoupon?.code || "");
     }
@@ -365,8 +377,8 @@ const CheckoutPage = () => {
     if (formData?.districtId === "" || formData.division === "") {
       Swal.fire("Oops!!", "Enter valid shipping address", "error");
     } else {
-      // Use getDeliveryChargeByDistrictId to get delivery charge
-      const deliveryCharge = getDeliveryChargeByDistrictId(
+      // Use the server-configured delivery charge (hardcoded table fallback)
+      const deliveryCharge = deliveryChargeForDistrict(
         formData.districtId || "",
       );
 
@@ -388,8 +400,8 @@ const CheckoutPage = () => {
     if (formData?.districtId === "" && formData.division === "") {
       deliveryChargeX = 0;
     } else {
-      // Use getDeliveryChargeByDistrictId to get delivery charge
-      deliveryChargeX = getDeliveryChargeByDistrictId(
+      // Use the server-configured delivery charge (hardcoded table fallback)
+      deliveryChargeX = deliveryChargeForDistrict(
         formData.districtId || "",
       );
 
@@ -406,13 +418,11 @@ const CheckoutPage = () => {
         deliveryCharge: deliveryChargeX,
         remaining,
       });
-      // Calculate prepayment only when deliveryCharge > 80
-      if (hasPrepayment && deliveryChargeX > 80) {
-        calculateOrderPrepayment(deliveryChargeX);
-      }
+      // Rules decide whether prepayment applies — no hardcoded charge gate
+      if (cart.length > 0) checkPrepaymentProductData(deliveryChargeX);
     }
     //eslint-disable-next-line
-  }, [formData?.districtId, appliedCoupon]);
+  }, [formData?.districtId, formData?.mobileNumber, appliedCoupon, locations]);
 
   const renderProduct = (item: CartItem, index: number) => {
     const {
@@ -432,55 +442,57 @@ const CheckoutPage = () => {
     const itemTotal = Number(currentPrice) * quantity;
 
     return (
-      <div key={index} className='group'>
-        <div className='flex gap-4 py-5'>
+      <motion.div
+        key={`${id}-${variation}`}
+        layout
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2, delay: index * 0.03 }}
+        className='group'>
+        <div className='flex gap-3 sm:gap-4 py-4'>
           {/* Product Image */}
           <Link
             href={`/products/${id}`}
-            className='relative h-[90px] w-[90px] shrink-0 overflow-hidden rounded-lg bg-neutral-50 border border-neutral-200 hover:border-neutral-300 transition-colors duration-200'>
+            className='relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-xl bg-neutral-50 border border-neutral-100 hover:border-neutral-200 transition-colors duration-200'>
             <Image
               fill
               src={thumbnail}
               alt={name}
               className='object-cover transition-transform duration-300 group-hover:scale-105'
+              sizes='96px'
             />
           </Link>
 
           {/* Product Details */}
           <div className='flex flex-1 flex-col justify-between min-w-0'>
-            <div className='space-y-1.5'>
-              {/* Name & Delete Row */}
-              <div className='flex items-start justify-between gap-3'>
+            <div className='space-y-1'>
+              <div className='flex items-start justify-between gap-2'>
                 <div className='flex-1 min-w-0'>
                   <Link
                     href={`/products/${id}`}
-                    className='font-medium uppercase text-sm text-neutral-900 hover:text-neutral-600 transition-colors duration-200 line-clamp-2 leading-snug'>
+                    className='font-medium text-sm text-neutral-900 hover:text-neutral-600 transition-colors duration-200 line-clamp-2 leading-snug'>
                     {name}
                   </Link>
                   {categoryName && (
-                    <p className='text-xs text-neutral-400 mt-0.5 tracking-wide'>
+                    <p className='text-[11px] text-neutral-400 mt-0.5'>
                       {categoryName}
                     </p>
                   )}
                 </div>
                 <button
                   onClick={() => removeFromCart(index)}
-                  className='text-neutral-300 hover:text-red-500 hover:bg-red-50 transition-all duration-200 p-1.5 rounded-md flex-shrink-0'
+                  className='text-neutral-300 hover:text-red-500 hover:bg-red-50 transition-all duration-200 p-1.5 rounded-lg flex-shrink-0'
                   aria-label='Remove item'>
-                  <TrashIcon className='w-4 h-4' />
+                  <TrashIcon className='w-3.5 h-3.5' />
                 </button>
               </div>
 
-              {/* Variant Badge */}
               {variation && (
-                <Badge
-                  variant='secondary'
-                  className='text-[11px] px-2 py-0.5 bg-neutral-100 text-neutral-500 border-0 rounded-md font-normal'>
+                <div className='inline-flex items-center self-start text-[10px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded'>
                   {formatVariant(variation)}
-                </Badge>
+                </div>
               )}
 
-              {/* Price */}
               <div className='flex items-baseline gap-2'>
                 <span className='text-sm font-semibold text-neutral-900'>
                   ৳{Number(currentPrice).toLocaleString()}
@@ -494,7 +506,7 @@ const CheckoutPage = () => {
             </div>
 
             {/* Quantity & Item Total */}
-            <div className='flex items-center justify-between mt-3'>
+            <div className='flex items-center justify-between mt-2'>
               <InputNumber
                 defaultValue={quantity}
                 min={1}
@@ -503,108 +515,118 @@ const CheckoutPage = () => {
                   updateToCart({
                     ...item,
                     quantity: value,
-                    totalPrice: Number(currentPrice) * Number(value),
+                    discount: getLineDiscount(item, Number(value)),
+                    totalPrice: Number(item.unitPrice) * Number(value),
                   });
                 }}
               />
-
-              <div className='text-right'>
-                <p className='text-[11px] text-neutral-400 mb-0.5'>total</p>
-                <p className='text-sm font-semibold text-neutral-900'>
-                  ৳{itemTotal.toLocaleString()}
-                </p>
-              </div>
+              <p className='text-sm font-semibold text-neutral-900'>
+                ৳{itemTotal.toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Divider — hidden after last item */}
         {index < cart.length - 1 && (
           <div className='border-t border-neutral-100' />
         )}
-      </div>
+      </motion.div>
     );
   };
 
   const renderLeft = () => {
     return (
-      <div className='space-y-8'>
-        {/* Login/Register Prompt for Guest Users */}
+      <div className='space-y-6'>
+        {/* Login Prompt */}
         {!authState.isAuthenticated && (
-          <Card className='rounded-none border-neutral-200'>
-            <CardHeader>
-              <CardTitle className='flex items-center font-serif tracking-wide text-neutral-900'>
-                <User className='h-5 w-5 mr-2' />
-                Sign In for Faster Checkout
-              </CardTitle>
-              <CardDescription className='font-serif tracking-wide text-neutral-600'>
-                Already have an account? Sign in to auto-fill your information
-                and track your orders.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className='flex flex-col sm:flex-row gap-3'>
-                <Link href={`/login?redirect=/checkout`} className='flex-1'>
-                  <Button
-                    variant='outline'
-                    className='w-full font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'>
-                    <LogIn className='h-4 w-4 mr-2' />
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href={`/register?redirect=/checkout`} className='flex-1'>
-                  <Button className='w-full font-serif tracking-wide rounded-none bg-neutral-900 hover:bg-neutral-800'>
-                    <User className='h-4 w-4 mr-2' />
-                    Create Account
-                  </Button>
-                </Link>
-              </div>
-              <p className='text-xs font-serif tracking-wide text-neutral-500 mt-3 text-center'>
-                Or continue as guest below
-              </p>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}>
+            <Card className='rounded-2xl border-neutral-200 shadow-sm'>
+              <CardHeader className='pb-3'>
+                <CardTitle className='flex items-center font-semibold text-neutral-900 text-base'>
+                  <div className='w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center mr-2.5'>
+                    <User className='h-4 w-4 text-neutral-600' />
+                  </div>
+                  Sign in for faster checkout
+                </CardTitle>
+                <CardDescription className='text-sm text-neutral-500'>
+                  Auto-fill your information and track orders
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='flex flex-col sm:flex-row gap-3'>
+                  <Link href={`/login?redirect=/checkout`} className='flex-1'>
+                    <Button
+                      variant='outline'
+                      className='w-full font-medium rounded-xl border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50 transition-all duration-300'>
+                      <LogIn className='h-4 w-4 mr-2' />
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link
+                    href={`/register?redirect=/checkout`}
+                    className='flex-1'>
+                    <Button className='w-full font-medium rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white transition-all duration-300 shadow-sm'>
+                      <User className='h-4 w-4 mr-2' />
+                      Create Account
+                    </Button>
+                  </Link>
+                </div>
+                <p className='text-xs text-neutral-400 mt-3 text-center'>
+                  Or continue as guest below
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
 
         {/* Logged-in User Info */}
         {authState.isAuthenticated && authState.user && (
-          <Card className='rounded-none border-neutral-200'>
-            <CardHeader className='border-b border-neutral-200'>
-              <CardTitle className='flex items-center font-serif tracking-wide text-neutral-900'>
-                <User className='h-5 w-5 mr-2' />
-                Welcome back, {authState.user.name?.split(" ")[0]}!
-              </CardTitle>
-              <CardDescription className='font-serif tracking-wide text-neutral-600'>
-                Your information has been auto-filled. You can edit it below if
-                needed.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center space-x-3'>
-                  <div className='h-10 w-10 bg-neutral-100 rounded-none flex items-center justify-center'>
-                    <User className='h-5 w-5 text-neutral-600' />
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}>
+            <Card className='rounded-2xl border-neutral-200 shadow-sm'>
+              <CardHeader className='pb-3'>
+                <CardTitle className='flex items-center font-semibold text-neutral-900 text-base'>
+                  <div className='w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center mr-2.5'>
+                    <User className='h-4 w-4 text-neutral-600' />
                   </div>
-                  <div>
-                    <p className='font-serif tracking-wide text-neutral-900'>
-                      {authState.user.name}
-                    </p>
-                    <p className='text-sm font-serif text-neutral-500 tracking-wide'>
-                      {authState.user.email || authState.user.mobileNumber}
-                    </p>
+                  Welcome back, {authState.user.name?.split(" ")[0]}!
+                </CardTitle>
+                <CardDescription className='text-sm text-neutral-500'>
+                  Your information has been auto-filled
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center space-x-3'>
+                    <div className='h-10 w-10 bg-neutral-100 rounded-full flex items-center justify-center'>
+                      <User className='h-5 w-5 text-neutral-600' />
+                    </div>
+                    <div>
+                      <p className='font-medium text-neutral-900 text-sm'>
+                        {authState.user.name}
+                      </p>
+                      <p className='text-xs text-neutral-500'>
+                        {authState.user.email || authState.user.mobileNumber}
+                      </p>
+                    </div>
                   </div>
+                  <Link href='/account/profile'>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='text-neutral-700 hover:bg-neutral-100 rounded-lg text-xs'>
+                      Edit
+                    </Button>
+                  </Link>
                 </div>
-                <Link href='/account/profile'>
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='font-serif tracking-wide rounded-none hover:bg-neutral-50'>
-                    Edit Profile
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
 
         <UserInformation
@@ -618,7 +640,7 @@ const CheckoutPage = () => {
             prePaymentAmount={
               hasPrepayment && prePaymentAmount > 0 ? prePaymentAmount : 0
             }
-            district={formData?.district}
+            prepaymentRuleName={prepaymentRuleName}
             paymentMethod={paymentMethod}
             handlePaymentMethodChange={(value: string) =>
               setPaymentMethod(value)
@@ -669,7 +691,7 @@ const CheckoutPage = () => {
       },
       notes,
       transectionData,
-      products: [...orderProducts],
+      products: orderProducts.map(sanitizeCartItem),
       hasPayment,
       couponCode: appliedCoupon?.code || undefined,
       // Duplicate prevention
@@ -778,28 +800,22 @@ const CheckoutPage = () => {
       return Swal.fire("Oops!!", "Please enter a valid phone number", "error");
     }
 
-    // Check for deliveries with delivery charge > 80 and prompt for prepayment
-    // if (transectionData.deliveryCharge > 80) {
-    //   return Swal.fire({
-    //     title: "Terms & Condition",
-    //     text: `A prepayment of ${transectionData?.deliveryCharge} taka (delivery charge) is required for your delivery location.`,
-    //     showDenyButton: false,
-    //     showCancelButton: true,
-    //     confirmButtonText: "Continue",
-    //     denyButtonText: "Don't save",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       confirmOrderAndCreateOne();
-    //     }
-    //   });
-    // }
+    // Prepayment rules engine: when a rule requires an advance and the
+    // customer is placing a COD order, confirm it in a modal before placing
+    // (bkash orders go straight to the gateway to pay it)
+    if (hasPrepayment && prePaymentAmount > 0 && paymentMethod !== "bkash") {
+      setShowPrepaymentModal(true);
+      return;
+    }
 
     // Confirm order if all checks pass
     confirmOrderAndCreateOne();
   };
 
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
-    <div className='nc-CheckoutPage bg-neutral-50 min-h-screen'>
+    <div className='nc-CheckoutPage min-h-screen bg-[#fafafa]'>
       {/* Product Changes Dialog */}
       <ProductChangesDialog
         open={showChangesDialog}
@@ -808,81 +824,93 @@ const CheckoutPage = () => {
         onContinue={() => setShowChangesDialog(false)}
       />
 
-      <main className='px-2 md:container py-8 sm:py-12 lg:py-16 lg:pb-28'>
-        {/* Enhanced Header */}
-        <div className='mb-8 sm:mb-10 lg:mb-12'>
-          <h2 className='text-2xl sm:ml-20 sm:text-3xl lg:text-4xl xl:text-5xl font-serif tracking-wide text-neutral-900'>
-            Checkout
-          </h2>
-          <p className='text-neutral-600 text-sm sm:text-base font-serif tracking-wide ml-0 sm:ml-20 mt-2'>
-            {verifyingProducts
-              ? "Verifying product availability and prices..."
-              : "Complete your order in just a few steps"}
-          </p>
-        </div>
+      {/* Prepayment advance confirmation */}
+      <PrepaymentModal
+        open={showPrepaymentModal}
+        onOpenChange={setShowPrepaymentModal}
+        amount={prePaymentAmount}
+        onConfirm={() => {
+          setShowPrepaymentModal(false);
+          confirmOrderAndCreateOne();
+        }}
+      />
 
-        <div className='flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-12'>
-          {/* Left Section - Forms */}
-          <div className=' flex-1 order-2 lg:order-1'>{renderLeft()}</div>
+      {/* Header */}
+      <div className='bg-white border-b border-neutral-100'>
+        <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10'>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}>
+            <h1 className='text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900'>
+              Checkout
+            </h1>
+            <p className='text-neutral-500 text-sm mt-1.5'>
+              {verifyingProducts
+                ? "Verifying product availability..."
+                : `${totalItems} ${totalItems === 1 ? "item" : "items"} in your order`}
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      <main className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10'>
+        <div className='flex flex-col lg:flex-row gap-6 lg:gap-8'>
+          {/* Left - Forms */}
+          <div className='flex-1'>{renderLeft()}</div>
 
           {/* Divider */}
           <div className='hidden lg:block shrink-0 w-px bg-neutral-200' />
 
-          {/* Right Section - Order Summary */}
-          <div className='w-full lg:w-[42%] xl:w-[38%] order-2'>
-            <div className='lg:sticky lg:top-24 space-y-6'>
-              {/* Order Summary Card */}
-              <Card className='shadow-sm border-neutral-200 overflow-hidden rounded-none'>
-                <CardHeader className='bg-white border-b border-neutral-200 pb-4'>
-                  <CardTitle className='text-xl sm:text-2xl font-serif tracking-wide text-neutral-900 flex items-center gap-2'>
-                    <div className='h-8 w-1 bg-neutral-900 rounded-none'></div>
-                    Order Summary
-                  </CardTitle>
-                  <CardDescription className='text-sm font-serif text-neutral-600 mt-1 tracking-wide'>
-                    Review your items before checkout
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='p-4 sm:p-6'>
-                  {/* Cart Items */}
-                  <div className='divide-y divide-neutral-200 -mx-2 sm:-mx-3'>
-                    {cart.length > 0 ? (
-                      cart.map((item, index) => renderProduct(item, index))
-                    ) : (
-                      <div className='py-12 text-center'>
-                        <div className='inline-flex items-center justify-center w-16 h-16 bg-neutral-100 rounded-none mb-4'>
-                          <svg
-                            className='w-8 h-8 text-neutral-400'
-                            fill='none'
-                            stroke='currentColor'
-                            viewBox='0 0 24 24'>
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth={2}
-                              d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
-                            />
-                          </svg>
-                        </div>
-                        <p className='text-neutral-500 text-sm font-serif tracking-wide'>
-                          Your cart is empty
-                        </p>
-                      </div>
-                    )}
-                  </div>
+          {/* Right - Order Summary */}
+          <div className='w-full lg:w-[40%]'>
+            <div className='lg:sticky lg:top-6'>
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}>
+                <Card className='rounded-2xl border-neutral-200 overflow-hidden shadow-sm'>
+                  <CardHeader className='bg-gradient-to-r from-neutral-50 to-transparent border-b border-neutral-100 pb-3'>
+                    <CardTitle className='text-base font-semibold text-neutral-900 flex items-center gap-2'>
+                      <div className='w-1 h-5 bg-neutral-900 rounded-full' />
+                      Order Summary
+                    </CardTitle>
+                    <CardDescription className='text-xs text-neutral-500'>
+                      Review your items before checkout
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className='p-4 sm:p-5'>
+                    {/* Cart Items */}
+                    <div className='max-h-[320px] overflow-y-auto -mx-1 px-1'>
+                      <AnimatePresence>
+                        {cart.length > 0 ? (
+                          cart.map((item, index) => renderProduct(item, index))
+                        ) : (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className='py-10 text-center'>
+                            <PackageOpen className='w-8 h-8 text-neutral-300 mx-auto mb-2' />
+                            <p className='text-sm text-neutral-400'>
+                              Your cart is empty
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
 
-                  {/* Coupon Button */}
-                  <div className='mt-4'>
-                    <Button
-                      disabled={
-                        cart.length === 0 ||
-                        !formData.mobileNumber ||
-                        !isValidBangladeshiPhoneNumber(formData.mobileNumber)
-                      }
-                      variant='outline'
-                      className='w-full font-serif tracking-wide rounded-none border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'
-                      onClick={() => setIsCouponModalOpen(true)}>
-                      <div className='flex items-center justify-center gap-2'>
-                        <Tag className='h-4 w-4' />
+                    {/* Coupon Button */}
+                    <div className='mt-4'>
+                      <Button
+                        disabled={
+                          cart.length === 0 ||
+                          !formData.mobileNumber ||
+                          !isValidBangladeshiPhoneNumber(formData.mobileNumber)
+                        }
+                        variant='outline'
+                        className='w-full text-xs font-medium rounded-xl border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50 transition-all duration-300'
+                        onClick={() => setIsCouponModalOpen(true)}>
+                        <Tag className='h-3.5 w-3.5 mr-1.5' />
                         {appliedCoupon ? (
                           <span>
                             {appliedCoupon.code} - Save ৳
@@ -891,140 +919,167 @@ const CheckoutPage = () => {
                         ) : (
                           <span>Apply Coupon</span>
                         )}
-                      </div>
-                    </Button>
-                  </div>
-
-                  {/* Price Breakdown */}
-                  <div className='mt-8 space-y-4 pt-6 border-t border-neutral-200'>
-                    <div className='flex justify-between items-center text-sm sm:text-base'>
-                      <span className='text-neutral-600 font-serif tracking-wide'>
-                        Subtotal
-                      </span>
-                      <span className='font-serif tracking-wide text-neutral-900'>
-                        ৳{formatPrice(transectionData?.totalPrice)}
-                      </span>
+                      </Button>
                     </div>
 
-                    <div className='flex justify-between items-center text-sm sm:text-base'>
-                      <span className='text-neutral-600 font-serif tracking-wide'>
-                        Delivery & Handling
-                      </span>
-                      <span className='font-serif tracking-wide text-neutral-900'>
-                        ৳{formatPrice(transectionData?.deliveryCharge)}
-                      </span>
-                    </div>
-
-                    {transectionData?.discount > 0 && (
-                      <div className='flex justify-between items-center text-sm sm:text-base'>
-                        <span className='text-neutral-600 font-serif tracking-wide'>
-                          Discount
+                    {/* Price Breakdown */}
+                    <div className='mt-5 space-y-2.5 pt-4 border-t border-neutral-100'>
+                      <div className='flex justify-between text-sm'>
+                        <span className='text-neutral-500'>
+                          Subtotal ({totalItems}{" "}
+                          {totalItems === 1 ? "item" : "items"})
                         </span>
-                        <span className='font-serif tracking-wide text-emerald-700'>
-                          -৳{transectionData?.discount}
+                        <span className='text-neutral-900 font-medium'>
+                          ৳{formatPrice(transectionData?.totalPrice)}
                         </span>
                       </div>
-                    )}
 
-                    {/* Coupon Discount */}
-                    {appliedCoupon && (
-                      <div className='flex justify-between items-center text-sm sm:text-base'>
-                        <span className='text-neutral-600 font-serif tracking-wide'>
-                          Coupon ({appliedCoupon.code})
+                      <div className='flex justify-between text-sm'>
+                        <span className='text-neutral-500'>
+                          Delivery & Handling
                         </span>
-                        <span className='font-serif tracking-wide text-emerald-700'>
-                          -৳{appliedCoupon.discountAmount}
+                        <span className='text-neutral-900 font-medium'>
+                          {transectionData?.deliveryCharge > 0
+                            ? `৳${formatPrice(transectionData?.deliveryCharge)}`
+                            : "Calculated next"}
                         </span>
                       </div>
-                    )}
 
-                    {/* Total */}
-                    <div className='flex justify-between items-center pt-4 border-t border-neutral-300'>
-                      <span className='text-base sm:text-lg font-serif tracking-wide text-neutral-900'>
-                        Total
-                      </span>
-                      <span className='text-xl sm:text-2xl font-serif tracking-wide text-neutral-900'>
-                        ৳{transectionData?.remaining}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Notes Section */}
-                  <div className='mt-6'>
-                    <label className='text-sm font-serif tracking-[0.2em] uppercase text-neutral-700 mb-2 block'>
-                      Order Notes (Optional)
-                    </label>
-                    <Textarea
-                      className='w-full border-neutral-300 bg-neutral-50/50 p-3 sm:p-4 text-sm font-serif tracking-wide placeholder:text-neutral-400 focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900 transition-all duration-300 rounded-none resize-none'
-                      rows={4}
-                      value={notes}
-                      onChange={(e: any) => setNotes(e.target.value)}
-                      placeholder='Add delivery instructions or special requests...'
-                    />
-                  </div>
-
-                  {/* Terms & Conditions */}
-                  <div className='mt-6 p-4 bg-blue-50/50 rounded-none border border-blue-100'>
-                    <TermsCondition
-                      checked={isTermsChecked}
-                      handleTermCondition={(value: boolean) =>
-                        setIsTermsChecked(value)
-                      }
-                    />
-                  </div>
-
-                  {/* Confirm Button */}
-                  <ButtonPrimary
-                    className='mt-6 w-full h-12 sm:h-14 text-sm sm:text-base font-serif tracking-[0.15em] uppercase rounded-none shadow-sm hover:shadow-md transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
-                    disabled={loading || !isTermsChecked || redirecting}
-                    onClick={() => {
-                      if (!loading) {
-                        handleConfirmOrder();
-                      }
-                    }}>
-                    <span className='flex items-center justify-center gap-2'>
-                      {redirecting
-                        ? "Redirecting to payment..."
-                        : loading
-                          ? "Processing..."
-                          : `Confirm ${hasPrepayment ? "and Pay" : "Order"}`}
-                      {loading && <Loader2 className='animate-spin w-5 h-5' />}
-                      {redirecting && (
-                        <Disc2 className='animate-spin w-5 h-5' />
+                      {transectionData?.discount > 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          className='flex justify-between text-sm'>
+                          <span className='text-emerald-600'>Discount</span>
+                          <span className='text-emerald-600 font-medium'>
+                            -৳{transectionData?.discount}
+                          </span>
+                        </motion.div>
                       )}
-                      {!loading && !redirecting && (
-                        <svg
-                          className='w-5 h-5'
-                          fill='none'
-                          stroke='currentColor'
-                          viewBox='0 0 24 24'>
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            strokeWidth={2}
-                            d='M13 7l5 5m0 0l-5 5m5-5H6'
-                          />
-                        </svg>
-                      )}
-                    </span>
-                  </ButtonPrimary>
 
-                  {/* Security Badge */}
-                  <div className='mt-4 flex items-center justify-center gap-2 text-xs font-serif tracking-wide text-neutral-500'>
-                    <svg
-                      className='w-4 h-4 text-emerald-700'
-                      fill='currentColor'
-                      viewBox='0 0 20 20'>
-                      <path
-                        fillRule='evenodd'
-                        d='M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                        clipRule='evenodd'
+                      {appliedCoupon && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          className='flex justify-between text-sm'>
+                          <span className='text-emerald-600'>
+                            Coupon ({appliedCoupon.code})
+                          </span>
+                          <span className='text-emerald-600 font-medium'>
+                            -৳{appliedCoupon.discountAmount}
+                          </span>
+                        </motion.div>
+                      )}
+
+                      {/* Total */}
+                      <div className='flex justify-between items-center pt-3 border-t border-neutral-200'>
+                        <span className='text-sm font-semibold text-neutral-900'>
+                          Total
+                        </span>
+                        <motion.span
+                          key={transectionData?.remaining}
+                          initial={{ scale: 1.05 }}
+                          animate={{ scale: 1 }}
+                          className='text-xl font-bold text-neutral-900'>
+                          ৳{transectionData?.remaining?.toLocaleString()}
+                        </motion.span>
+                      </div>
+                    </div>
+
+                    {/* Savings pill */}
+                    <AnimatePresence>
+                      {transectionData?.discount > 0 && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className='inline-flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-full mt-3'>
+                          <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
+                          You&apos;re saving ৳
+                          {transectionData?.discount.toLocaleString()}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Notes */}
+                    <div className='mt-4'>
+                      <label className='text-xs font-medium text-neutral-600 mb-1.5 block'>
+                        Order Notes (Optional)
+                      </label>
+                      <Textarea
+                        className='w-full border-neutral-200 rounded-xl p-3 text-sm placeholder:text-neutral-400 focus:ring-1 focus:ring-neutral-200 focus:border-neutral-300 transition-all duration-200 resize-none bg-neutral-50/50'
+                        rows={3}
+                        value={notes}
+                        onChange={(e: any) => setNotes(e.target.value)}
+                        placeholder='Delivery instructions or special requests...'
                       />
-                    </svg>
-                    Secure checkout
-                  </div>
-                </CardContent>
-              </Card>
+                    </div>
+
+                    {/* Terms */}
+                    <div className='mt-4 p-3 bg-neutral-50 rounded-xl border border-neutral-200'>
+                      <TermsCondition
+                        checked={isTermsChecked}
+                        handleTermCondition={(value: boolean) =>
+                          setIsTermsChecked(value)
+                        }
+                      />
+                    </div>
+
+                    {/* Confirm Button */}
+                    <Button
+                      className='mt-4 w-full h-12 text-sm font-semibold tracking-wide rounded-xl bg-neutral-900 hover:bg-neutral-800 text-white transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed'
+                      disabled={loading || !isTermsChecked || redirecting}
+                      onClick={() => {
+                        if (!loading) {
+                          handleConfirmOrder();
+                        }
+                      }}>
+                      <span className='flex items-center justify-center gap-2'>
+                        {redirecting
+                          ? "Redirecting to payment..."
+                          : loading
+                            ? "Processing..."
+                            : `Confirm ${hasPrepayment ? "and Pay" : "Order"}`}
+                        {loading && (
+                          <Loader2 className='animate-spin w-4 h-4' />
+                        )}
+                        {redirecting && (
+                          <Disc2 className='animate-spin w-4 h-4' />
+                        )}
+                        {!loading && !redirecting && (
+                          <svg
+                            className='w-4 h-4'
+                            fill='none'
+                            stroke='currentColor'
+                            viewBox='0 0 24 24'>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth={2}
+                              d='M13 7l5 5m0 0l-5 5m5-5H6'
+                            />
+                          </svg>
+                        )}
+                      </span>
+                    </Button>
+
+                    {/* Security Badge */}
+                    <div className='mt-4 flex items-center justify-center gap-1.5 text-[11px] text-neutral-400'>
+                      <svg
+                        className='w-3.5 h-3.5 text-emerald-600'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'>
+                        <path
+                          fillRule='evenodd'
+                          d='M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                      Secure checkout
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
           </div>
         </div>

@@ -29,6 +29,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { trackViewContent } from "@/lib/analytics";
+import { buildCartProduct } from "@/utils/functions";
 import TiptapRenderer from "../TiptapRenderer";
 
 interface QuickAddSheetProps {
@@ -139,33 +140,7 @@ export default function QuickAddSheet({
       return Swal.fire("Select Quantity", "Please select quantity", "warning");
     }
 
-    const productData = {
-      id: product.id,
-      sku: product.sku,
-      name: product.name,
-      active: true,
-      quantity: quantity,
-      unitPrice: product.unitPrice,
-      manufactureId: "",
-      discountType: product.discountType,
-      updatedPrice: product.updatedPrice ?? 0,
-      hasDiscount: product.discount > 0 && !!product.updatedPrice,
-      discount: product.discount,
-      description: product.description,
-      thumbnail: product.thumbnail,
-      productCode: product.productCode,
-      totalPrice: Number(
-        (product.discount > 0 && !!product.updatedPrice
-          ? product.updatedPrice
-          : product.unitPrice) * Number(quantity),
-      ).toFixed(2),
-      categoryName: product.categoryName,
-      hasVariation: product.hasVariation,
-      variation: selectedVariant,
-      maxQuantity: !!selectedVariant
-        ? selectedVariant.quantity
-        : product.quantity,
-    };
+    const productData = buildCartProduct(product, quantity, selectedVariant);
 
     // @ts-ignore
     addToCart(productData);

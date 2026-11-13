@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Variation } from "@/data/types";
 import { trackAddToCart, trackCustomEvent } from "@/lib/analytics";
+import { getEffectiveUnitPrice, getLineDiscount } from "@/utils/functions";
 
 // Cart item interface (from CartContext)
 export interface CartItem {
@@ -72,16 +73,11 @@ export const useCartStore = create<CartStore>()(
             const updatedCart = state.cart.map((cartItem, idx) => {
               if (idx === existingIndex) {
                 const newQuantity = cartItem.quantity + 1;
-                const totalPrice = cartItem.unitPrice * newQuantity;
-                const discount =
-                  (cartItem.unitPrice - (cartItem.updatedPrice ?? 0)) *
-                  newQuantity;
-
                 return {
                   ...cartItem,
                   quantity: newQuantity,
-                  totalPrice,
-                  discount,
+                  totalPrice: cartItem.unitPrice * newQuantity,
+                  discount: getLineDiscount(cartItem, newQuantity),
                 };
               }
               return cartItem;
@@ -155,10 +151,11 @@ export const useCartStore = create<CartStore>()(
       // Get total price
       getTotalPrice: () => {
         const state = get();
-        return state.cart.reduce((total, item) => {
-          const price = item.updatedPrice ?? item.unitPrice;
-          return total + price * item.quantity;
-        }, 0);
+        return state.cart.reduce(
+          (total, item) =>
+            total + getEffectiveUnitPrice(item) * item.quantity,
+          0,
+        );
       },
     }),
     {

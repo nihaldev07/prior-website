@@ -3,6 +3,8 @@ import { Noto_Sans_Devanagari } from "next/font/google";
 // @ts-ignore: global CSS import may not have type declarations available.
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { CampaignProvider } from "@/context/CampaignContext";
+import AnnouncementBar from "@/components/new-ui/AnnouncementBar";
 import { AuthProvider } from "@/context/AuthContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import Header from "@/components/new-ui/Header";
@@ -168,14 +170,17 @@ export default function RootLayout({
           <AuthProvider>
             <WishlistProvider>
               <CartProvider>
-                <>
-                  <SiteSeoSchema />
-                  <Header />
-                  <PageViewTracker />
-                  {children}
-                  <Footer />
-                </>
-                {/* <Maintenance /> */}
+                <CampaignProvider>
+                  <>
+                    <SiteSeoSchema />
+                    <AnnouncementBar />
+                    <Header />
+                    <PageViewTracker />
+                    {children}
+                    <Footer />
+                  </>
+                  {/* <Maintenance /> */}
+                </CampaignProvider>
               </CartProvider>
             </WishlistProvider>
           </AuthProvider>

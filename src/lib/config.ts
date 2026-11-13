@@ -50,6 +50,9 @@ export const config = {
     checkPrepayment: () => `${baseUrl}/campaign/check-campaign-product`,
     calculatePrepayment: () => `${baseUrl}/campaign/calculate-prepayment`,
   },
+  prepayment: {
+    evaluate: () => `${baseUrl}/prepayment/evaluate`,
+  },
   coupon: {
     validate: () => `${baseUrl}/coupon/validate`,
     myCoupons: (phone: string) => `${baseUrl}/coupon/my/${phone}`,
