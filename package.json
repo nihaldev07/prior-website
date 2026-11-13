@@ -1,7 +1,10 @@
 {
   "name": "prior-website",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
+  "engines": {
+    "node": "26.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "rm -rf .next && next build",
